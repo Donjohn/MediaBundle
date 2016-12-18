@@ -5,16 +5,20 @@ First, give credits to Sonata, their inspire this bundle.
 ### Composer
 
 Add those lines to your composer.json
-
 ```yaml
 #composer.json
-    "require": {
-        ...
-      "donjohn/media-bundle": "^1.0"
-    }
+    "repositories": [
+      {
+        "url": "https://github.com/Donjohn/MediaBundle.git",
+        "type": "git"
+      }
+    ],
 ```
 
-and update
+then type:
+```
+composer require donjohn/media-bundle
+```
 
 ### Kernel
 
