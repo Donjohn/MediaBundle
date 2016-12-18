@@ -1,0 +1,24 @@
+parameters:
+    donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+    donjohn.media.file.provider.class: Donjohn\MediaBundle\Provider\FileProvider
+    donjohn.media.image.provider.class: Donjohn\MediaBundle\Provider\ImageProvider
+
+services:
+    donjohn.media.provider.factory:
+        class: "%donjohn.media.provider.factory.class%"
+
+    donjohn.media.file.provider:
+        class: "%donjohn.media.file.provider.class%"
+        arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%" ]
+        tags:
+            - { name: media.provider, alias: file }
+
+    donjohn.media.image.provider:
+        class: "%donjohn.media.image.provider.class%"
+        arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%", "@liip_imagine.cache.manager", "@liip_imagine.filter.configuration" ]
+        tags:
+            - { name: media.provider, alias: image }
+
+
+        
+    

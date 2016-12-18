@@ -1,0 +1,47 @@
+{% block file_row %}
+    {% if not form.parent.vars.dropzone|default(false) %}
+        {{ form_row(form) }}
+    {% else %}
+        <div class="dropzone-previews"></div>
+        <div class="dz-default dz-message">
+            {{ 'dropzone.message'|trans({}, 'DonjohnMediaBundle') }}
+        </div>
+        <div class="fallback">
+        {{ form_row(form) }}
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                Dropzone.autoDiscover = false;
+                Dropzone.options = {
+                                paramName: "{{ full_name }}",
+                                url: "{{ app.request.requestUri}}",
+                                autoProcessQueue: false,
+                                maxFiles: {{ form.parent.vars.maxFiles }},
+                                parallelUploads: {{ form.parent.vars.maxFiles }},
+                                uploadMultiple: false,
+                                previewsContainer: ".dropzone-previews",
+                                init: function() {
+                                    var myDropzone = this;
+
+                                    $("#{{ form.parent.vars.id }}").closest('form').submit(function (event) {
+                                                event.preventDefault();
+                                                event.stopPropagation();
+                                                myDropzone.processQueue();
+                                            }
+                                    );
+                                },
+                    {% if form.parent.vars.redirect|default(false) %}
+                                complete: function(){
+                                    var myDropzone = this;
+                                    if (myDropzone.getRejectedFiles().length==0){
+                                        window.location={{ path(form.parent.vars.redirect) }};
+                                    }
+                                }
+                    {% endif %}
+                            };
+
+                $("#{{ form.parent.vars.id }}").closest('form').addClass('dropzone').dropzone(Dropzone.options);
+            });
+        </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,10 @@
+parameters:
+    donjohn.media.subscriber.class: Donjohn\MediaBundle\Listener\MediaSubscriber
+
+services:
+    donjohn.media.subscriber:
+        class: "%donjohn.media.subscriber.class%"
+        arguments:
+            - "@donjohn.media.provider.factory"
+        tags:
+            - { name: doctrine.event_subscriber }

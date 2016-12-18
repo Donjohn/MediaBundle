@@ -1,0 +1,9 @@
+parameters:
+    donjohn.media.type.class: Donjohn\MediaBundle\Form\MediaType
+
+services:
+    donjohn.media.type:
+        class: "%donjohn.media.type.class%"
+        arguments: ["@donjohn.media.provider.factory"]
+        tags:
+            - { name: form.type }

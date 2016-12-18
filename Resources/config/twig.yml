@@ -1,0 +1,19 @@
+parameters:
+    donjohn.media.twig.extension.class: Donjohn\MediaBundle\Twig\Extension\MediaExtension
+
+services:
+    donjohn.media.twig.extension:
+        class: "%donjohn.media.twig.extension.class%"
+        arguments: [ "@donjohn.media.provider.factory", "@twig", "@liip_imagine.cache.manager" ]
+        tags:
+            - { name: twig.extension }
+
+    twig.extension.text:
+       class: Twig_Extensions_Extension_Text
+       tags:
+            - { name: twig.extension }
+
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

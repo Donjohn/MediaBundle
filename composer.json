@@ -1,0 +1,35 @@
+{
+    "name" : "donjohn/media-bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+        "name" : "Donjohn",
+        "email" : "donjohn.geekzone@gmail.com"
+    }],
+    "license" : [
+        "MIT"
+    ],
+	"prefer-stable": true,
+    "require" : {
+        "php": ">=5.5.9",
+        "symfony/symfony": "^3.0",
+        "doctrine/orm": "^2.5",
+        "doctrine/doctrine-bundle": "^1.6",
+        "sensio/framework-extra-bundle": "^3.0.2",
+        "liip/imagine-bundle": "^1.6",
+        "twig/extensions": "^1.4",
+        "symfony/assetic-bundle": "^2.8",
+        "knplabs/gaufrette": "^0.2.1",
+        "knplabs/doctrine-behaviors": "^1.4"
+
+    },
+    "suggest": {
+        "api-platform/core": "for API feature",
+        "nelmio/api-doc-bundle": "for the API doc"
+    },
+    "autoload" : {
+        "psr-0" : {
+            "Donjohn\\MediaBundle" : ""
+        }
+    },
+    "target-dir" : "Donjohn/MediaBundle"
+}
