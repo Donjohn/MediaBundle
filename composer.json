@@ -1,12 +1,16 @@
 {
     "name" : "donjohn/media-bundle",
-    "type" : "symfony-bundle",
-    "authors" : [{
-        "name" : "Donjohn",
-        "email" : "donjohn.geekzone@gmail.com"
-    }],
-    "license" : [
-        "MIT"
+    "type": "symfony-bundle",
+    "description": "Crud generator with adminlte theme",
+    "keywords": ["crud","adminlte", "symfony"],
+    "homepage": "https://github.com/Donjohn/AdminLTEGeneratorBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Donjohn",
+            "email": "donjohn.geekzone@gmail.com",
+            "role": "Developer"
+        }
     ],
 	"prefer-stable": true,
     "require" : {
