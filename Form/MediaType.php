@@ -39,9 +39,7 @@ class MediaType extends AbstractType
                 'provider' => 'file',
                 'dropzone' => false,
                 'redirect' => false,
-                'maxFiles' => 1,
-                'label' => 'media',
-
+                'maxFiles' => 1
                 ));
     }
 
