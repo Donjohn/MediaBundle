@@ -1,9 +1,9 @@
 {
     "name" : "donjohn/media-bundle",
     "type": "symfony-bundle",
-    "description": "Crud generator with adminlte theme",
-    "keywords": ["crud","adminlte", "symfony"],
-    "homepage": "https://github.com/Donjohn/AdminLTEGeneratorBundle",
+    "description": "a simple media bundle inspired by sonata",
+    "keywords": ["media", "symfony"],
+    "homepage": "https://github.com/Donjohn/MediaBundle",
     "license": "MIT",
     "authors": [
         {
