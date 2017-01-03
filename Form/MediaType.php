@@ -45,8 +45,6 @@ class MediaType extends AbstractType
                 'invalid_message' => 'media.error.transform',
 
                 ));
-        $resolver->setRequired('data_class');
-
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
