@@ -31,7 +31,7 @@ class FileProvider extends BaseProvider {
     public function __construct($rootFolder, $uploadFolder)
     {
 
-        $this->filesystem = new \Gaufrette\Filesystem(new Local($rootFolder, true, '0775'));
+        $this->filesystem = new \Gaufrette\Filesystem(new Local($rootFolder, true, 0775));
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
     }
