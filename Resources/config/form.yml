@@ -1,5 +1,5 @@
 parameters:
-    donjohn.media.type.class: Donjohn\MediaBundle\Form\MediaType
+    donjohn.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
 
 services:
     donjohn.media.type:

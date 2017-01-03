@@ -5,7 +5,7 @@
  * @description For ...
  */
 
-namespace Donjohn\MediaBundle\Form;
+namespace Donjohn\MediaBundle\Form\Type;
 
 
 use Donjohn\MediaBundle\Model\Media;
