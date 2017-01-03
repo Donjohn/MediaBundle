@@ -29,17 +29,6 @@ class ImageProvider extends FileProvider  {
         parent::__construct($rootFolder, $uploadFolder);
     }
 
-    public function extractMetaData(Media $oMedia)
-    {
-//
-//        try {
-//            $this->adapter = new Imagine();
-//            $this->adapter->open($this->filesystem->get($oMedia)->getKey());
-//        } catch (\Exception $e) {
-//            //throw new \RuntimeException($e->getMessage());
-//        }
-    }
-
     /**
      * @inheritdoc
      */
