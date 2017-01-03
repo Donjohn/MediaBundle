@@ -18,7 +18,3 @@ services:
         arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%", "@liip_imagine.cache.manager", "@liip_imagine.filter.configuration" ]
         tags:
             - { name: media.provider, alias: image }
-
-
-        
-    
