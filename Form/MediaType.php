@@ -11,7 +11,6 @@ namespace Donjohn\MediaBundle\Form;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;
