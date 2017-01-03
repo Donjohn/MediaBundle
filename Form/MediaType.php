@@ -11,10 +11,12 @@ namespace Donjohn\MediaBundle\Form;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaType extends AbstractType
@@ -32,19 +34,27 @@ class MediaType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired(array('data_class'));
+
         $resolver->setDefaults(array(
                 'translation_domain' => 'DonjohnMediaBundle',
                 'error_bubbling' => true,
                 'provider' => 'file',
                 'dropzone' => false,
                 'redirect' => false,
-                'maxFiles' => 1
+                'maxFiles' => 1,
+                'label' => 'media',
+                'invalid_message' => 'media.error.transform',
+
                 ));
+        $resolver->setRequired('data_class');
+
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+
+        if ($options['data_class'] === null ) throw new MissingOptionsException('you must define data_class');
+
         $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
 

@@ -2,3 +2,4 @@ media: Media
 dropzone.message: Drop your files here!
 media.file.binaryContent: File
 media.image.binaryContent: Image
+media.error.transform: That is not a valid media.
