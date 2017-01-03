@@ -139,7 +139,7 @@ class FileProvider extends BaseProvider {
 
     public function extractMetaData(Media $oMedia)
     {
-        // TODO: Implement extractMetaData() method.
+        //Implement extractMetaData() method.
     }
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
