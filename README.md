@@ -6,18 +6,7 @@ First, give credits to Sonata, their inspire this bundle.
 
 ### Composer
 
-Add those lines to your composer.json
-```yaml
-#composer.json
-    "repositories": [
-      {
-        "url": "https://github.com/Donjohn/MediaBundle.git",
-        "type": "git"
-      }
-    ],
-```
-
-then type:
+Type:
 ```
 composer require donjohn/media-bundle
 ```
