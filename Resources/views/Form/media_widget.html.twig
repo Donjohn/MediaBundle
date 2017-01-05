@@ -1,4 +1,7 @@
 {% block file_row %}
+    {% if form.parent.vars.data|default(false) %}
+         {% media form.parent.vars.data, 'thumbnail' %}
+    {% endif %}
     {% if not form.parent.vars.dropzone|default(false) %}
         {{ form_row(form) }}
     {% else %}
