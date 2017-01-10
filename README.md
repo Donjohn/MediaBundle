@@ -91,6 +91,14 @@ liip_imagine:
                 cache_prefix: AnotherFolder/cache
 ```
 
+You can also change the template used to render a media, change the config:
+```
+donjohn_media:
+    providers:
+        image: ##provider alias
+            template: YouBundle:View:Twig.html.twig
+```
+
 
 
 ###Providers
@@ -109,9 +117,15 @@ You can also pass class/width/height/alt options to the media rendering:
 ```
 
 
-you can also ask for the path directly
+You can also ask for the path directly
 ```
 {% path media, '<filter>' %}
+```
+
+In order to download a media, pls use the following to get the download link 
+```
+example:
+<a href="{% download media%}">Download</a>
 ```
 
 
