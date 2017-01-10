@@ -15,6 +15,7 @@ use Donjohn\MediaBundle\Twig\TokenParser\DownloadTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\RouterInterface;
 
 
 class MediaExtension extends \Twig_Extension
@@ -46,7 +47,7 @@ class MediaExtension extends \Twig_Extension
      * @param Router $router
      * @param array $entities
      */
-    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, Router $router, array $entities = array())
+    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, RouterInterface $router, array $entities = array())
     {
         $this->providerFactory = $providerFactory;
         $this->twig = $twig;
