@@ -34,11 +34,18 @@ class DonjohnMediaExtension extends Extension
         //on sauve la liste des entites media
         $container->setParameter('donjohn.media.entities', array_keys($config['entities']));
 
+        if (isset($config['providers']) && count($config['providers'])){
+            foreach ($config['providers'] as $providerAlias => $configProvider) {
+                $container->setParameter('donjohn.media.provider.'.$providerAlias.'.template', $configProvider['template']);
+            }
+
+        }
+
         //until liiPbundle 2.0 is released, i need this filter
         if (isset($bundles['LiipImagineBundle']) && !class_exists('Liip\ImagineBundle\Imagine\Filter\Loader\ScaleFilterLoader'))
             $loader->load('imagine.yml');
 
-        //delcaration des services api pour ttoues les entites dans la conf
+        //delcaration des services api pour toutes les entites dans la conf
         if (isset($bundles['DunglasApiBundle'])){
             foreach ($config['entities'] as $classMedia => $configClassMedia) {
                 $container->setDefinition(sprintf('donjohn.media.api.resource.%s', $classMedia), $this->createApiService($classMedia, $configClassMedia));

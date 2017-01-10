@@ -18,17 +18,46 @@ abstract class BaseProvider implements ProviderInterface {
     protected $alias='';
 
     /**
+     * @var string
+     */
+    protected $template;
+
+    /**
      * @var array
      */
     public $allowedTypes=array();
 
+    /**
+     * @param $template
+     * @return $this
+     */
+    public function setTemplate($template)
+    {
+        $this->template = $template;
+        return $this;
+    }
 
+    /**
+     * @return string
+     */
+    public function getTemplate()
+    {
+        return $this->template;
+    }
+
+    /**
+     * @param string $alias
+     * @return $this
+     */
     final public function setAlias($alias)
     {
         $this->alias = $alias;
         return $this;
     }
 
+    /**
+     * @return string
+     */
     final public function getAlias()
     {
         return $this->alias;
@@ -38,7 +67,7 @@ abstract class BaseProvider implements ProviderInterface {
      * @inheritdoc
      */
     public function render(\Twig_Environment $twig, Media $media, $options = array()){
-        return $twig->render(sprintf('DonjohnMediaBundle:Provider:media.%s.html.twig', $this->getAlias()),
+        return $twig->render($this->getTemplate(),
                             array_merge($options, array('media' => $media))
                             );
     }
@@ -53,14 +82,29 @@ abstract class BaseProvider implements ProviderInterface {
         return true;
     }
 
+    /**
+     * @param Media $oMedia
+     */
     public function postLoad(Media $oMedia){}
 
+    /**
+     * @param Media $oMedia
+     */
     public function prePersist(Media $oMedia){}
 
+    /**
+     * @param Media $oMedia
+     */
     public function postPersist(Media $oMedia){}
 
+    /**
+     * @param Media $oMedia
+     */
     public function postUpdate(Media $oMedia){}
 
+    /**
+     * @param Media $oMedia
+     */
     public function postRemove(Media $oMedia){}
 
 

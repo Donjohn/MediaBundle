@@ -40,6 +40,14 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->arrayNode('providers')
+                    ->useAttributeAsKey('provider_name')
+                    ->prototype('array')
+                       ->children()
+                            ->scalarNode('template')->end()
+                        ->end()
+                    ->end()
+                ->end()
                 ->scalarNode('upload_folder')->isRequired()->cannotBeEmpty()->end()
             ->end();
 

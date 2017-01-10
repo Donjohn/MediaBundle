@@ -14,6 +14,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 interface ProviderInterface {
 
     /**
+     * @param string $template template name
+     */
+    public function setTemplate($template);
+
+    /**
+     * @return string template
+     */
+    public function getTemplate();
+
+    /**
      * @param string $alias provider alias
      */
     public function setAlias($alias);

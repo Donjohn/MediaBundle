@@ -20,15 +20,22 @@ class ProviderCompilerPass implements CompilerPassInterface
 
         $taggedServices = $container->findTaggedServiceIds(
             'media.provider'
-        );        
-        
+        );
+
+
         foreach ($taggedServices as $id => $tagAttributes) {
             foreach ($tagAttributes as $attributes) {
                 $definition->addMethodCall(
                     'addProvider',
                     array(new Reference($id), $attributes['alias'])
                 );
+                $definitionProvider = $container->getDefinition($id);
+                $definitionProvider->addMethodCall('setTemplate', array(
+                    $container->hasParameter('donjohn.media.provider.'.$attributes['alias'].'.template') ?
+                        $container->getParameter('donjohn.media.provider.'.$attributes['alias'].'.template') :
+                        'DonjohnMediaBundle:Provider:media.'.$attributes['alias'].'.html.twig')
+                );
             }
         }
     }
-}?>
+}

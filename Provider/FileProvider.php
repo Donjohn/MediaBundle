@@ -34,6 +34,7 @@ class FileProvider extends BaseProvider {
         $this->filesystem = new \Gaufrette\Filesystem(new Local($rootFolder, true, 0775));
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
+
     }
 
     public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
