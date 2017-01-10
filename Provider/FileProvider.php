@@ -10,6 +10,7 @@ use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * description 
@@ -151,6 +152,22 @@ class FileProvider extends BaseProvider {
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('binaryContent', FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => 'media.'.$this->getAlias().'.binaryContent') );
+    }
+
+    public function getDownloadResponse(Media $oMedia, array $headers = array())
+    {
+        // build the default headers
+        $headers = array_merge(array(
+            'Content-Type'          => $oMedia->getMimeType(),
+            'Content-Disposition'   => sprintf('attachment; filename="%s"', $oMedia->getName()),
+        ), $headers);
+
+
+        $file = $this->filesystem->get($this->getPath($oMedia), true);
+
+        return new StreamedResponse(function () use ($file) {
+            echo $file->getContent();
+        }, 200, $headers);
     }
 
 

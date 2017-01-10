@@ -4,7 +4,7 @@ parameters:
 services:
     donjohn.media.twig.extension:
         class: "%donjohn.media.twig.extension.class%"
-        arguments: [ "@donjohn.media.provider.factory", "@twig", "@liip_imagine.cache.manager" ]
+        arguments: [ "@donjohn.media.provider.factory", "@twig", "@router", "%donjohn.media.entities%" ]
         tags:
             - { name: twig.extension }
 

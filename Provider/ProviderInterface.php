@@ -6,6 +6,7 @@ use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * description 
@@ -112,6 +113,11 @@ interface ProviderInterface {
      */
     public function getPath(Media $oMedia, $filter= null);
 
-
+    /**
+     * return response for each media according to provider
+     * @param Media $oMedia
+     * @return Response
+     */
+    public function getDownloadResponse(Media $oMedia);
     
 }

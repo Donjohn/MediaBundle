@@ -8,7 +8,7 @@
 namespace Donjohn\MediaBundle\Twig\Node;
 
 
-class PathNode extends \Twig_Node
+class DownloadNode extends \Twig_Node
 {
     protected $extensionName;
 
@@ -20,11 +20,11 @@ class PathNode extends \Twig_Node
      * @param int                   $lineno
      * @param string                $tag
      */
-    public function __construct($extensionName, \Twig_Node_Expression $media, \Twig_Node_Expression $filter, $lineno, $tag = null)
+    public function __construct($extensionName, \Twig_Node_Expression $media, $lineno, $tag = null)
     {
         $this->extensionName = $extensionName;
 
-        parent::__construct(array('media' => $media, 'filter' => $filter), array(), $lineno, $tag);
+        parent::__construct(array('media' => $media), array(), $lineno, $tag);
     }
 
     /**
@@ -34,10 +34,8 @@ class PathNode extends \Twig_Node
     {
         $compiler
             ->addDebugInfo($this)
-            ->write(sprintf("echo \$this->env->getExtension('%s')->path(", $this->extensionName))
+            ->write(sprintf("echo \$this->env->getExtension('%s')->download(", $this->extensionName))
             ->subcompile($this->getNode('media'))
-            ->raw(', ')
-            ->subcompile($this->getNode('filter'))
             ->raw(");\n")
         ;
     }

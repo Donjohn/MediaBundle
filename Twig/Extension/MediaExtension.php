@@ -11,8 +11,10 @@ namespace Donjohn\MediaBundle\Twig\Extension;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Donjohn\MediaBundle\Twig\TokenParser\DownloadTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 
 class MediaExtension extends \Twig_Extension
@@ -28,13 +30,28 @@ class MediaExtension extends \Twig_Extension
     protected $twig;
 
     /**
-     * MediaExtension constructor.
-     * @param \Donjohn\MediaBundle\Provider\Factory\ProviderFactory $providerFactory
+     * @var Router $router
      */
-    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig)
+    protected $router;
+
+    /**
+     * @var array
+     */
+    protected $entities;
+
+    /**
+     * MediaExtension constructor.
+     * @param ProviderFactory $providerFactory
+     * @param \Twig_Environment $twig
+     * @param Router $router
+     * @param array $entities
+     */
+    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, Router $router, array $entities = array())
     {
         $this->providerFactory = $providerFactory;
         $this->twig = $twig;
+        $this->router = $router;
+        $this->entities = $entities;
     }
 
 
@@ -46,6 +63,7 @@ class MediaExtension extends \Twig_Extension
         return array(
             new MediaTokenParser(self::class),
             new PathTokenParser(self::class),
+            new DownloadTokenParser(self::class),
         );
     }
 
@@ -78,6 +96,21 @@ class MediaExtension extends \Twig_Extension
             return '';
         }
         return $provider->getPath($media, $filter);
+
+    }
+
+    public function download(Media $media = null)
+    {
+        try {
+            $provider = $this->providerFactory->getProvider($media);
+        }
+        catch (NotFoundProviderException $e) {
+            return '';
+        }
+        $options = array('id' => $media->getId());
+        if (get_class($media)!=$this->entities[0]) $options['entity'] = get_class($media);
+
+        return $this->router->generate('donjohn_media_download',$options);
 
     }
 

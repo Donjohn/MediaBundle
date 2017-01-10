@@ -13,7 +13,7 @@ class MediaNode extends \Twig_Node
     protected $extensionName;
 
     /**
-     * @param array                 $extensionName
+     * @param string                 $extensionName
      * @param \Twig_Node_Expression $media
      * @param \Twig_Node_Expression $filter
      * @param \Twig_Node_Expression $attributes
