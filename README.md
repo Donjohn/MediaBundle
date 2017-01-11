@@ -70,7 +70,7 @@ liip_imagine:
     filter_sets: #example set, define yours
         full: 
             quality: 100
-        thumb:
+        thumbnail:
             quality: 75
             filters:
                 thumbnail: { size: [120, 90], mode: outbound }
