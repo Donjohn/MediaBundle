@@ -16,6 +16,7 @@ use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
+use Doctrine\Common\Util\ClassUtils;
 
 
 class MediaExtension extends \Twig_Extension
@@ -109,7 +110,8 @@ class MediaExtension extends \Twig_Extension
             return '';
         }
         $options = array('id' => $media->getId());
-        if (get_class($media)!=$this->entities[0]) $options['entity'] = get_class($media);
+        ;
+        if (get_class($media)!=$this->entities[0]) $options['entity'] = ClassUtils::getRealClass(get_class($media));
 
         return $this->router->generate('donjohn_media_download',$options);
 
