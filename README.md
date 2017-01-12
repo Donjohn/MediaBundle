@@ -63,8 +63,8 @@ doctrine:
 donjohn_media:
     upload_folder: /media
     entities:
-        YourBundle/Entity/YourMedia: ~
-        AnotherBundle/Entity/AnotherMedia: ~ #example, AnotherMedia also extends Donjohn\MediaBundle\Entity\Media, you can define as much as media class you need 
+        YourBundle\Entity\YourMedia: ~
+        AnotherBundle\Entity\AnotherMedia: ~ #example, AnotherMedia also extends Donjohn\MediaBundle\Entity\Media, you can define as much as media class you need 
 
 liip_imagine:
     filter_sets: #example set, define yours
