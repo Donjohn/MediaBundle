@@ -9,14 +9,12 @@ namespace Donjohn\MediaBundle\Twig\Extension;
 
 
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\DownloadTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\RouterInterface;
-use Doctrine\Common\Util\ClassUtils;
 
 
 class MediaExtension extends \Twig_Extension
@@ -37,23 +35,16 @@ class MediaExtension extends \Twig_Extension
     protected $router;
 
     /**
-     * @var array
-     */
-    protected $entities;
-
-    /**
      * MediaExtension constructor.
      * @param ProviderFactory $providerFactory
      * @param \Twig_Environment $twig
      * @param Router $router
-     * @param array $entities
      */
-    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, RouterInterface $router, array $entities = array())
+    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, RouterInterface $router)
     {
         $this->providerFactory = $providerFactory;
         $this->twig = $twig;
         $this->router = $router;
-        $this->entities = $entities;
     }
 
 
@@ -77,12 +68,7 @@ class MediaExtension extends \Twig_Extension
     public function media(Media $media = null, $filter, $attributes)
     {
 
-        try {
-            $provider = $this->providerFactory->getProvider($media);
-        }
-        catch (NotFoundProviderException $e) {
-            return '';
-        }
+        $provider = $this->providerFactory->getProvider($media);
         $attributes = array_merge($attributes, array('filter' => $filter));
         return $provider->render($this->twig, $media, $attributes);
 
@@ -91,29 +77,14 @@ class MediaExtension extends \Twig_Extension
 
     public function path(Media $media = null, $filter)
     {
-        try {
-            $provider = $this->providerFactory->getProvider($media);
-        }
-        catch (NotFoundProviderException $e) {
-            return '';
-        }
+        $provider = $this->providerFactory->getProvider($media);
         return $provider->getPath($media, $filter);
 
     }
 
     public function download(Media $media = null)
     {
-        try {
-            $provider = $this->providerFactory->getProvider($media);
-        }
-        catch (NotFoundProviderException $e) {
-            return '';
-        }
-        $options = array('id' => $media->getId());
-        ;
-        if (get_class($media)!=$this->entities[0]) $options['entity'] = ClassUtils::getRealClass(get_class($media));
-
-        return $this->router->generate('donjohn_media_download',$options);
+        return $this->router->generate('donjohn_media_download',array('id' => $media->getId()));
 
     }
 

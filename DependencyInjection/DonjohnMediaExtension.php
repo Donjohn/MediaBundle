@@ -32,7 +32,7 @@ class DonjohnMediaExtension extends Extension
         $loader->load('twig.yml');
 
         //on sauve la liste des entites media
-        $container->setParameter('donjohn.media.entities', array_keys($config['entities']));
+        $container->setParameter('donjohn.media.entity', $config['entity']);
 
         if (isset($config['providers']) && count($config['providers'])){
             foreach ($config['providers'] as $providerAlias => $configProvider) {
@@ -47,10 +47,8 @@ class DonjohnMediaExtension extends Extension
 
         //delcaration des services api pour toutes les entites dans la conf
         if (isset($bundles['DunglasApiBundle'])){
-            foreach ($config['entities'] as $classMedia => $configClassMedia) {
-                $container->setDefinition(sprintf('donjohn.media.api.resource.%s', $classMedia), $this->createApiService($classMedia, $configClassMedia));
-                $container->setDefinition(sprintf('donjohn.media.api.listener.%s', $classMedia), $this->createApiListenerService($container->getDefinition('donjohn.media.provider.factory')));
-            }
+            $container->setDefinition(sprintf('donjohn.media.api.resource.%s', $config['entity']), $this->createApiService($config['entity'], $config['api']));
+            $container->setDefinition(sprintf('donjohn.media.api.listener.%s', $config['entity']), $this->createApiListenerService($container->getDefinition('donjohn.media.provider.factory')));
         }
 
     }

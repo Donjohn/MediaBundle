@@ -17,11 +17,8 @@ class MediaController extends Controller
 
     public function downloadAction(Request $request, $id)
     {
-        $entityName = $request->query->has('entity') ? $request->query->get('entity') : $this->getParameter('donjohn.media.entities')[0];
-        if (!in_array($entityName,$this->getParameter('donjohn.media.entities') )) throw new NotFoundHttpException($entityName .'does not exists');
-
-        if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($entityName)->find($id))
-            throw new NotFoundHttpException('media '.$entityName.' '.$id.' cannot be found');
+        if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))
+            throw new NotFoundHttpException('media '.$this->getParameter('donjohn.media.entity').' '.$id.' cannot be found');
 
         return $this->get('donjohn.media.provider.factory')->getProvider($media)->getDownloadResponse($media);
     }

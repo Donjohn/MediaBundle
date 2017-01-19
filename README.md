@@ -62,9 +62,7 @@ doctrine:
             
 donjohn_media:
     upload_folder: /media
-    entities:
-        YourBundle/Entity/YourMedia: ~
-        AnotherBundle/Entity/AnotherMedia: ~ #example, AnotherMedia also extends Donjohn\MediaBundle\Entity\Media, you can define as much as media class you need 
+    entity: YourBundle\Entity\YourMedia: ~ 
 
 liip_imagine:
     filter_sets: #example set, define yours
@@ -165,10 +163,9 @@ and the in the config.yml, modify the configuration
 ```
 donjohn_media:
     ...
-    entities:
-        YourBundle\Entity\YourMedia:
-            group_input: ['new_group_input', 'another_group_input']
-            group_output: ['new_group_ouput']
+    api:
+        group_input: ['new_group_input', 'another_group_input']
+        group_output: ['new_group_ouput']
             
 ```
 
