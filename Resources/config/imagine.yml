@@ -1,8 +1,0 @@
-parameters:
-    donjohn.media.filter.loader.scale.class: Donjohn\MediaBundle\Filter\Loader\ScaleFilterLoader
-
-services:
-    donjohn.media.filter.loader.scale:
-        class: "%donjohn.media.filter.loader.scale.class%"
-        tags:
-            - { name: liip_imagine.filter.loader, loader: scale }

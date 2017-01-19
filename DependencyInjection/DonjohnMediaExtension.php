@@ -41,9 +41,6 @@ class DonjohnMediaExtension extends Extension
 
         }
 
-        //until liiPbundle 2.0 is released, i need this filter
-        if (isset($bundles['LiipImagineBundle']) && !class_exists('Liip\ImagineBundle\Imagine\Filter\Loader\ScaleFilterLoader'))
-            $loader->load('imagine.yml');
 
         //delcaration des services api pour toutes les entites dans la conf
         if (isset($bundles['DunglasApiBundle'])){

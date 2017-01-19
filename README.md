@@ -62,7 +62,7 @@ doctrine:
             
 donjohn_media:
     upload_folder: /media
-    entity: YourBundle\Entity\YourMedia: ~ 
+    entity: YourBundle\Entity\YourMedia
 
 liip_imagine:
     filter_sets: #example set, define yours
