@@ -5,6 +5,7 @@ namespace Donjohn\MediaBundle\Provider;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Adapter\Local;
+use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -53,6 +54,16 @@ class FileProvider extends BaseProvider {
         $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
 
         return sprintf('%s/%04s/%02s/%s', $this->uploadFolder, $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+    }
+
+    protected function delete(Media $oMedia)
+    {
+        try {
+            return $this->filesystem->delete($this->getPath($oMedia));
+        } catch (FileNotFound $e) {
+            //do nothing, file already deleted
+        }
+        return true;
     }
 
     /**
@@ -127,7 +138,7 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        if ($oMedia->getOldMedia() instanceof Media) $this->filesystem->delete($this->getPath($oMedia->getOldMedia()));
+        if ($oMedia->getOldMedia() instanceof Media) $this->preRemove($oMedia->getOldMedia());
         return $this->postPersist($oMedia);
     }
 
@@ -136,7 +147,8 @@ class FileProvider extends BaseProvider {
      */
     public function preRemove(Media $oMedia)
     {
-        return $this->filesystem->delete($this->getPath($oMedia));
+        return $this->delete($oMedia);
+
     }
 
     public function extractMetaData(Media $oMedia)

@@ -3,6 +3,7 @@
 namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Model\Media;
+use Gaufrette\Exception\FileNotFound;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
 
@@ -29,6 +30,16 @@ class ImageProvider extends FileProvider  {
         parent::__construct($rootFolder, $uploadFolder);
     }
 
+    protected function delete(Media $oMedia, $filter=null)
+    {
+        try {
+            return $this->filesystem->delete($this->getPath($oMedia, $filter));
+        } catch (FileNotFound $e) {
+            //do nothing, file already deleted
+        }
+        return true;
+    }
+
     /**
      * @inheritdoc
      */
@@ -37,6 +48,17 @@ class ImageProvider extends FileProvider  {
         $paths = array('reference' => $this->getPath($oMedia));
         foreach ($this->filterConfiguration->all() as $filter=> $configuration) $paths[$filter] = $this->getPath($oMedia, $filter);
         $oMedia->setPaths($paths);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function preRemove(Media $oMedia)
+    {
+        $this->delete($oMedia);
+        foreach ($this->filterConfiguration->all() as $filter=> $configuration) $this->delete($oMedia, $filter);
+
+        return true;
     }
 
     public function getPath(Media $oMedia, $filter= null)
