@@ -68,12 +68,6 @@ interface ProviderInterface {
     public function postLoad(Media $oMedia);
 
     /**
-     * function called on prePersist Dcotrine Event on MEdia entity
-     * @param Media $oMedia
-     */
-    public function prePersist(Media $oMedia);
-
-    /**
      * function called on postPerstist Dcotrine Event on MEdia entity
      * @param Media $oMedia
      */
@@ -86,10 +80,10 @@ interface ProviderInterface {
     public function postUpdate(Media $oMedia);
 
     /**
-     * function called on postRemove Dcotrine Event on MEdia entity
+     * function called on preRemove Dcotrine Event on MEdia entity
      * @param Media $oMedia
      */
-    public function postRemove(Media $oMedia);
+    public function preRemove(Media $oMedia);
 
 
     /**

@@ -134,7 +134,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function postRemove(Media $oMedia)
+    public function preRemove(Media $oMedia)
     {
         return $this->filesystem->delete($this->getPath($oMedia));
     }

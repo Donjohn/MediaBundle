@@ -23,9 +23,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Media
 {
-    use ORMBehaviors\Timestampable\Timestampable;
-
-    
     /**
      * @var integer
      * @ORM\Id
@@ -34,6 +31,8 @@ class Media
      * @Groups({"api_output"})
     */
     protected $id;
+
+    use ORMBehaviors\Timestampable\Timestampable;
     
     /**
      * @var string

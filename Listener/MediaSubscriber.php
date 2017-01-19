@@ -23,29 +23,19 @@ class MediaSubscriber implements EventSubscriber {
     public function getSubscribedEvents() {
         return array(
             'postLoad',
-            'prePersist',
             'postPersist',
             'postUpdate',
-            'postRemove',
+            'preRemove',
         );
     }
 
     /**
-     * event declenché à la creation de l'objet, sert à sauver le fichier si uploadé
+     * event declenché à la creation de l'objet, sert à loader les paths
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
     public function postLoad(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
         if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->postLoad($oMedia);
-    }
-
-    /**
-     * event declenché à la creation de l'objet, sert à sauver le fichier si uploadé
-     * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
-     */
-    public function prePersist(LifecycleEventArgs $args) {
-        $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->prePersist($oMedia);
     }
     
     /**
@@ -68,12 +58,12 @@ class MediaSubscriber implements EventSubscriber {
 
 
     /**
-     * declenché à l'update de l'objet, sert à delete l'ancien fichier si yen a un nouveau
+     * declenché à l'update de l'objet, sert à delete le fichier
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function postRemove(LifecycleEventArgs $args) {
+    public function preRemove(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->postRemove($oMedia);
+        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->preRemove($oMedia);
     }
 
     
