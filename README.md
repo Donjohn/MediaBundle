@@ -132,9 +132,10 @@ An Donjohn\MediaBundle\Form\Type\MediaType is available. Only 'data_class' optio
 'provider' option default value is 'file', change it if you wanna create a media with another provider (ex 'image').
 In case you're editing a persisted media object, the option is overwritten by $media->getProviderName() value in any case
 ```
-$builder->add(<fieldName>,MediaType::class, array('provider'=> 'image', 'data_class' => 'YourAppBundle:YourMedia));
+$builder->add(<fieldName>,MediaType::class, array('provider'=> 'image', 'data_class' => 'YourAppBundle:YourMedia'));
 ```
 
+Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.  
 
 ### Api
 This bundle is compatible with DunglasApiBundle and NelmioApiDocBundle. No config is needed.

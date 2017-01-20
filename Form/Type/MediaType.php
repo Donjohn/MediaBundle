@@ -12,7 +12,10 @@ use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
@@ -43,7 +46,7 @@ class MediaType extends AbstractType
                 'maxFiles' => 1,
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',
-
+                'allow_delete' => true
                 ));
     }
 
@@ -59,6 +62,21 @@ class MediaType extends AbstractType
         else $provider->addCreateForm($builder, $options);
 
         $builder->addModelTransformer(new MediaDataTransformer($provider));
+
+        if ($options['allow_delete']){
+            $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+                if ($event->getForm()->get('unlink')->getData()) {
+                    $event->setData(null);
+                }
+            });
+
+            $builder->add('unlink', CheckboxType::class, array(
+                'mapped'   => false,
+                'data'     => false,
+                'required' => false,
+                'label' => 'media.unlink.label'
+            ));
+        }
 
     }
 
