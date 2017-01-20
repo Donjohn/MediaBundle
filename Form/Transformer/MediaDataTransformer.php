@@ -32,6 +32,11 @@ class MediaDataTransformer implements DataTransformerInterface
      */
     public function reverseTransform($oMedia)
     {
+        if (!$oMedia instanceof Media) return $oMedia;
+
+        // no binary content and no media id return null
+        if (empty($oMedia->getBinaryContent()) && $oMedia->getId() === null) return null;
+
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent() instanceof \SplFileInfo)) return $oMedia;
 
         $this->provider->transform($oMedia);
