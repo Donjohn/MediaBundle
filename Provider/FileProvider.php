@@ -158,12 +158,12 @@ class FileProvider extends BaseProvider {
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => 'media.'.$this->getAlias().'.binaryContent'));
+        $builder->add('binaryContent', FileType::class, array('required' => false, 'label' => 'media.'.$this->getAlias().'.binaryContent'));
     }
 
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => 'media.'.$this->getAlias().'.binaryContent') );
+        $builder->add('binaryContent', FileType::class, array('label' => 'media.'.$this->getAlias().'.binaryContent') );
     }
 
     public function getDownloadResponse(Media $oMedia, array $headers = array())
