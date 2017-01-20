@@ -104,7 +104,7 @@ class MediaExtension extends \Twig_Extension
     public function download(Media $media = null)
     {
         try {
-            $provider = $this->providerFactory->getProvider($media);
+            $this->providerFactory->getProvider($media);
         }
         catch (NotFoundProviderException $e) {
             return '';
