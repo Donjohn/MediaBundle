@@ -9,6 +9,7 @@ namespace Donjohn\MediaBundle\Twig\Extension;
 
 
 use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\DownloadTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
