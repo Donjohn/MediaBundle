@@ -1,5 +1,6 @@
 media: Media
 dropzone.message: Glissez vos fichiers ici.
+media.unlink.label: Supprimer le média
 media.file.binaryContent: Fichier
 media.file.binaryContent: Image
 media.error.transform: Ce média est invalide.
