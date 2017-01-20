@@ -68,7 +68,12 @@ class MediaExtension extends \Twig_Extension
     public function media(Media $media = null, $filter, $attributes)
     {
 
-        $provider = $this->providerFactory->getProvider($media);
+        try {
+            $provider = $this->providerFactory->getProvider($media);
+        }
+        catch (NotFoundProviderException $e) {
+            return '';
+        }
         $attributes = array_merge($attributes, array('filter' => $filter));
         return $provider->render($this->twig, $media, $attributes);
 
@@ -77,7 +82,12 @@ class MediaExtension extends \Twig_Extension
 
     public function path(Media $media = null, $filter)
     {
-        $provider = $this->providerFactory->getProvider($media);
+        try {
+            $provider = $this->providerFactory->getProvider($media);
+        }
+        catch (NotFoundProviderException $e) {
+            return '';
+        }
         return $provider->getPath($media, $filter);
 
     }
