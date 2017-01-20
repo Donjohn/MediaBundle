@@ -36,7 +36,7 @@ class Media
     
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      * @Groups({"api_output","api_input"})
      */
     protected $name;
@@ -49,7 +49,7 @@ class Media
     protected $providerName;
     
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=true)
      * @Groups({"api_output"})
      */
     protected $filename;
@@ -274,8 +274,8 @@ class Media
     }
 
     /**
-     * get Provider
-     * @return ProviderInterface string
+     * get ProviderName
+     * @return string
      */
     public function getProvider()
     {
