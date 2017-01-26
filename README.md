@@ -28,7 +28,7 @@ Add thoses route to your routing.yml
 
 ```yaml
 #app/config/routing.yml
-media:
+donjohn_media:
     resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
 ```
     

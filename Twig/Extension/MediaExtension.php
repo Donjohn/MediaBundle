@@ -95,7 +95,7 @@ class MediaExtension extends \Twig_Extension
 
     public function download(Media $media = null)
     {
-        return $this->router->generate('donjohn_media_download',array('id' => $media->getId()));
+        return $media && $media->getId() ? $this->router->generate('donjohn_media_download',array('id' => $media->getId())) : null;
 
     }
 

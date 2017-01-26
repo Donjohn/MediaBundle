@@ -6,7 +6,6 @@ use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
@@ -66,24 +65,13 @@ class FileProvider extends BaseProvider {
         return true;
     }
 
+
     /**
      * @inheritdoc
      */
-    public function transform(Media $oMedia)
+    public function prePersist(Media $oMedia)
     {
-        $matches=array(); $fileName='';
-
-        //si c'est un stream file http://php.net/manual/en/wrappers.data.php
-        if (preg_match('#data:('.implode('|', $this->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
-            $tmpFile = tempnam(sys_get_temp_dir(), $this->getAlias());
-            $source = fopen($oMedia->getBinaryContent(), 'r');
-            $destination = fopen($tmpFile, 'w');
-            stream_copy_to_stream($source, $destination);
-            fclose($source);
-            fclose($destination);
-            $oMedia->setBinaryContent(new UploadedFile($tmpFile, basename($tmpFile), $matches[1]));
-        }
-
+        $fileName='';
         if ($oMedia->getBinaryContent() instanceof UploadedFile) {
             $fileName = $oMedia->getBinaryContent()->getClientOriginalName();
 
@@ -91,16 +79,11 @@ class FileProvider extends BaseProvider {
             $fileName = $oMedia->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) throw new TransformationFailedException('invalid media');
+        if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
-        try {
-            $this->extractMetaData($oMedia);
-            $this->validateMimeType($mimeType);
-        } catch (InvalidMimeTypeException $e)
-        {
-            throw new TransformationFailedException($e->getMessage());
-        }
+        $this->validateMimeType($mimeType);
+        $this->extractMetaData($oMedia);
 
         $oMedia->setMimeType($mimeType);
         $oMedia->setProviderName($this->getAlias());

@@ -4,7 +4,6 @@ namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
-use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -49,12 +48,6 @@ interface ProviderInterface {
 
 
     /**
-     * @param \Donjohn\MediaBundle\Model\Media $oMedia
-     * @throws TransformationFailedException
-     */
-    public function transform(Media $oMedia);
-
-    /**
      * extract data from media, size/height/etc..;
      * @param Media $oMedia
      * @return array metadatas
@@ -62,25 +55,32 @@ interface ProviderInterface {
     public function extractMetaData(Media $oMedia);
 
     /**
-     * function called on postLoad Dcotrine Event on MEdia entity
+     * function called on postLoad Dcotrine Event on Media entity
      * @param Media $oMedia
      */
     public function postLoad(Media $oMedia);
 
+
     /**
-     * function called on postPerstist Dcotrine Event on MEdia entity
+     * function called on prePersist Dcotrine Event on v entity
+     * @param Media $oMedia
+     */
+    public function prePersist(Media $oMedia);
+
+    /**
+     * function called on postPersist Dcotrine Event on Media entity
      * @param Media $oMedia
      */
     public function postPersist(Media $oMedia);
 
     /**
-     * function called on postUpdate Dcotrine Event on MEdia entity
+     * function called on postUpdate Dcotrine Event on Media entity
      * @param Media $oMedia
      */
     public function postUpdate(Media $oMedia);
 
     /**
-     * function called on preRemove Dcotrine Event on MEdia entity
+     * function called on preRemove Dcotrine Event on Media entity
      * @param Media $oMedia
      */
     public function preRemove(Media $oMedia);

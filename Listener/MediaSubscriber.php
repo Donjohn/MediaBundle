@@ -23,6 +23,7 @@ class MediaSubscriber implements EventSubscriber {
     public function getSubscribedEvents() {
         return array(
             'postLoad',
+            'prePersist',
             'postPersist',
             'postUpdate',
             'preRemove',
@@ -36,6 +37,15 @@ class MediaSubscriber implements EventSubscriber {
     public function postLoad(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
         if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->postLoad($oMedia);
+    }
+
+    /**
+     * event declenché àvant la creation de l'objet, sert à setter les metadatas /filename etc...
+     * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
+     */
+    public function prePersist(LifecycleEventArgs $args) {
+        $oMedia = $args->getEntity();
+        if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->prePersist($oMedia);
     }
     
     /**

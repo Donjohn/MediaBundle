@@ -2,9 +2,13 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
+use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 use Donjohn\MediaBundle\Model\Media;
+use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 
 class MediaDataTransformer implements DataTransformerInterface
@@ -39,7 +43,38 @@ class MediaDataTransformer implements DataTransformerInterface
 
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent() instanceof \SplFileInfo)) return $oMedia;
 
-        $this->provider->transform($oMedia);
+
+        $matches=array(); $fileName='';
+
+        //si c'est un stream file http://php.net/manual/en/wrappers.data.php
+        if (preg_match('#data:('.implode('|', $this->provider->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
+            $tmpFile = tempnam(sys_get_temp_dir(), $this->provider->getAlias());
+            $source = fopen($oMedia->getBinaryContent(), 'r');
+            $destination = fopen($tmpFile, 'w');
+            stream_copy_to_stream($source, $destination);
+            fclose($source);
+            fclose($destination);
+            $oMedia->setBinaryContent(new UploadedFile($tmpFile, basename($tmpFile), $matches[1]));
+        }
+
+        if ($oMedia->getBinaryContent() instanceof UploadedFile) {
+            $fileName = $oMedia->getBinaryContent()->getClientOriginalName();
+
+        } elseif ($oMedia->getBinaryContent() instanceof File) {
+            $fileName = $oMedia->getBinaryContent()->getBasename();
+        }
+
+        if (empty($fileName)) throw new TransformationFailedException('invalid media');
+
+        try {
+            $this->provider->validateMimeType($oMedia->getBinaryContent()->getMimeType());
+        } catch (InvalidMimeTypeException $e)
+        {
+            throw new TransformationFailedException($e->getMessage());
+        }
+
+        $oMedia->setProviderName($this->provider->getAlias());
+
 
         return $oMedia;
     }

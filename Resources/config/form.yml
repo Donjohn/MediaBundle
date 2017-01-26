@@ -4,6 +4,6 @@ parameters:
 services:
     donjohn.media.type:
         class: "%donjohn.media.type.class%"
-        arguments: ["@donjohn.media.provider.factory"]
+        arguments: ["@donjohn.media.provider.factory", "%donjohn.media.entity%"]
         tags:
             - { name: form.type }

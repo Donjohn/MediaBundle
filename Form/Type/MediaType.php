@@ -18,7 +18,6 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\OptionsResolver\Exception\MissingOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaType extends AbstractType
@@ -28,9 +27,15 @@ class MediaType extends AbstractType
      */
     protected $providerFactory;
 
-    public function __construct( ProviderFactory $providerFactory)
+    /**
+     * @var string
+     */
+    protected $classMedia;
+
+    public function __construct( ProviderFactory $providerFactory, $classMedia)
     {
         $this->providerFactory = $providerFactory;
+        $this->classMedia = $classMedia;
     }
 
 
@@ -46,14 +51,13 @@ class MediaType extends AbstractType
                 'maxFiles' => 1,
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',
-                'allow_delete' => true
+                'allow_delete' => true,
+                'data_class' => $this->classMedia,
                 ));
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        if ($options['data_class'] === null ) throw new MissingOptionsException('you must define data_class');
 
         $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
