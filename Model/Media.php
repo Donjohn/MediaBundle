@@ -1,12 +1,11 @@
 <?php
 namespace Donjohn\MediaBundle\Model;
 
-use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -32,7 +31,7 @@ class Media
     */
     protected $id;
 
-    use ORMBehaviors\Timestampable\Timestampable;
+    use TimestampableEntity;
     
     /**
      * @var string
