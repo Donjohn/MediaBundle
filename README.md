@@ -18,7 +18,7 @@ Add thoses bundles to your AppKernel.php
 ```PHP
     new Liip\ImagineBundle\LiipImagineBundle(),
     new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-    new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
     new Donjohn\MediaBundle\DonjohnMediaBundle(),
 ```
 
@@ -72,12 +72,6 @@ liip_imagine:
             quality: 75
             filters:
                 thumbnail: { size: [120, 90], mode: outbound }
-                
-stof_doctrine_extensions:
-    default_locale: %locale%
-    orm:
-        default:
-            timestampable: true
 ```
 
 see [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters config
