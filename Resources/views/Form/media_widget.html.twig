@@ -1,7 +1,12 @@
-{% block file_row %}
-    {% if form.parent.vars.data|default(false) %}
-         {% media form.parent.vars.data, 'thumbnail' %}
+{% block media_widget %}
+    {% if form.vars.data|default(false) %}
+         {% media form.vars.data, 'thumbnail' %}
     {% endif %}
+    toto
+    {{ form_widget(form) }}
+{% endblock %}
+
+{% block file_row %}
     {% if not form.parent.vars.dropzone|default(false) %}
         {{ form_row(form) }}
     {% else %}
