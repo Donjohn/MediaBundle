@@ -1,7 +1,6 @@
 <?php
 namespace Donjohn\MediaBundle\Model;
 
-use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\File\File;
