@@ -78,7 +78,8 @@ class MediaType extends AbstractType
                 'mapped'   => false,
                 'data'     => false,
                 'required' => false,
-                'label' => 'media.unlink.label'
+                'label' => 'media.unlink.label',
+                'translation_domain' => 'DonjohnMediaBundle'
             ));
         }
 
