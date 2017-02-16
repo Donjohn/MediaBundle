@@ -46,7 +46,14 @@ use Donjohn\MediaBundle\Model\Media as BaseMedia;
  */
 class YourMedia extends BaseMedia
 {
-
+    /**
+     * @var integer
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")     
+     * @Groups({"api_output"})
+    */
+    protected $id;
 }
 ```
 
