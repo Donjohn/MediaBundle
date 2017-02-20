@@ -18,9 +18,15 @@ class MediaDataTransformer implements DataTransformerInterface
      */
     protected $provider;
 
-    public function __construct(ProviderInterface $provider)
+    /**
+     * @var string
+     */
+    protected $mediaClass;
+
+    public function __construct(ProviderInterface $provider, $mediaClass)
     {
         $this->provider = $provider;
+        $this->mediaClass = $mediaClass;
     }
 
     /**
@@ -41,12 +47,16 @@ class MediaDataTransformer implements DataTransformerInterface
         // no binary content and no media id return null
         if (empty($oMedia->getBinaryContent()) && $oMedia->getId() === null) return null;
 
-        if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent() instanceof \SplFileInfo)) return $oMedia;
+        if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
 
-
-        $matches=array(); $fileName='';
+        $oNewMedia = new $this->mediaClass();
+        $oNewMedia->setProviderName($oMedia->getProviderName())
+                    ->setBinaryContent($oMedia->getBinaryContent());
+        $matches=array();
+        $fileName='';
 
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
+
         if (preg_match('#data:('.implode('|', $this->provider->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
             $tmpFile = tempnam(sys_get_temp_dir(), $this->provider->getAlias());
             $source = fopen($oMedia->getBinaryContent(), 'r');
@@ -54,29 +64,29 @@ class MediaDataTransformer implements DataTransformerInterface
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);
-            $oMedia->setBinaryContent(new UploadedFile($tmpFile, basename($tmpFile), $matches[1]));
+            $oNewMedia->setBinaryContent(new UploadedFile($tmpFile, basename($tmpFile), $matches[1]));
         }
 
-        if ($oMedia->getBinaryContent() instanceof UploadedFile) {
-            $fileName = $oMedia->getBinaryContent()->getClientOriginalName();
+        if ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
+            $fileName = $oNewMedia->getBinaryContent()->getClientOriginalName();
 
-        } elseif ($oMedia->getBinaryContent() instanceof File) {
-            $fileName = $oMedia->getBinaryContent()->getBasename();
+        } elseif ($oNewMedia->getBinaryContent() instanceof File) {
+            $fileName = $oNewMedia->getBinaryContent()->getBasename();
         }
 
         if (empty($fileName)) throw new TransformationFailedException('invalid media');
 
         try {
-            $this->provider->validateMimeType($oMedia->getBinaryContent()->getMimeType());
+            $this->provider->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
         } catch (InvalidMimeTypeException $e)
         {
             throw new TransformationFailedException($e->getMessage());
         }
 
-        $oMedia->setProviderName($this->provider->getAlias());
+        $oNewMedia->setProviderName($this->provider->getAlias());
 
 
-        return $oMedia;
+        return $oNewMedia;
     }
 }
 

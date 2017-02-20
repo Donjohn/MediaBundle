@@ -46,7 +46,7 @@ class MediaType extends AbstractType
                 'translation_domain' => 'DonjohnMediaBundle',
                 'error_bubbling' => true,
                 'provider' => 'file',
-                'dropzone' => false,
+                'dropzone' => true,
                 'redirect' => false,
                 'maxFiles' => 1,
                 'label' => 'media',
@@ -65,7 +65,7 @@ class MediaType extends AbstractType
         if ($media) $provider->addEditForm($builder, $options);
         else $provider->addCreateForm($builder, $options);
 
-        $builder->addModelTransformer(new MediaDataTransformer($provider));
+        $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
 
         if ($options['allow_delete']){
             $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
