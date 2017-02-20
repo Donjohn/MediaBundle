@@ -1,7 +1,8 @@
 {% block media_widget %}
     {% if form.vars.dropzone %}
-        <div data-dropzone="on" id="dropzone{{ id }}" class="media-dropzone">
-            <span>{{ 'dropzone.message'|trans({},'DonjohnMediaBundle') }}<br /></span>
+        <input type="file" id="hiddenFile{{ id }}" style="visibility: hidden">
+        <div data-dropzone="on" id="dropzone{{ id }}" style="width: 200; height: 200">
+            {{ 'dropzone.message'|trans({},'DonjohnMediaBundle') }}<br />
     {% endif %}
 
             {% media form.vars.data, 'thumbnail' with {class: 'thumbnail' } %}

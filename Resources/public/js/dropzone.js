@@ -8,24 +8,41 @@ $(function () {
     var processFile = function (file, element) {
         var reader  = new FileReader();
         reader.addEventListener("load", function () {
-            var dropzone = $(element).closest('[data-dropzone="on"]');
-            var img = $('#'+dropzone.attr(id)+' img');
+            var dropzoneId= $(element).closest('[data-dropzone="on"]').attr('id');
+            var img = $('#'+dropzoneId+' img');
             if( img.length ) {
                 img.attr('src', reader.result).attr('height', '120px');
             } else {
-                $('#'+dropzone.attr(id)+' span.media-info').html(file.name);
+                $('#'+dropzoneId+' span.media_info').html(file.name);
             }
-            alert(dropzone.attr(id));
-            $('#'+dropzone.attr(id)+' input[type="text"]').val(reader.result);
+            $('#'+dropzoneId+' input[type="text"]').val(reader.result);
 
         }, false);
         reader.readAsDataURL(file);
     };
 
 
-
-
     $('[data-dropzone="on"]').on(
+        'click ontouchstart',
+        function(e) {
+            var _this = this;
+            $('#'+ $(this).attr('id').replace('dropzone','hiddenFile')).click()
+            .on(
+                'change',
+                function(e){
+                    e.preventDefault();
+                    e.stopPropagation();
+                    files = $(this).prop('files');
+                    if(files.length) {
+                        $(files).each(function(){
+                            processFile(this, _this);
+                        })
+
+                    }
+                }
+            );
+        }
+    ).on(
         'dragover dragenter',
         function(e) {
             $(this).addClass('hover');
@@ -44,8 +61,8 @@ $(function () {
         function(e){
             e.preventDefault();
             e.stopPropagation();
-            files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             var _this = this;
+            files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             if(files.length) {
                 $(files).each(function(){
                     processFile(this, _this);
