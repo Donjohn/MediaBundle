@@ -9,12 +9,10 @@ $(function () {
         var reader  = new FileReader();
         reader.addEventListener("load", function () {
             var dropzoneId= $(element).closest('[data-dropzone="on"]').attr('id');
-            var img = $('#'+dropzoneId+' img');
-            if( img.length ) {
-                img.attr('src', reader.result).attr('height', '120px');
-            } else {
-                $('#'+dropzoneId+' span.media_info').html(file.name);
-            }
+
+            //TODO ici en fonction du provider, charger un template different...
+            $('#'+dropzoneId+' img').attr('src', reader.result).attr('height', '120px');
+            $('#'+dropzoneId+' span.media_info').html(file.name);
             $('#'+dropzoneId+' input[type="text"]').val(reader.result);
 
         }, false);
