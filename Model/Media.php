@@ -22,6 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Media
 {
+    /**
+    * @Groups({"api_output"})
+    */
     protected $id;
 
     use ORMBehaviors\Timestampable\Timestampable;
