@@ -13,7 +13,7 @@ $(function () {
                 var img = $(document.createElement('img')).attr('src', reader.result).attr('height', $(dropzone).data('thumbnail-height')).addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
                 $('#'+dropzoneId+' span.media-info').html(img);
                 console.log($(img));
-            } else if ($(dropzone).data('provider')=='file') {
+            } else {
                 $('#'+dropzoneId+' span.media-info').html(file.name);
             }
             $('#'+dropzoneId+' textarea').val(reader.result);
