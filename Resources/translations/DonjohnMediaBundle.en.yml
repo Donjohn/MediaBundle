@@ -1,5 +1,6 @@
 media: Media
-dropzone.message: Drop your files here!
+dropzone.message.single: Drop your file or Click Here!
+dropzone.message.multiple: Drop your files or Click Here!
 media.unlink.label: Unlink Media
 media.provider.file.label: Files
 media.provider.image.label: Images

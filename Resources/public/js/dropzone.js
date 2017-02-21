@@ -3,16 +3,17 @@
  */
 $(function () {
 
-    $('[data-dropzone="on"] input[type="text"]').css('visibility','hidden');
-
     var processFile = function (file, element) {
         var reader  = new FileReader();
         reader.addEventListener("load", function () {
-            var dropzoneId= $(element).closest('[data-dropzone="on"]').attr('id');
-
+            var dropzone = $(element).closest('[data-dropzone="on"]');
+            var dropzoneId= dropzone.attr('id');
             //TODO ici en fonction du provider, charger un template different...
-            $('#'+dropzoneId+' img').attr('src', reader.result).attr('height', '120px');
-            $('#'+dropzoneId+' span.media_info').html(file.name);
+            if ($(dropzone).data('provider')=='image') {
+                $('#'+dropzoneId+' img').attr('src', reader.result).attr('height', '200px');
+            } else if ($(dropzone).data('provider')=='file') {
+                $('#'+dropzoneId+' span.media_info').html(file.name);
+            }
             $('#'+dropzoneId+' input[type="text"]').val(reader.result);
 
         }, false);
@@ -20,11 +21,11 @@ $(function () {
     };
 
 
-    $('[data-dropzone="on"]').on(
+    $('[data-dropzone="on"] > span').on(
         'click ontouchstart',
         function(e) {
             var _this = this;
-            $('#'+ $(this).attr('id').replace('dropzone','hiddenFile')).click()
+            $('#'+ $(this).parent().attr('id').replace('dropzone','hiddenFile')).click()
             .on(
                 'change',
                 function(e){
@@ -55,7 +56,7 @@ $(function () {
             e.stopPropagation();
         }
     ).on(
-        'drop change',
+        'drop',
         function(e){
             e.preventDefault();
             e.stopPropagation();

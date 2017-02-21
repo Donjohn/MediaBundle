@@ -2,9 +2,11 @@
 
 namespace Donjohn\MediaBundle\DependencyInjection;
 
+use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration as EasyAdminConfiguration;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -13,7 +15,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class DonjohnMediaExtension extends Extension
+class DonjohnMediaExtension extends Extension implements PrependExtensionInterface
 {
     /**
      * {@inheritdoc}
@@ -76,5 +78,18 @@ class DonjohnMediaExtension extends Extension
         $definition->addTag('kernel.event_listener', array('event' => 'api.post_create', 'method' => 'onPostCreate'));
         return $definition;
     }
+
+    public function prepend(ContainerBuilder $container)
+    {
+        if ($container->hasExtension('easy_admin')) {
+            $config = $container->getExtensionConfig('easy_admin');
+            $config = $this->processConfiguration(new EasyAdminConfiguration(), $config);
+
+            $container->setParameter('easy_admin.design.brand_color', $config['design']['brand_color']);
+        } else {
+            $container->setParameter('easy_admin.design.brand_color', '#205081');
+        }
+    }
+
 
 }
