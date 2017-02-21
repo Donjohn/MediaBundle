@@ -46,7 +46,7 @@ class MediaType extends AbstractType
                 'translation_domain' => 'DonjohnMediaBundle',
                 'error_bubbling' => true,
                 'provider' => 'file',
-                'dropzone' => true,
+                'dropzone' => false,
                 'redirect' => false,
                 'maxFiles' => 1,
                 'label' => 'media',

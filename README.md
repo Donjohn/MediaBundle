@@ -190,15 +190,11 @@ app.media.your_type.provider:
 
 
 ### Dropzone
-The MediaType is compatible with [dropzone.js](http://www.dropzonejs.com/) , set true to 'dropzone' option. Install it and add the the js and css provided by dropzone install to your layout.
-Beware you can't use twice MediaType with dropzone option set to true within the same form (blame dropzone, or me, prehaps i'm dumb)
+The MediaType provide a dropzone functionnality. You must first activate it with the formType options.
 ```
-$builder = $this->createFormBuilder();
 $builder->add('media', MediaType::class, array( ... ,'dropzone' => true ) );
 ```
-
-You can upload more than one files at each time, change option maxFiles in the MediaType. Don't forget : each file sumbit the whole form.
+Then add to your layout the js provided with the bundle
 ```
-$builder = $this->createFormBuilder();
-$builder->add('media', MediaType::class, array( ... ,'dropzone' => true, maxFiles => 50) );
+<script src="{{ asset('bundles/donjohnmedia/js/dropzone.js') }}"></script>
 ```
