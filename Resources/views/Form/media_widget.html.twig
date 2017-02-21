@@ -2,7 +2,7 @@
     {% if form.vars.dropzone %}
         <input type="file" id="hiddenFile{{ id }}" class="hidden">
         <div data-dropzone="on" id="dropzone{{ id }}" data-provider="{{ provider }}" class="panel">
-            <span class="panel-body center-block text-center">
+            <span class="panel-body center-block text-center media-info">
                 {% media form.vars.data, 'thumbnail' with {class: 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block' } %}
             </span>
             <span class="center-block text-center panel-body" style="border: 2px dashed {{ media_dropzone_border_color }}; ">{{ 'dropzone.message.single'|trans({},'DonjohnMediaBundle') }}</span>
