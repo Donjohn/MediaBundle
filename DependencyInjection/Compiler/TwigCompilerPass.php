@@ -14,8 +14,7 @@ class TwigCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $brandColor = $container->getParameter('media_dropzone_border_color');
-
-        $container->getDefinition('twig')->addMethodCall('addGlobal', array('media_dropzone_border_color', $brandColor));
+        $container->getDefinition('twig')->addMethodCall('addGlobal', array('media_dropzone_border_color', $container->getParameter('media_dropzone_border_color')));
+        $container->getDefinition('twig')->addMethodCall('addGlobal', array('media_dropzone_thumbnail_height', $container->getParameter('media_dropzone_thumbnail_height')));
     }
 }

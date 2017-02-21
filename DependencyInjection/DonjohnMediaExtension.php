@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
+use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -90,6 +91,20 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             $container->setParameter('media_dropzone_border_color', $config['design']['brand_color']);
         } else {
             $container->setParameter('media_dropzone_border_color', '#205081');
+        }
+
+
+
+        $config = $container->getExtensionConfig('liip_imagine');
+        $config = $this->processConfiguration(
+            $container->getExtension('liip_imagine')->getConfiguration($config, $container),
+            $config
+        );
+        if (!isset($config['filter_sets']['thumbnail'])) {
+            throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
+        } else {
+
+            $container->setParameter('media_dropzone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
         }
     }
 

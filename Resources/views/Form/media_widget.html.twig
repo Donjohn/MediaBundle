@@ -1,7 +1,7 @@
 {% block media_widget %}
     {% if form.vars.dropzone %}
         <input type="file" id="hiddenFile{{ id }}" class="hidden">
-        <div data-dropzone="on" id="dropzone{{ id }}" data-provider="{{ provider }}" class="panel">
+        <div data-dropzone="on" id="dropzone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_dropzone_thumbnail_height }}" class="panel">
             <span class="panel-body center-block text-center media-info">
                 {% media form.vars.data, 'thumbnail' with {class: 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block' } %}
             </span>

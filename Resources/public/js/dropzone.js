@@ -8,10 +8,10 @@ $(function () {
         reader.addEventListener("load", function () {
             var dropzone = $(element).closest('[data-dropzone="on"]');
             var dropzoneId= dropzone.attr('id');
-            //TODO ici en fonction du provider, charger un template different...
+
             if ($(dropzone).data('provider')=='image') {
-                var img = $(document.createElement('img')).attr('src', reader.result).attr('height', '200px').addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
-                $('#'+dropzoneId+' span.media-info').html(img);
+                var img = $(document.createElement('img')).attr('src', reader.result).attr('height', $(dropzone).data('thumbnail-height')).addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
+                $('#'+dropzoneId+' span.media-info').append(img);
                 console.log($(img));
             } else if ($(dropzone).data('provider')=='file') {
                 $('#'+dropzoneId+' span.media-info').html(file.name);
