@@ -7,7 +7,7 @@ use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -142,12 +142,12 @@ class FileProvider extends BaseProvider {
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', $options['dropzone'] ? TextType::class : FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
+        $builder->add('binaryContent', $options['dropzone'] ? TextareaType::class : FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
     }
 
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', $options['dropzone'] ? TextType::class : FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
+        $builder->add('binaryContent', $options['dropzone'] ? TextareaType::class : FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
     }
 
     public function getDownloadResponse(Media $oMedia, array $headers = array())
