@@ -2,7 +2,6 @@
 
 namespace Donjohn\MediaBundle\DependencyInjection;
 
-use JavierEguiluz\Bundle\EasyAdminBundle\DependencyInjection\Configuration as EasyAdminConfiguration;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Definition;
@@ -83,11 +82,14 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
     {
         if ($container->hasExtension('easy_admin')) {
             $config = $container->getExtensionConfig('easy_admin');
-            $config = $this->processConfiguration(new EasyAdminConfiguration(), $config);
+            $config = $this->processConfiguration(
+                $container->getExtension('easy_admin')->getConfiguration($config, $container),
+                $config
+            );
 
-            $container->setParameter('easy_admin.design.brand_color', $config['design']['brand_color']);
+            $container->setParameter('media_dropzone_border_color', $config['design']['brand_color']);
         } else {
-            $container->setParameter('easy_admin.design.brand_color', '#205081');
+            $container->setParameter('media_dropzone_border_color', '#205081');
         }
     }
 
