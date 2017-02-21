@@ -68,19 +68,34 @@ class MediaType extends AbstractType
         $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
 
         if ($options['allow_delete']){
+
+            $formEventUnlink = function(FormEvent $event) {
+                if ($event->getData()) {
+                    $event->getForm()->add('unlink', CheckboxType::class, array(
+                        'mapped'   => false,
+                        'data'     => false,
+                        'required' => false,
+                        'label' => 'media.unlink.label',
+                        'translation_domain' => 'DonjohnMediaBundle'
+                    ));
+                }
+            };
+
+            $builder->addEventListener(
+                FormEvents::PRE_SET_DATA,
+                $formEventUnlink
+            );
+
+            $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                $formEventUnlink
+            );
+
             $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                if ($event->getForm()->get('unlink')->getData()) {
+                if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
                     $event->setData(null);
                 }
             });
-
-            $builder->add('unlink', CheckboxType::class, array(
-                'mapped'   => false,
-                'data'     => false,
-                'required' => false,
-                'label' => 'media.unlink.label',
-                'translation_domain' => 'DonjohnMediaBundle'
-            ));
         }
 
     }

@@ -20,6 +20,8 @@ $(function () {
         reader.readAsDataURL(file);
     };
 
+    //on vire le bloc empty de easyadmin
+    $('[data-dropzone="on"] > .empty').remove();
 
     $('[data-dropzone="on"] > span').on(
         'click ontouchstart',
