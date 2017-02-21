@@ -16,7 +16,7 @@ $(function () {
             } else if ($(dropzone).data('provider')=='file') {
                 $('#'+dropzoneId+' span.media-info').html(file.name);
             }
-            $('#'+dropzoneId+' input[type="text"]').val(reader.result);
+            $('#'+dropzoneId+' textarea').val(reader.result);
 
         }, false);
         reader.readAsDataURL(file);
