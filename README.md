@@ -78,6 +78,7 @@ liip_imagine:
         thumbnail:
             quality: 75
             filters:
+                auto_rotate: ~
                 thumbnail: { size: [120, 90], mode: outbound }
 ```
 
