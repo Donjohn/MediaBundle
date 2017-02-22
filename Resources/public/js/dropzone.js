@@ -48,7 +48,7 @@ $(function () {
     //on vire le bloc empty de easyadmin
     $('[data-dropzone="on"] > .empty').remove();
 
-    $('[data-dropzone="on"] > span').on(
+    $('[data-dropzone="on"] > span.message').on(
         'click ontouchstart',
         function(e) {
             var _this = this;
