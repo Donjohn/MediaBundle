@@ -3,7 +3,30 @@
  */
 $(function () {
 
-    var processFile = function (file, element) {
+    var switchInputFileToTextearea = function (_this){
+        var dropzone = $(_this).closest('[data-dropzone="on"]');
+        var textarea = $(dropzone).find('textarea');
+        if (!$(textarea).length) {
+            var inputFile = $(dropzone).find('input[type="file"]');
+            textearea = $(document.createElement('textarea')).attr('id',$(inputFile).attr('id'))
+                                                .attr('name',$(inputFile).attr('name'))
+                                                .attr('class',$(inputFile).attr('class'));
+            inputFile.attr('id','').attr('name','');
+            $(dropzone).find('input[type="file"]').parent().append(textearea);
+        }
+    }
+
+    var switchTexteareaToInputFile = function (_this){
+        var dropzone = $(_this).closest('[data-dropzone="on"]');
+        var textarea = $(dropzone).find('textarea');
+        if ($(textarea).length) {
+            $(dropzone).find('input[type="file"]').attr('id',$(textearea).attr('id'))
+                                                    .attr('name',$(textearea).attr('name'));
+            $(textarea).remove();
+        }
+}
+
+    var processFile = function (file, element, target) {
         var reader  = new FileReader();
         reader.addEventListener("load", function () {
             var dropzone = $(element).closest('[data-dropzone="on"]');
@@ -16,7 +39,7 @@ $(function () {
             } else {
                 $('#'+dropzoneId+' span.media-info').html(file.name);
             }
-            $('#'+dropzoneId+' textarea').html(reader.result);
+            if (target) $(target).html(reader.result);
 
         }, false);
         reader.readAsDataURL(file);
@@ -29,7 +52,8 @@ $(function () {
         'click ontouchstart',
         function(e) {
             var _this = this;
-            $('#'+ $(this).parent().attr('id').replace('dropzone','hiddenFile')).click()
+            switchTexteareaToInputFile(_this);
+            $('[data-dropzone="on"] input[type="file"]').click()
             .on(
                 'change',
                 function(e){
@@ -65,10 +89,11 @@ $(function () {
             e.preventDefault();
             e.stopPropagation();
             var _this = this;
+            switchInputFileToTextearea(_this);
             files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             if(files.length) {
                 $(files).each(function(){
-                    processFile(this, _this);
+                    processFile(this, _this, $(textearea));
                 })
 
             }

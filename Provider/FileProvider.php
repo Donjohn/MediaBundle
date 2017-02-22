@@ -142,12 +142,12 @@ class FileProvider extends BaseProvider {
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', $options['dropzone'] ? TextareaType::class : FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
+        $builder->add('binaryContent', FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : null) ) );
     }
 
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', $options['dropzone'] ? TextareaType::class : FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : '') ) );
+        $builder->add('binaryContent', FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : null) ) );
     }
 
     public function getDownloadResponse(Media $oMedia, array $headers = array())
