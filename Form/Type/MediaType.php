@@ -104,8 +104,6 @@ class MediaType extends AbstractType
         array $options
     ) {
         $view->vars['dropzone'] = $options['dropzone'];
-        $view->vars['redirect'] = $options['redirect'];
-        $view->vars['maxFiles'] = $options['maxFiles'];
         $view->vars['provider'] = $options['provider'];
 
     }
