@@ -7,7 +7,6 @@ use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
