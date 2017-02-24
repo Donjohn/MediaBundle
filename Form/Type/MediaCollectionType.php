@@ -80,7 +80,7 @@ class MediaCollectionType extends AbstractType
         array $options
     ) {
         $view->vars['dropzone'] = $options['dropzone'];
-        $view->vars['provider'] = $options['entry_options']['provider'];
+        $view->vars['provider'] = $options['provider'];
 
     }
 
