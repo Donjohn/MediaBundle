@@ -78,7 +78,8 @@ liip_imagine:
         thumbnail:
             quality: 75
             filters:
-                thumbnail: { size: [120, 90], mode: outbound }
+                auto_rotate: ~
+                thumbnail: { size: [120, 120], mode: outbound }
 ```
 
 see [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters config
