@@ -47,8 +47,6 @@ class MediaType extends AbstractType
                 'error_bubbling' => true,
                 'provider' => 'file',
                 'dropzone' => false,
-                'redirect' => false,
-                'maxFiles' => 1,
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',
                 'allow_delete' => true,

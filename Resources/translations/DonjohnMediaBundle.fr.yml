@@ -1,4 +1,5 @@
 media: Media
+medias: Medias
 dropzone.message.single: Glissez votre fichier ou cliquez ici.
 dropzone.message.multiple: Glissez vos fichiers ou cliquez ici.
 media.unlink.label: Enlever le média
