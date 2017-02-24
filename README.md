@@ -136,11 +136,11 @@ example:
 
 
 ### FormType
-An Donjohn\MediaBundle\Form\Type\MediaType is available. Only 'data_class' option is mandatory.
+An Donjohn\MediaBundle\Form\Type\MediaType is available
 'provider' option default value is 'file', change it if you wanna create a media with another provider (ex 'image').
 In case you're editing a persisted media object, the option is overwritten by $media->getProviderName() value in any case
 ```
-$builder->add(<fieldName>,MediaType::class, array('provider'=> 'image', 'data_class' => 'YourAppBundle:YourMedia'));
+$builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) );
 ```
 
 Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.  
@@ -195,6 +195,11 @@ The MediaType provide a dropzone functionnality. You must first activate it with
 ```
 $builder->add('media', MediaType::class, array( ... ,'dropzone' => true ) );
 ```
+If you want to upload a collection of medias
+```
+$builder->add('medias', MediaCollectionType::class, array( 'dropzone' => true ) );
+```
+
 Then add to your layout the js provided with the bundle
 ```
 <script src="{{ asset('bundles/donjohnmedia/js/dropzone.js') }}"></script>
