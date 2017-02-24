@@ -256,36 +256,14 @@ class Media
     /**
      * Get mimeType     *
      *
-     * @var string $return quel partie ?
+     * @var string
      * @return string
      */
-    public function getMimeType($return='full')
+    public function getMimeType()
     {
-        $full = $this->mimeType;
-        try {list($provider, $type) = explode('/', $this->mimeType);}
-        catch (ContextErrorException $e) {$return = 'full';}
-
-        return ${$return};
+        return $this->mimeType;
     }
 
-    /**
-     * get ProviderName
-     * @return string
-     */
-    public function getProvider()
-    {
-        return $this->getMimeType('provider');
-    }
-
-    /**
-     * get type
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->getMimeType('type');
-    }
-            
 
     /**
      * Set filename
