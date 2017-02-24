@@ -45,6 +45,15 @@ class MediaCollectionType extends AbstractType
     }
 
 
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+
+        $options['entry_options'] = array_merge($options['entry_options'], array(
+                                                                'provider' => $options['provider']
+                                                ));
+    }
+
+
     public function configureOptions(OptionsResolver $resolver)
     {
 
@@ -56,10 +65,12 @@ class MediaCollectionType extends AbstractType
                 'allow_add' => true,
                 'entry_type' => MediaType::class,
                 'dropzone' => false,
-                'entry_options' => array('label' => false,
-                                        'attr' => array('class' => 'hidden'),
-                                        'required' => false,
-                                    ),
+                'provider' => 'file',
+                'entry_options' => array(
+                                    'dropzone' => false,
+                                    'label' => false,
+                                    'attr' => array('class' => 'hidden'),
+                                    'required' => false)
                 ));
     }
 
