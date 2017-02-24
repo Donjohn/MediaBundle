@@ -14,8 +14,7 @@ $(function () {
             $(inputFile).attr('id','').attr('name','');
             $(inputText).appendTo($(formGroup));
         }
-        return inputText;
-    }
+    };
 
     var switchInputTextToInputFile = function (formGroup){
         var inputText = $(formGroup).find('input[type="text"]');
@@ -24,13 +23,13 @@ $(function () {
                                                     .attr('name',$(inputText).attr('name'));
             $(inputText).remove();
         }
-    }
+    };
 
     var createOrGetFormGroup = function(dropzone){
         var prototype = $(dropzone).find('[data-prototype]');
         if ($(prototype).length) {
             //si multi
-            var formGroup = $(prototype).data('prototype')
+            var formGroup = $(prototype).data('prototype');
             var total = $(dropzone).find('.form-group').length;
             formGroup = $.parseHTML( formGroup.replace(/__name__/g, ++total) );
             $(formGroup).attr('data-provider',$(dropzone).data('provider'));
@@ -42,15 +41,15 @@ $(function () {
             return $(dropzone);
         }
 
-    }
+    };
 
     var dropzone_image = function(reader, formGroup){
         return $(document.createElement('img')).attr('src', reader.result).attr('height', $(formGroup).data('thumbnail-height')).addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
-    }
+    };
 
     var dropzone_file = function(file, formGroup){
         return file.name;
-    }
+    };
 
     var processFile = function (file, formGroup) {
         var reader  = new FileReader();
@@ -84,19 +83,18 @@ $(function () {
             e.preventDefault();
             e.stopPropagation();
         }
-    ).on(
+    )
+    .on(
         'dragleave dragexit',
         function(e) {
             $(this).removeClass('hover');
             e.preventDefault();
             e.stopPropagation();
         }
-    );
-
-    $('[data-dropzone="on"] > span.message').on(
+    )
+    .on(
         'click ontouchstart',
-        function(e) {
-            var _this = this;
+        function() {
             var formGroup = createOrGetFormGroup($(this).closest('[data-dropzone="on"]'));
             switchInputTextToInputFile(formGroup);
             $(formGroup).find('input[type="file"]').click()
@@ -119,9 +117,8 @@ $(function () {
         function(e){
             e.preventDefault();
             e.stopPropagation();
-            var _this = this;
             var formGroup = createOrGetFormGroup($(this).closest('[data-dropzone="on"]'));
-            var inputText = switchInputFileToInputText(formGroup);
+            switchInputFileToInputText(formGroup);
             files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             if(files.length) {
                 $(files).each(function(){
