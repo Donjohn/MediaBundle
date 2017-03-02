@@ -43,8 +43,7 @@ class MediaCollectionType extends AbstractType
     {
 
         $options['entry_options'] = array_merge($options['entry_options'], array(
-                                                                'provider' => $options['provider'],
-                                                                'multiple' => $options['multiple']
+                                                                'provider' => $options['provider']
                                                 ));
 
     }
@@ -62,12 +61,12 @@ class MediaCollectionType extends AbstractType
                 'entry_type' => MediaType::class,
                 'dropzone' => false,
                 'provider' => 'file',
-                'multiple' => true,
                 'entry_options' => array(
                                     'dropzone' => false,
                                     'label' => false,
-                                    'attr' => array('class' => 'hidden'),
-                                    'required' => false)
+                                    'required' => false,
+                                    'multiple' => true
+                                )
                 ));
     }
 

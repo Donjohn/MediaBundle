@@ -141,27 +141,30 @@ class FileProvider extends BaseProvider {
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $formOptions = array('required' => false, 'translation_domain' => 'DonjohnMediaBundle');
-        if ($options['dropzone']) {
-            $formOptions['label'] = false;
-            if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
-            else $formOptions['attr'] = array('class' => 'hidden' );
-        } else {
-            $formOptions['label'] = 'media.'.$this->getAlias().'.binaryContent';
-        }
+        $formOptions = array('required' => false,
+                            'translation_domain' => 'DonjohnMediaBundle',
+                            'label' => ($options['dropzone'] || $options['multiple'])
+                                        ? false
+                                        : 'media.'.$this->getAlias().'.binaryContent',
+                        );
+        if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
+        if ($options['dropzone']) $formOptions['attr'] = array('class' => 'hidden' );
+
+
+
         $builder->add('binaryContent', FileType::class, $formOptions );
     }
 
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $formOptions = array('translation_domain' => 'DonjohnMediaBundle');
-        if ($options['dropzone']) {
-            $formOptions['label'] = false;
-            if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
-            else $formOptions['attr'] = array('class' => 'hidden' );
-        } else {
-            $formOptions['label'] = 'media.'.$this->getAlias().'.binaryContent';
-        }
+        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
+                            'label' => $options['dropzone'] || $options['multiple']
+                                        ? false
+                                        : 'media.'.$this->getAlias().'.binaryContent',
+                        );
+        if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
+        if ($options['dropzone']) $formOptions['attr'] = array('class' => 'hidden' );
+
         $builder->add('binaryContent', FileType::class, $formOptions );
     }
 
