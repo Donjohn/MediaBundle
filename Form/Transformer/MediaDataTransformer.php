@@ -58,6 +58,10 @@ class MediaDataTransformer implements DataTransformerInterface
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
 
         if (preg_match('#data:('.implode('|', $this->provider->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
+
+            //^data:([a-zA-Z]+/[a-zA-Z]+);base64\,([a-zA-Z0-9+\=/]+)$
+            //passer le filename dans le champ en plus sinon t'es baisé
+
             $tmpFile = tempnam(sys_get_temp_dir(), $this->provider->getAlias());
             $source = fopen($oMedia->getBinaryContent(), 'r');
             $destination = fopen($tmpFile, 'w');
