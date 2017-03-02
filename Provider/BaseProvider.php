@@ -82,5 +82,18 @@ abstract class BaseProvider implements ProviderInterface {
         return true;
     }
 
+    protected function getFormOptions($options)
+    {
+        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
+                            'label' => $options['dropzone'] || $options['multiple']
+                                        ? false
+                                        : 'media.'.$this->getAlias().'.binaryContent',
+                        );
+        if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
+        if ($options['dropzone']) $formOptions['attr'] = array('class' => 'hidden' );
+
+        return $formOptions;
+    }
+
 
 }
