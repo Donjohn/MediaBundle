@@ -29,14 +29,12 @@ $(function () {
     var createOrGetFormGroup = function(dropzone){
         var prototype = $(dropzone).find('[data-prototype]');
         if ($(prototype).length) {
-            //si multi
-            var formGroup = $(prototype).data('prototype');
             var total = $(dropzone).find('.form-group[data-provider]').length;
-            formGroup = $.parseHTML( formGroup.replace(/__name__/g, ++total) );
-            $(formGroup).attr('data-provider',$(dropzone).data('provider'));
-            $(formGroup).attr('data-thumbnail-height',$(dropzone).data('thumbnail-height'));
-            $(formGroup).attr('data-multi','on');
-            $(formGroup).appendTo($(prototype));
+            var formGroup = $.parseHTML( $(prototype).data('prototype').replace(/__name__/g, ++total) );
+            $(formGroup).attr('data-provider',$(dropzone).data('provider'))
+                        .attr('data-thumbnail-height',$(dropzone).data('thumbnail-height'))
+                        .attr('data-multi','on')
+                        .appendTo($(prototype));
             return $(formGroup);
         } else {
             return $(dropzone);
@@ -107,9 +105,11 @@ $(function () {
                     files = $(this).prop('files');
                     if(files.length) {
                         $(files).each(function(){
-                            if (!formGroup) formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
+                            if (!formGroup) {
+                                formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
+                            }
                             processFile(this, formGroup);
-                            formGroup = false;
+                            formGroup = false; //on unset le formgroup pour forcer la creation au file suivant
                         });
                     }
                 }

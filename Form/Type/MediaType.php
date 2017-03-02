@@ -50,6 +50,7 @@ class MediaType extends AbstractType
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',
                 'allow_delete' => true,
+                'multiple' => false,
                 'data_class' => $this->classMedia,
                 ));
     }

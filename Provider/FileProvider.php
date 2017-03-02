@@ -141,12 +141,28 @@ class FileProvider extends BaseProvider {
 
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', FileType::class, array('required' => false, 'translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : null) ) );
+        $formOptions = array('required' => false, 'translation_domain' => 'DonjohnMediaBundle');
+        if ($options['dropzone']) {
+            $formOptions['label'] = false;
+            if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
+            else $formOptions['attr'] = array('class' => 'hidden' );
+        } else {
+            $formOptions['label'] = 'media.'.$this->getAlias().'.binaryContent';
+        }
+        $builder->add('binaryContent', FileType::class, $formOptions );
     }
 
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('binaryContent', FileType::class, array('translation_domain' => 'DonjohnMediaBundle', 'label' => $options['dropzone'] ? false : 'media.'.$this->getAlias().'.binaryContent', 'attr' => array('class' => $options['dropzone'] ? 'hidden' : null) ) );
+        $formOptions = array('translation_domain' => 'DonjohnMediaBundle');
+        if ($options['dropzone']) {
+            $formOptions['label'] = false;
+            if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
+            else $formOptions['attr'] = array('class' => 'hidden' );
+        } else {
+            $formOptions['label'] = 'media.'.$this->getAlias().'.binaryContent';
+        }
+        $builder->add('binaryContent', FileType::class, $formOptions );
     }
 
     public function getDownloadResponse(Media $oMedia, array $headers = array())
