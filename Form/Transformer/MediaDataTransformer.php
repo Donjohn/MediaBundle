@@ -49,6 +49,7 @@ class MediaDataTransformer implements DataTransformerInterface
 
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
 
+        /** @var $oNewMedia Media */
         $oNewMedia = new $this->mediaClass();
         $oNewMedia->setProviderName($oMedia->getProviderName())
                     ->setBinaryContent($oMedia->getBinaryContent());
@@ -59,17 +60,16 @@ class MediaDataTransformer implements DataTransformerInterface
 
         if (preg_match('#data:('.implode('|', $this->provider->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
 
-            //^data:([a-zA-Z]+/[a-zA-Z]+);base64\,([a-zA-Z0-9+\=/]+)$
-            //passer le filename dans le champ en plus sinon t'es baisé
-
             $tmpFile = tempnam(sys_get_temp_dir(), $this->provider->getAlias());
             $source = fopen($oMedia->getBinaryContent(), 'r');
             $destination = fopen($tmpFile, 'w');
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);
-            $oNewMedia->setBinaryContent(new UploadedFile($tmpFile, basename($tmpFile), $matches[1]));
+            $fileName = $oMedia->getOriginalFilename();
+            $oNewMedia->setBinaryContent(new UploadedFile($tmpFile, $fileName, $matches[1]));
         }
+
 
         if ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
             $fileName = $oNewMedia->getBinaryContent()->getClientOriginalName();
@@ -78,8 +78,8 @@ class MediaDataTransformer implements DataTransformerInterface
             $fileName = $oNewMedia->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) throw new TransformationFailedException('invalid media');
-
+        if (empty($fileName)) throw new TransformationFailedException('invalid media, no filename');
+        $oNewMedia->setOriginalFilename($fileName);
         try {
             $this->provider->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
         } catch (InvalidMimeTypeException $e)

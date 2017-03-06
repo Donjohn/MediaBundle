@@ -2,7 +2,6 @@
 namespace Donjohn\MediaBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Debug\Exception\ContextErrorException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -55,6 +54,12 @@ class Media
     protected $oldFilename;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"api_output","api_input"})
+     */
+    protected $originalFilename;
+
+    /**
      * @var array collection of paths
      * @Groups({"api_output"})
      */
@@ -66,16 +71,16 @@ class Media
      * @Groups({"api_output"})
      */
     protected $mimeType;
-    
+
     protected $oldMimeType;
-    
+
     /**
      * @var string
      * @ORM\Column(type="text", nullable=true)
      * @Groups({"api_output","api_input"})
      */
     protected $description;
-    
+
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=true)
@@ -125,7 +130,7 @@ class Media
         /**
      * Get mediaId
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -148,7 +153,7 @@ class Media
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -195,7 +200,7 @@ class Media
 
         return $this;
     }
-    
+
     /**
      * add metadata
      *
@@ -280,13 +285,13 @@ class Media
     /**
      * Get filename
      *
-     * @return string 
+     * @return string
      */
     public function getFilename()
     {
         return $this->filename;
     }
-    
+
     /**
      * return old filename for delete/update
      * @return string
@@ -294,6 +299,29 @@ class Media
     public function getOldFilename()
     {
         return $this->oldFilename;
+    }
+
+
+    /**
+     * Set filename
+     *
+     * @param string $filename
+     * @return Media
+     */
+    public function setOriginalFilename($originalFilename)
+    {
+        $this->originalFilename = $originalFilename;
+        return $this;
+    }
+
+    /**
+     * Get filename
+     *
+     * @return string
+     */
+    public function getOriginalFilename()
+    {
+        return $this->originalFilename;
     }
 
     /**

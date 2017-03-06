@@ -13,6 +13,7 @@ use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -65,6 +66,8 @@ class MediaType extends AbstractType
         else $provider->addCreateForm($builder, $options);
 
         $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
+
+        $builder->add('originalFilename', HiddenType::class);
 
         if ($options['allow_delete']){
 

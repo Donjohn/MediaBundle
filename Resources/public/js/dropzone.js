@@ -64,6 +64,7 @@ $(function () {
                     );
                 }
                 var inputText = $(formGroup).find('input[type="text"]');
+                $(formGroup).find('[id$="originalFilename"]').val(file.name);
                 if ($(inputText).length) $(inputText).val(reader.result);
             }
 
