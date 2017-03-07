@@ -29,7 +29,7 @@ $(function () {
     var createOrGetFormGroup = function(dropzone){
         var prototype = $(dropzone).find('[data-prototype]');
         if ($(prototype).length) {
-            var total = $(dropzone).find('.form-group[data-provider]').length;
+            var total = $(dropzone).find('[data-provider]').length;
             var formGroup = $.parseHTML( $(prototype).data('prototype').replace(/__name__/g, ++total) );
             $(formGroup).attr('data-provider',$(dropzone).data('provider'))
                         .attr('data-thumbnail-height',$(dropzone).data('thumbnail-height'))
