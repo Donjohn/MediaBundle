@@ -72,12 +72,12 @@ class MediaType extends AbstractType
         if ($options['allow_delete']){
 
             $formEventUnlink = function(FormEvent $event) use ($options) {
-                if ($event->getData() || $options['multiple'] || $options['dropzone']) {
+                if ($event->getData() || $options['multiple']) {
                     $event->getForm()->add('unlink', CheckboxType::class, array(
                         'mapped'   => false,
                         'data'     => false,
                         'required' => false,
-                        'label' => !($options['multiple'] || $options['dropzone'])? 'media.unlink.label' : false,
+                        'label' => !$options['multiple'] ? 'media.unlink.label' : false,
                         'translation_domain' => 'DonjohnMediaBundle'
                     ));
                 }
