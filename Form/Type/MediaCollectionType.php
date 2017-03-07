@@ -46,20 +46,23 @@ class MediaCollectionType extends AbstractType
                 FormEvents::PRE_SUBMIT,
                 function(FormEvent $event){
                     $newData = []; $j=0;
-                    foreach ($event->getData() as $media)
-                    {
-                        if (!isset($media['binaryContent'])) continue;
-                        if (is_array($media['binaryContent'])) {
-                            for ($i=0; $i<count($media['binaryContent']); $i++) {
-                                $cloneMedia = $media;
-                                $cloneMedia['binaryContent'] = $media['binaryContent'][$i];
-                                if ($cloneMedia['binaryContent']) $newData[++$j]=$cloneMedia;
+                    if ($event->getData()) {
+                        foreach ($event->getData() as $media)
+                        {
+                            if (!isset($media['binaryContent'])) continue;
+                            if (is_array($media['binaryContent'])) {
+                                for ($i=0; $i<count($media['binaryContent']); $i++) {
+                                    $cloneMedia = $media;
+                                    $cloneMedia['binaryContent'] = $media['binaryContent'][$i];
+                                    if ($cloneMedia['binaryContent']) $newData[++$j]=$cloneMedia;
+                                }
+                            } else {
+                                $newData[++$j] = $media;
                             }
-                        } else {
-                            $newData[++$j] = $media;
                         }
+                        $event->setData($newData);
                     }
-                    $event->setData($newData);
+
                 }
             );
 
