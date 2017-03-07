@@ -112,10 +112,8 @@ $(function () {
                                 formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
                             }
                             processFile(this, formGroup);
-                            formGroup = false; //on unset le formgroup pour forcer sa re-creation au file suivant
+                            formGroup = false; //on unset le formgroup pour forcer sa re-creation au file suivant, ce sont des fakes, les données sont dans le premier
                         });
-                    } else {
-                        $(formGroup).remove();
                     }
                 }
             );
