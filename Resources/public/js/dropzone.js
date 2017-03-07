@@ -97,10 +97,12 @@ $(function () {
             var _this = this;
             var formGroup = createOrGetFormGroup($(this).closest('[data-dropzone="on"]'));
             switchInputTextToInputFile(formGroup);
+            $(formGroup).addClass('hidden');
             $(formGroup).find('input[type="file"]').click()
             .on(
                 'change',
                 function(e){
+                    $(formGroup).removeClass('hidden');
                     e.preventDefault();
                     e.stopPropagation();
                     files = $(this).prop('files');
