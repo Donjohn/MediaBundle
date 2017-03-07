@@ -97,7 +97,7 @@ $(function () {
             var _this = this;
             var formGroup = createOrGetFormGroup($(this).closest('[data-dropzone="on"]'));
             switchInputTextToInputFile(formGroup);
-            $(formGroup).addClass('hidden');
+            if ($(formGroup).data('multi')) $(formGroup).addClass('hidden');
             $(formGroup).find('input[type="file"]').click()
             .on(
                 'change',
