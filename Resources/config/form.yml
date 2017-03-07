@@ -11,6 +11,6 @@ services:
 
     donjohn.media_collection.type:
         class: "%donjohn.media_collection.type.class%"
-        arguments: ["@donjohn.media.provider.factory", "%donjohn.media.entity%"]
+        arguments: ["%donjohn.media.entity%"]
         tags:
             - { name: form.type }
