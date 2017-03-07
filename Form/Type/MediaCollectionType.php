@@ -8,10 +8,11 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,18 +20,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediaCollectionType extends AbstractType
 {
     /**
-     * @var ProviderFactory
-     */
-    protected $providerFactory;
-
-    /**
      * @var string
      */
     protected $classMedia;
 
-    public function __construct( ProviderFactory $providerFactory, $classMedia)
+    public function __construct( $classMedia )
     {
-        $this->providerFactory = $providerFactory;
         $this->classMedia = $classMedia;
     }
 
@@ -46,6 +41,28 @@ class MediaCollectionType extends AbstractType
                                                                 'provider' => $options['provider']
                                                 ));
 
+
+        $builder->addEventListener(
+                FormEvents::PRE_SUBMIT,
+                function(FormEvent $event){
+                    $newData = []; $j=0;
+                    foreach ($event->getData() as $media)
+                    {
+                        if (is_array($media['binaryContent'])) {
+                            for ($i=0; $i<count($media['binaryContent']); $i++) {
+                                $cloneMedia = $media;
+                                $cloneMedia['binaryContent'] = $media['binaryContent'][$i];
+                                if ($cloneMedia['binaryContent']) $newData[++$j]=$cloneMedia;
+                            }
+                        } else {
+                            $newData[++$j] = $media;
+                        }
+                    }
+                    $event->setData($newData);
+                }
+            );
+
+
     }
 
 
@@ -58,6 +75,7 @@ class MediaCollectionType extends AbstractType
                 'label' => 'medias',
                 'allow_delete' => true,
                 'allow_add' => true,
+                'allow_extra_fields' => true,
                 'entry_type' => MediaType::class,
                 'dropzone' => false,
                 'provider' => 'file',

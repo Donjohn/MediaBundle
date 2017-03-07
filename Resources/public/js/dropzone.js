@@ -110,8 +110,10 @@ $(function () {
                                 formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
                             }
                             processFile(this, formGroup);
-                            formGroup = false; //on unset le formgroup pour forcer la creation au file suivant
+                            formGroup = false; //on unset le formgroup pour forcer sa re-creation au file suivant
                         });
+                    } else {
+                        $(formGroup).remove();
                     }
                 }
             );

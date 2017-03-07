@@ -88,9 +88,9 @@ abstract class BaseProvider implements ProviderInterface {
                             'label' => $options['dropzone'] || $options['multiple']
                                         ? false
                                         : 'media.'.$this->getAlias().'.binaryContent',
+                            'multiple' => $options['multiple'] ? 'multiple' : false,
                         );
-        if ($options['multiple']) $formOptions['attr'] = array('class' => 'hidden', 'multiple' => 'multiple' );
-        if ($options['dropzone']) $formOptions['attr'] = array('class' => 'hidden' );
+        if ($options['multiple'] || $options['dropzone']) $formOptions['attr'] = array('class' => 'hidden' );
 
         return $formOptions;
     }
