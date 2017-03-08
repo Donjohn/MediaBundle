@@ -1,10 +1,10 @@
 {% block media_widget %}
-    {% if form.vars.dropzone %}
-        <div data-dropzone="on" id="dropzone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_dropzone_thumbnail_height }}" class="panel">
+    {% if form.vars.mediazone %}
+        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height }}" class="panel">
             <span class="panel-body center-block text-center media-info">
                 {% media form.vars.data, 'thumbnail' with {class: 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block' } %}
             </span>
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_dropzone_border_color }}; ">{{ 'dropzone.message.single'|trans({},'DonjohnMediaBundle') }}</span>
+            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color }}; ">{{ 'mediazone.message.single'|trans({},'DonjohnMediaBundle') }}</span>
             {{ form_widget(form) }}
         </div>
     {% else %}
@@ -17,9 +17,9 @@
 
 
 {% block media_collection_widget %}
-    {% if form.vars.dropzone %}
-        <div data-dropzone="on" id="dropzone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_dropzone_thumbnail_height }}" class="panel">
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_dropzone_border_color }}; ">{{ 'dropzone.message.multiple'|trans({},'DonjohnMediaBundle') }}</span>
+    {% if form.vars.mediazone %}
+        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height }}" class="panel">
+            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color }}; ">{{ 'mediazone.message.multiple'|trans({},'DonjohnMediaBundle') }}</span>
             {{ form_widget(form) }}
         </div>
     {% else %}

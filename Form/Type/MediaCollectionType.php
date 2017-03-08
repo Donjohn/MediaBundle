@@ -81,10 +81,9 @@ class MediaCollectionType extends AbstractType
                 'allow_add' => true,
                 'allow_extra_fields' => true,
                 'entry_type' => MediaType::class,
-                'dropzone' => true,
                 'provider' => 'file',
                 'entry_options' => array(
-                                    'dropzone' => false,
+                                    'mediazone' => false,
                                     'label' => false,
                                     'required' => false,
                                     'multiple' => true
@@ -97,7 +96,7 @@ class MediaCollectionType extends AbstractType
         FormInterface $form,
         array $options
     ) {
-        $view->vars['dropzone'] = $options['dropzone'];
+        $view->vars['mediazone'] = $options['mediazone'];
         $view->vars['provider'] = $options['provider'];
 
     }

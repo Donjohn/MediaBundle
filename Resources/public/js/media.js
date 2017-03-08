@@ -26,27 +26,27 @@ $(function () {
         }
     };
 
-    var createOrGetFormGroup = function(dropzone){
-        var prototype = $(dropzone).find('[data-prototype]');
+    var createOrGetFormGroup = function(mediazone){
+        var prototype = $(mediazone).find('[data-prototype]');
         if ($(prototype).length) {
-            var total = $(dropzone).find('[data-provider]').length;
+            var total = $(mediazone).find('[data-provider]').length;
             var formGroup = $.parseHTML( $(prototype).data('prototype').replace(/__name__/g, ++total) );
-            $(formGroup).attr('data-provider',$(dropzone).data('provider'))
-                        .attr('data-thumbnail-height',$(dropzone).data('thumbnail-height'))
+            $(formGroup).attr('data-provider',$(mediazone).data('provider'))
+                        .attr('data-thumbnail-height',$(mediazone).data('thumbnail-height'))
                         .attr('data-multi','on')
                         .appendTo($(prototype));
             return $(formGroup);
         } else {
-            return $(dropzone);
+            return $(mediazone);
         }
 
     };
 
-    var dropzone_image = function(reader, formGroup){
+    var media_image = function(file, eader, formGroup){
         return $(document.createElement('img')).attr('src', reader.result).attr('height', $(formGroup).data('thumbnail-height')).addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
     };
 
-    var dropzone_file = function(file, formGroup){
+    var media_file = function(file, reader, formGroup){
         return file.name;
     };
 
@@ -56,11 +56,11 @@ $(function () {
             if (reader.result) {
                 if ($(formGroup).data('multi')=='on') {
                     $(formGroup).find('span.media-info').append(
-                        $(formGroup).data('provider')=='image' ?  dropzone_image(reader, formGroup) : dropzone_file(file, formGroup)
+                        eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup);')
                     );
                 } else {
                     $(formGroup).find('span.media-info').html(
-                        $(formGroup).data('provider')=='image' ?  dropzone_image(reader, formGroup) : dropzone_file(file, formGroup)
+                        eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup);')
                     );
                 }
                 var inputText = $(formGroup).find('input[type="text"]');
@@ -73,9 +73,9 @@ $(function () {
     };
 
     //on vire le bloc empty de easyadmin
-    $('[data-dropzone="on"] > .empty').remove();
+    $('[data-mediazone="on"] > .empty').remove();
 
-    $('[data-dropzone="on"] > span.message')
+    $('[data-mediazone="on"] > span.message')
     .on(
         'dragover dragenter',
         function(e) {
@@ -95,7 +95,7 @@ $(function () {
         'click ontouchstart',
         function() {
             var _this = this;
-            var formGroup = createOrGetFormGroup($(this).closest('[data-dropzone="on"]'));
+            var formGroup = createOrGetFormGroup($(this).closest('[data-mediazone="on"]'));
             switchInputTextToInputFile(formGroup);
             if ($(formGroup).data('multi')) $(formGroup).addClass('hidden');
             $(formGroup).find('input[type="file"]').click()
@@ -109,7 +109,7 @@ $(function () {
                     if(files.length) {
                         $(files).each(function(){
                             if (!formGroup) {
-                                formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
+                                formGroup = createOrGetFormGroup($(_this).closest('[data-mediazone="on"]'));
                             }
                             processFile(this, formGroup);
                             formGroup = false; //on unset le formgroup pour forcer sa re-creation au file suivant, ce sont des fakes, les données sont dans le premier
@@ -128,7 +128,7 @@ $(function () {
             if(files.length) {
                 $(files).each(function(){
                     if (this.name!='') {
-                        var formGroup = createOrGetFormGroup($(_this).closest('[data-dropzone="on"]'));
+                        var formGroup = createOrGetFormGroup($(_this).closest('[data-mediazone="on"]'));
                         switchInputFileToInputText(formGroup);
                         processFile(this, formGroup);
                     }

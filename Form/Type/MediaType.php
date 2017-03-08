@@ -47,7 +47,7 @@ class MediaType extends AbstractType
                 'translation_domain' => 'DonjohnMediaBundle',
                 'error_bubbling' => true,
                 'provider' => 'file',
-                'dropzone' => false,
+                'mediazone' => true,
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',
                 'allow_delete' => true,
@@ -107,7 +107,7 @@ class MediaType extends AbstractType
         FormInterface $form,
         array $options
     ) {
-        $view->vars['dropzone'] = $options['dropzone'];
+        $view->vars['mediazone'] = $options['mediazone'];
         $view->vars['provider'] = $options['provider'];
 
     }

@@ -88,9 +88,9 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
                 $config
             );
 
-            $container->setParameter('media_dropzone_border_color', $config['design']['brand_color']);
+            $container->setParameter('media_mediazone_border_color', $config['design']['brand_color']);
         } else {
-            $container->setParameter('media_dropzone_border_color', '#205081');
+            $container->setParameter('media_mediazone_border_color', '#205081');
         }
 
 
@@ -104,7 +104,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
         } else {
 
-            $container->setParameter('media_dropzone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
+            $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
         }
     }
 

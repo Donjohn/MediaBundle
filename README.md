@@ -195,17 +195,9 @@ app.media.your_type.provider:
 ``` 
 
 
-### Dropzone
-The MediaType provide a dropzone functionnality. You must first activate it with the formType options.
+### Javascript
+The bundle is jquery dependant, you must add it before the media.js provided
 ```
-$builder->add('media', MediaType::class, array( ... ,'dropzone' => true ) );
+<script src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
 ```
-If you want to upload a collection of medias
-```
-$builder->add('medias', MediaCollectionType::class, array( 'dropzone' => true ) );
-```
-
-Then add to your layout the js provided with the bundle
-```
-<script src="{{ asset('bundles/donjohnmedia/js/dropzone.js') }}"></script>
-```
+In case you don't want the waesome javascript feature, set the "mediazone" option to false in either MediaType or MediaCollectionType. You will fall back to raw file inputs
