@@ -41,10 +41,7 @@ class MediaCollectionType extends AbstractType
                                                                 'provider' => $options['provider']
                                                 ));
 
-
-        $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                function(FormEvent $event){
+        $formModifier = function(FormEvent $event){
                     $newData = []; $j=0;
                     if ($event->getData()) {
                         foreach ($event->getData() as $media)
@@ -63,7 +60,10 @@ class MediaCollectionType extends AbstractType
                         $event->setData($newData);
                     }
 
-                }
+                };
+        $builder->addEventListener(
+                FormEvents::PRE_SUBMIT ,
+                $formModifier
             );
 
 

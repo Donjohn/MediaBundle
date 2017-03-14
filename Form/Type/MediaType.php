@@ -13,6 +13,7 @@ use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -53,6 +54,7 @@ class MediaType extends AbstractType
                 'allow_delete' => true,
                 'multiple' => false,
                 'data_class' => $this->classMedia,
+                'required' => false
                 ));
     }
 
@@ -62,15 +64,20 @@ class MediaType extends AbstractType
         $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
 
-        if ($media) $provider->addEditForm($builder, $options);
-        else $provider->addCreateForm($builder, $options);
+
+        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
+                            'label' => $options['multiple'] ? false : 'media.'.$options['provider'].'.binaryContent',
+                            'multiple' => $options['multiple'] ? 'multiple' : false,
+                            'required' => $options['required'],
+                        );
+        if ($options['multiple'] ) $formOptions['attr'] = array('class' => 'hidden' );
+        $builder->add('binaryContent', FileType::class, $formOptions );
+        $builder->add('originalFilename', HiddenType::class);
 
         $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
 
-        $builder->add('originalFilename', HiddenType::class);
 
         if ($options['allow_delete']){
-
             $formEventUnlink = function(FormEvent $event) use ($options) {
                 if ($event->getData() || $options['multiple']) {
                     $event->getForm()->add('unlink', CheckboxType::class, array(

@@ -49,6 +49,8 @@ class MediaDataTransformer implements DataTransformerInterface
 
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
 
+        $oMedia->setProviderName( $oMedia->getProviderName() ? $oMedia->getProviderName() : $this->provider->getAlias() );
+
         /** @var $oNewMedia Media */
         $oNewMedia = new $this->mediaClass();
         $oNewMedia->setProviderName($oMedia->getProviderName())
@@ -57,8 +59,7 @@ class MediaDataTransformer implements DataTransformerInterface
         $fileName='';
 
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
-
-        if (preg_match('#data:('.implode('|', $this->provider->allowedTypes).');base64,.*#', $oMedia->getBinaryContent(),$matches)) {
+        if (preg_match('#data:(.*);base64,.*#', $oMedia->getBinaryContent(),$matches)) {
 
             $tmpFile = tempnam(sys_get_temp_dir(), $this->provider->getAlias());
             $source = fopen($oMedia->getBinaryContent(), 'r');
@@ -68,18 +69,20 @@ class MediaDataTransformer implements DataTransformerInterface
             fclose($destination);
             $fileName = $oMedia->getOriginalFilename();
             $oNewMedia->setBinaryContent(new UploadedFile($tmpFile, $fileName, $matches[1]));
-        }
 
 
-        if ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
+        } elseif ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
             $fileName = $oNewMedia->getBinaryContent()->getClientOriginalName();
 
         } elseif ($oNewMedia->getBinaryContent() instanceof File) {
             $fileName = $oNewMedia->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) throw new TransformationFailedException('invalid media, no filename');
         $oNewMedia->setOriginalFilename($fileName);
+
+        if (empty($fileName)) {
+            throw new TransformationFailedException('invalid media, no filename');
+        }
         try {
             $this->provider->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
         } catch (InvalidMimeTypeException $e)
