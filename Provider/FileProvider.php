@@ -53,6 +53,11 @@ class FileProvider extends BaseProvider {
         return sprintf('%s/%04s/%02s/%s', $this->uploadFolder, $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
+    public function getFullPath(Media $oMedia, $filter = null)
+    {
+        return $this->rootFolder.DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
+    }
+
     protected function delete(Media $oMedia)
     {
         try {

@@ -31,7 +31,7 @@ abstract class BaseProvider implements ProviderInterface {
      * @param $template
      * @return $this
      */
-    public function setTemplate($template)
+    final public function setTemplate($template)
     {
         $this->template = $template;
         return $this;
@@ -40,7 +40,7 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @return string
      */
-    public function getTemplate()
+   final  public function getTemplate()
     {
         return $this->template;
     }

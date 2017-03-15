@@ -91,6 +91,13 @@ interface ProviderInterface {
      * @return mixed
      */
     public function getPath(Media $oMedia, $filter= null);
+    
+    /**
+     * return path of the media, depends on the media ^^
+     * @param \Donjohn\MediaBundle\Model\Media $oMedia
+     * @return mixed
+     */
+    public function getFullPath(Media $oMedia, $filter= null);
 
     /**
      * return response for each media according to provider
