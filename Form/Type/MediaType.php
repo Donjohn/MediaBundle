@@ -66,11 +66,11 @@ class MediaType extends AbstractType
 
 
         $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-                            'label' => $options['multiple'] ? false : 'media.'.$options['provider'].'.binaryContent',
+                            'label' => false,
                             'multiple' => $options['multiple'] ? 'multiple' : false,
                             'required' => $options['required'],
+                            'attr' => array('class' => 'hidden' )
                         );
-        if ($options['multiple'] ) $formOptions['attr'] = array('class' => 'hidden' );
         $builder->add('binaryContent', FileType::class, $formOptions );
         $builder->add('originalFilename', HiddenType::class);
 
