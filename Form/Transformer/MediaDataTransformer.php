@@ -37,8 +37,10 @@ class MediaDataTransformer implements DataTransformerInterface
         return $value;
     }
 
+
     /**
-     * {@inheritdoc}
+     * @param mixed $oMedia
+     * @return Media|mixed|null
      */
     public function reverseTransform($oMedia)
     {
@@ -79,10 +81,12 @@ class MediaDataTransformer implements DataTransformerInterface
         }
 
         $oNewMedia->setOriginalFilename($fileName);
+        $oNewMedia->setProviderName($this->provider->getAlias());
 
         if (empty($fileName)) {
             throw new TransformationFailedException('invalid media, no filename');
         }
+
         try {
             $this->provider->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
         } catch (InvalidMimeTypeException $e)
@@ -90,7 +94,7 @@ class MediaDataTransformer implements DataTransformerInterface
             throw new TransformationFailedException($e->getMessage());
         }
 
-        $oNewMedia->setProviderName($this->provider->getAlias());
+
 
 
         return $oNewMedia;
