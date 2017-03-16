@@ -15,6 +15,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaCollectionType extends AbstractType
@@ -36,10 +37,6 @@ class MediaCollectionType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
-        $options['entry_options'] = array_merge($options['entry_options'], array(
-                                                                'provider' => $options['provider']
-                                                ));
 
         $formModifier = function(FormEvent $event){
                     $newData = []; $j=0;
@@ -66,7 +63,6 @@ class MediaCollectionType extends AbstractType
                 $formModifier
             );
 
-
     }
 
 
@@ -83,14 +79,21 @@ class MediaCollectionType extends AbstractType
                 'entry_type' => MediaType::class,
                 'provider' => 'file',
                 'mediazone' => true,
-                'entry_options' => array(
-                                    'mediazone' => false,
-                                    'label' => false,
-                                    'required' => false,
-                                    'multiple' => true
-                                )
+                'ignore_error' => false,
+                'entry_options' => array()
                 ));
+
+        $entryOptionsNormalizer = function (Options $options, $value) {
+            $value['mediazone'] = false;
+            $value['label'] = false;
+            $value['required'] = false;
+            $value['multiple'] = true;
+            return $value;
+        };
+
+        $resolver->setNormalizer('entry_options', $entryOptionsNormalizer);
     }
+
 
     public function buildView(
         FormView $view,
