@@ -95,6 +95,11 @@ class Media
     protected $binaryContent;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     * @Groups({"api_output"})
+     */
+    protected $md5;
+    /**
      * @Assert\IsTrue(message="binaryContent can't be empty or null on creation")
      */
     public function isBinaryContentOnCreation()
@@ -372,4 +377,19 @@ class Media
     }
 
 
+    /**
+     * @return string
+     */
+    public function getMd5()
+    {
+        return $this->md5;
+    }
+
+    /**
+     * @param string $md5
+     */
+    public function setMd5($md5)
+    {
+        $this->md5 = $md5;
+    }
 }
