@@ -4,6 +4,7 @@ namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -84,6 +85,21 @@ interface ProviderInterface {
      */
     public function preRemove(Media $oMedia);
 
+    /**
+     * add edit fields for the defined provider
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @return mixed
+     */
+    public function addEditForm(FormBuilderInterface $builder, array $options);
+
+    /**
+     * add create fields for the defined provider
+     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @return mixed
+     */
+    public function addCreateForm(FormBuilderInterface $builder, array $options);
+
+
 
     /**
      * return path of the media, depends on the media ^^
@@ -91,13 +107,6 @@ interface ProviderInterface {
      * @return mixed
      */
     public function getPath(Media $oMedia, $filter= null);
-    
-    /**
-     * return path of the media, depends on the media ^^
-     * @param \Donjohn\MediaBundle\Model\Media $oMedia
-     * @return mixed
-     */
-    public function getFullPath(Media $oMedia, $filter= null);
 
     /**
      * return response for each media according to provider

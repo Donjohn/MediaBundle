@@ -79,7 +79,6 @@ class MediaCollectionType extends AbstractType
                 'entry_type' => MediaType::class,
                 'provider' => 'file',
                 'mediazone' => true,
-                'ignore_error' => false,
                 'entry_options' => array()
                 ));
 

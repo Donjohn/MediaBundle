@@ -6,6 +6,8 @@ use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -141,6 +143,18 @@ class FileProvider extends BaseProvider {
     {
         //Implement extractMetaData() method.
     }
+
+    public function addEditForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('binaryContent', FileType::class, $options );
+    }
+
+    public function addCreateForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('binaryContent', FileType::class, $options );
+    }
+
+
 
     /**
      * @param Media $oMedia
