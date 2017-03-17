@@ -84,7 +84,7 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        $oMedia->setMd5(md5($oMedia->getBinaryContent()));
+        $oMedia->setMd5(md5(file_get_contents($oMedia->getBinaryContent()->getRealPath())));
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
         $this->extractMetaData($oMedia);
