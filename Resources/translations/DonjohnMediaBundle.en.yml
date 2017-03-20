@@ -7,4 +7,3 @@ media.provider.file.label: Files
 media.provider.image.label: Images
 media.file.binaryContent: File
 media.image.binaryContent: Image
-media.error.transform: That is not a valid media.
