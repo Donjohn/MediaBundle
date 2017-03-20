@@ -8,7 +8,6 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Doctrine\Common\Util\Debug;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -59,7 +58,7 @@ class MediaCollectionType extends AbstractType
                         }
 
                         $event->setData($newData);
-                        $event->getForm()->setData($newData);
+
                     }
 
                 };
