@@ -116,8 +116,6 @@ donjohn_media:
 For the moment only Image (alias 'image') and File (alias 'file') provider are available.
 
 
-```
-
 
 ### Twig
 To insert a media in the twig, use the block with an optionnal filter name, defined in the liip_imagine.filter_sets section.
