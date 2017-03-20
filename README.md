@@ -208,4 +208,4 @@ The bundle is jquery dependant, you must add it before the media.js provided
 ```
 <script src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
 ```
-In case you don't want the aweesome javascript feature, set the "mediazone" option to false in either MediaType or MediaCollectionType. You will fall back to raw file inputs
+In case you don't want the awesome javascript feature, set the "mediazone" option to false in either MediaType or MediaCollectionType. You will fall back to raw file inputs
