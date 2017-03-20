@@ -57,6 +57,9 @@ $(function () {
             $(formGroup).find('span.media-info').html(
                     media_file(file, reader, formGroup)
                 );
+            $(formGroup).closest('form').submit(function (evt) {
+                evt.preventDefault();
+            });
         });
         reader.addEventListener("load", function () {
             if (reader.result) {
@@ -68,6 +71,12 @@ $(function () {
             }
 
         }, false);
+        reader.addEventListener('loadend'), function()
+        {
+            $(formGroup).closest('form').submit(function (evt) {
+                //
+            });
+        }
         reader.readAsDataURL(file);
     };
 

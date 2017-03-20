@@ -2,6 +2,7 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
+use Doctrine\Common\Util\Debug;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Symfony\Component\Form\DataTransformerInterface;

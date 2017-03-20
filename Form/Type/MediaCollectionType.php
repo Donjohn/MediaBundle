@@ -8,6 +8,7 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
+use Doctrine\Common\Util\Debug;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -46,15 +47,19 @@ class MediaCollectionType extends AbstractType
                             if (!isset($media['binaryContent'])) continue;
                             if (is_array($media['binaryContent'])) {
                                 for ($i=0; $i<count($media['binaryContent']); $i++) {
-                                    $cloneMedia = $media;
-                                    $cloneMedia['binaryContent'] = $media['binaryContent'][$i];
-                                    if ($cloneMedia['binaryContent']) $newData[++$j]=$cloneMedia;
+                                    if (!empty($media['binaryContent'][$i])) {
+                                        $cloneMedia = $media;
+                                        $cloneMedia['binaryContent'] = $media['binaryContent'][$i];
+                                        if ($cloneMedia['binaryContent']) $newData[++$j]=$cloneMedia;
+                                    }
                                 }
                             } else {
                                 $newData[++$j] = $media;
                             }
                         }
+
                         $event->setData($newData);
+                        $event->getForm()->setData($newData);
                     }
 
                 };
