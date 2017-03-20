@@ -9,12 +9,15 @@ services:
 
     donjohn.media.file.provider:
         class: "%donjohn.media.file.provider.class%"
-        arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%" ]
+        arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%", "%donjohn.media.file_max_size%" ]
         tags:
             - { name: media.provider, alias: file }
 
     donjohn.media.image.provider:
         class: "%donjohn.media.image.provider.class%"
-        arguments: [ "%assetic.write_to%", "%donjohn.media.upload_folder%", "@liip_imagine.cache.manager", "@liip_imagine.filter.configuration" ]
+        parent: donjohn.media.file.provider
+        calls:
+            - [setCacheManager, ["@liip_imagine.cache.manager"]]
+            - [setFilterConfiguration, ["@liip_imagine.filter.configuration"]]
         tags:
             - { name: media.provider, alias: image }

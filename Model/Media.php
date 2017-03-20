@@ -99,6 +99,7 @@ class Media
      * @Groups({"api_output"})
      */
     protected $md5;
+
     /**
      * @Assert\IsTrue(message="binaryContent can't be empty or null on creation")
      */

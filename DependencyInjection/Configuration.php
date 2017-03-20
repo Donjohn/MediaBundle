@@ -20,6 +20,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('file_max_size')->defaultValue(ini_get('upload_max_filesize'))->end()
                 ->scalarNode('entity')->cannotBeEmpty()->end()
                 ->arrayNode('api')
                     ->children()

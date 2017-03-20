@@ -105,10 +105,18 @@ donjohn_media:
             template: YouBundle:View:Twig.html.twig
 ```
 
+By default, php.ini setting is maximum but if you want to restrict a maximum uploaded file size, change the setting:
+```
+donjohn_media:
+    file_max_size: 500M
+```
 
 
 ###Providers
 For the moment only Image (alias 'image') and File (alias 'file') provider are available.
+
+
+```
 
 
 ### Twig

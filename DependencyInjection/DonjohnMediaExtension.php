@@ -35,6 +35,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
 
         //on sauve la liste des entites media
         $container->setParameter('donjohn.media.entity', $config['entity']);
+        $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
 
         if (isset($config['providers']) && count($config['providers'])){
             foreach ($config['providers'] as $providerAlias => $configProvider) {

@@ -52,19 +52,18 @@ $(function () {
 
     var processFile = function (file, formGroup) {
         var reader  = new FileReader();
+        reader.addEventListener('loadstart', function(){
+            $(formGroup).find('input[id$="originalFilename"]').val(file.name);
+            $(formGroup).find('span.media-info').html(
+                    media_file(file, reader, formGroup)
+                );
+        });
         reader.addEventListener("load", function () {
             if (reader.result) {
-                if ($(formGroup).data('multi')=='on') {
-                    $(formGroup).find('span.media-info').append(
-                        eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup);')
-                    );
-                } else {
-                    $(formGroup).find('span.media-info').html(
-                        eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup);')
-                    );
-                }
+                $(formGroup).find('span.media-info').html(
+                    eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup)')
+                );
                 var inputText = $(formGroup).find('input[type="text"]');
-                $(formGroup).find('[id$="originalFilename"]').val(file.name);
                 if ($(inputText).length) $(inputText).val(reader.result);
             }
 
