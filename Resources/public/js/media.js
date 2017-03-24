@@ -63,7 +63,7 @@ $(function () {
             $(formGroup).find('span.media-info').html(
                     media_file(file, reader, formGroup)
                 );
-            readerLoading = true;
+            if ($(formGroup).find('input[type="text"]').length) readerLoading = true;
         });
         reader.addEventListener("loadend", function () {
 
@@ -79,12 +79,9 @@ $(function () {
                     $(inputText).val(reader.result);
                 }
 
-            } else {
+            } else if ($(formGroup).find('input[type="text"]').length && $(formGroup).data('multi')) {
 
-                var mediaInfo = $(formGroup).find('span.media-info').html('error '+file.name+' too big to be dropped').addClass('text-warning');
-                if ($(formGroup).data('multi')) {
-                    $(formGroup).html($(mediaInfo));
-                }
+                $(formGroup).html($($(formGroup).find('span.media-info').html('error '+file.name+' too big to be dropped').addClass('text-warning')));
             }
             readerLoading =  false;
 
