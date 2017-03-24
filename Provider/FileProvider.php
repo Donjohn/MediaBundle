@@ -2,9 +2,9 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
+use Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
-use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,17 +25,13 @@ class FileProvider extends BaseProvider {
 
     public $allowedTypes=array('[a-z]+/[a-z\-]+');
 
-    protected $rootFolder;
-    protected $uploadFolder;
     protected $fileMaxSize;
 
 
-    final public function __construct($rootFolder, $uploadFolder, $fileMaxSize)
+    final public function __construct(MediaLocalFilesystem $filesystem, $fileMaxSize)
     {
 
-        $this->filesystem = new \Gaufrette\Filesystem(new Local($rootFolder, true, 0775));
-        $this->rootFolder = $rootFolder;
-        $this->uploadFolder = $uploadFolder;
+        $this->filesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
 
     }
@@ -54,12 +50,12 @@ class FileProvider extends BaseProvider {
         $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
         $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
 
-        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder, $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+        return sprintf('%04s/%02s/%s', $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
     public function getFullPath(Media $oMedia, $filter = null)
     {
-        return $this->rootFolder.DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
+        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
     protected function delete(Media $oMedia)

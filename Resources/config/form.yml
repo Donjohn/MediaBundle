@@ -1,10 +1,18 @@
 parameters:
     donjohn.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
+    donjohn.media.fine_uploader.type.class: Donjohn\MediaBundle\Form\Type\MediaFineUploaderType
     donjohn.media_collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
 
 services:
     donjohn.media.type:
         class: "%donjohn.media.type.class%"
+        arguments: ["@donjohn.media.provider.factory", "%donjohn.media.entity%"]
+        tags:
+            - { name: form.type }
+
+
+    donjohn.media.fine_uploader.type:
+        class: "%donjohn.media.fine_uploader.type.class%"
         arguments: ["@donjohn.media.provider.factory", "%donjohn.media.entity%"]
         tags:
             - { name: form.type }

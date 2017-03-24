@@ -101,6 +101,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             $container->getExtension('liip_imagine')->getConfiguration($config, $container),
             $config
         );
+
         if (!isset($config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0])) {
             throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
         } else {
