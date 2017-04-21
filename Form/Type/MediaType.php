@@ -70,7 +70,7 @@ class MediaType extends AbstractType
                             'error_bubbling' => true,
                             'multiple' => $options['multiple'] ? 'multiple' : false,
                             'required' => $options['required'],
-                            'attr' => array('class' => 'hidden' )
+                            'attr' => array('class' => $options['mediazone'] ? 'hidden' : null )
                         );
         if ($media) $provider->addEditForm($builder, $formOptions);
         else $provider->addCreateForm($builder, $formOptions);

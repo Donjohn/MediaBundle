@@ -1,0 +1,57 @@
+<div class="media-select">
+    <ul>
+        {% for media in medias %}
+            <li style="float: left; text-align: center; list-style-type: none" data-id="{{ media.id }}">
+                <a href="{{ path('donjohn_media_delete', {id: media.id}) }}" data-confirm="{{ 'image_delete_confirm'|trans }}">
+                    <i class="fa fa-trash-o"></i>
+                </a>
+
+                {% media media, 'thumbnail' with {class: 'thumbnail'} %}
+                <input name="add-media" id="add-media" type="radio" value="{{ media.id }}" style="display: block;">
+            </li>
+        {% endfor %}
+    </ul>
+    <button id="media-select-submit">Valider</button>
+    {% include '@DonjohnMedia/pagination.html.twig' %}
+    {{ form(form) }}
+</div>
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.media-select')
+            .delegate('ul li img','click', function(){
+                $('input').attr('checked',false);
+                $(this).closest('li').find('input').attr('checked','checked');
+
+            })
+            .delegate('#media-select-submit','click', function(event){
+                var input = $(this).parent().find('input[checked="checked"]');
+                if (input.length>0) window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().find('input[checked="checked"]').val());
+                else alert("Sélectionnez un media");
+
+                event.preventDefault();
+
+//                var self = this;
+//                $.ajax({
+//                    method:"post",
+//                    url: $(self).attr('action'),
+//                    data: $(self).serialize()
+//                })
+//                    .done(function(data){
+//                        document.location = data;
+//                    })
+//                    .error(function(data){
+//                        $('.modal-content').html(data);
+//                    });
+            })
+            .delegate('#addImage','click', function(){
+                var imageClicked = $('#donjohn-list-modal').find('input:checked');
+                if (imageClicked.val()) {
+                    $('form[name="news_form"]').attr('action', $('form[name="news_form"]').attr('action')+'?image='+$(imageClicked).val()).submit();
+                }
+
+            });
+    });
+</script>

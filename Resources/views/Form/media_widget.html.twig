@@ -27,3 +27,29 @@
         {{ form_widget(form) }}
     {% endif%}
 {% endblock media_collection_widget %}
+
+{% block media_select_widget %}
+    <span class="panel-body center-block text-center media-info">
+                {% media form.vars.data, 'thumbnail' with {class: 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block' } %}
+    </span>
+    {{ form_widget(form) }}
+    <script type="text/javascript">
+        var clickMedia{{ id }} = function(message)
+        {
+            var input = $(document).find('#{{ id }}');
+            input.val(message);
+            var img = $(input).find('img');
+            img.attr('src', 'hello.jpg');
+            $.ajax({
+                method: "post",
+                url: $(self).attr('data-target'),
+                cache: false,
+                data: $(self).serialize()
+            })
+                .done(function(data){
+
+                });
+        }
+    </script>
+    {% include 'DonjohnMediaBundle:Media:list_link.html.twig' %}
+{% endblock %}
