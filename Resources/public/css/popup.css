@@ -14,17 +14,14 @@
     border-color: #4cae4c;
     border: 1px solid transparent;
     display: inline-block;
-    float: right;
     font-weight: 400;
     margin-left: 3px;
-    text-align: center;
-    white-space: nowrap;
     cursor: pointer;
 }
 #media #media_submit:hover {
-    color: #fff;
     background-color: #449d44;
     border-color: #398439;
+    color: #fff;
 }
 .modal-header {
     padding: 0 15px !important;
@@ -35,7 +32,7 @@
 .modal-body div.pagination {
     clear: both;
     display: block;
-    margin: 0px 0;
+    margin: 0;
     text-align: center;
 }
 .modal-body div.pagination-buttons {
@@ -45,7 +42,6 @@
     border-radius: 4px;
 }
 .modal-body div.pagination div a {
-    display: inline;
     position: relative;
     float: left;
     padding: 6px 12px;
