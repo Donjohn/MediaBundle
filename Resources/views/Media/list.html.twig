@@ -1,0 +1,27 @@
+{% extends '@DonjohnMedia/base.html.twig' %}
+
+{% block body %}
+    <div class="media-select">
+        <div class="modal-header">
+            {{ form(form) }}
+        </div>
+        <div class="modal-body">
+            <ul>
+                {% for media in medias %}
+                    <li style="float: left; text-align: center; list-style-type: none" data-id="{{ media.id }}">
+                        <a href="{{ path('donjohn_media_delete', {id: media.id}) }}" data-confirm="{{ 'image_delete_confirm'|trans }}">
+                            <i class="fa fa-trash-o"></i>
+                        </a>
+
+                        {% media media, 'thumbnail' with {class: 'thumbnail'} %}
+                        <input name="add-media" id="add-media" type="radio" value="{{ media.id }}" style="display: none;">
+                    </li>
+                {% endfor %}
+            </ul>
+            {% include '@DonjohnMedia/pagination.html.twig' %}
+        </div>
+        <div class="modal-footer">
+            <button id="media-select-submit" class="btn btn-success btn-lg">Valider</button>
+        </div>
+    </div>
+{% endblock %}

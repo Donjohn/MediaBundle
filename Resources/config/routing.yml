@@ -4,3 +4,23 @@ _liip_imagine:
 donjohn_media_download:
     path: /media/download/{id}
     defaults: { _controller: DonjohnMediaBundle:Media:download }
+
+donjohn_media_list:
+    path: /media/list/{page}
+    defaults: { _controller: DonjohnMediaBundle:Media:list, page: 1 }
+    requirements:
+          id: \d+
+          page: \d+
+
+donjohn_media_delete:
+    path: /media/delete/{id}
+    defaults: { _controller: DonjohnMediaBundle:Media:delete}
+    requirements:
+          id: \d+
+          id_image: \d+
+
+donjohn_media_render:
+    path: /media/render/{id}
+    defaults: { _controller: DonjohnMediaBundle:Media:renderMedia }
+    requirements:
+          id: \d+

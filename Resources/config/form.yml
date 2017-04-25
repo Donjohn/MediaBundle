@@ -1,6 +1,7 @@
 parameters:
     donjohn.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
     donjohn.media_collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
+    donjohn.media_select.type.class: Donjohn\MediaBundle\Form\Type\MediaSelectType
 
 services:
     donjohn.media.type:
@@ -12,5 +13,11 @@ services:
     donjohn.media_collection.type:
         class: "%donjohn.media_collection.type.class%"
         arguments: ["%donjohn.media.entity%"]
+        tags:
+            - { name: form.type }
+
+    donjohn.media_select.type:
+        class: "%donjohn.media_select.type.class%"
+        arguments: ["@doctrine.orm.default_entity_manager", "%donjohn.media.entity%"]
         tags:
             - { name: form.type }

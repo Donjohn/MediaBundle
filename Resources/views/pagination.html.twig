@@ -1,0 +1,26 @@
+{% if pagination is defined and pagination.pages_count>1%}
+<div class="pagination">
+    <div class="pagination-buttons">
+        {% if pagination.page>1 %}
+            <a {{ pagination.attr }} href="{{ path(pagination.route,
+            pagination.route_params|merge({'page': 1})) }}"><<</a>
+            <a {{ pagination.attr }} href="{{ path(pagination.route,
+            pagination.route_params|merge({'page': pagination.page-1})) }}"><</a>
+        {% endif %}
+        {#display p numbers only from p-4 to p+4 but don't go <1 or >pages_count#}
+        {% if pagination.pages_count>1 %}
+            {% for p in range( max(pagination.page-4, 1), min(pagination.page+4, pagination.pages_count)) %}
+                <a {{ pagination.attr }} {% if p == pagination.page %} class="current-page"{% endif %}
+                        href="{{ path(pagination.route,
+                        pagination.route_params|merge({'page': p})) }}">{{ p }}</a>
+            {% endfor %}
+        {% endif %}
+        {% if pagination.page<pagination.pages_count %}
+            <a {{ pagination.attr }} href="{{ path(pagination.route,
+            pagination.route_params|merge({'page': pagination.page+1})) }}">></a>
+            <a {{ pagination.attr }} href="{{ path(pagination.route,
+            pagination.route_params|merge({'page': pagination.pages_count})) }}">>></a>
+        {% endif %}
+    </div>
+</div>
+{%  endif %}

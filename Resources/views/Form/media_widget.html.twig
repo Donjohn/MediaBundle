@@ -27,3 +27,29 @@
         {{ form_widget(form) }}
     {% endif%}
 {% endblock media_collection_widget %}
+
+{% block media_select_widget %}
+    <span class="panel-body center-block text-center media-info">
+                {% media form.vars.data, 'thumbnail' with {class: 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block' } %}
+    </span>
+    {{ form_widget(form) }}
+    <script type="text/javascript">
+        var clickMedia{{ id }} = function(message)
+        {
+            var input = $(document).find('#{{ id }}');
+            input.val(message);
+
+            $.ajax({
+                method: "get",
+                url: '/media/render/' + message,
+                cache: false,
+                data: message
+            })
+                .done(function(data){
+                    var mediaspan = $(document).find('#sonata-ba-field-container-{{ id }} span');
+                    mediaspan.html(data);
+                });
+        }
+    </script>
+    {% include 'DonjohnMediaBundle:Media:list_link.html.twig' %}
+{% endblock %}
