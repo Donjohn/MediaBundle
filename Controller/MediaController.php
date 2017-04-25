@@ -28,10 +28,10 @@ class MediaController extends Controller
         return $this->get('donjohn.media.provider.factory')->getProvider($media)->getDownloadResponse($media);
     }
 
-    public function listAction(Request $request, $page = 1, $maxperpage = 25)
+    public function listAction(Request $request, $page = 1, $maxperpage = 15)
     {
         $form = $this->createForm(MediaType::class, null, array(
-                'mediazone' => false,
+                'mediazone' => true,
                 'provider' => 'image',
                 'allow_delete' => false,
         ));
