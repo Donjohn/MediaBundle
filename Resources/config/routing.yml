@@ -18,3 +18,9 @@ donjohn_media_delete:
     requirements:
           id: \d+
           id_image: \d+
+
+donjohn_media_render:
+    path: /media/render/{id}
+    defaults: { _controller: DonjohnMediaBundle:Media:renderMedia }
+    requirements:
+          id: \d+

@@ -14,6 +14,7 @@ use Donjohn\MediaBundle\Model\Media;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MediaController extends Controller
@@ -68,4 +69,15 @@ class MediaController extends Controller
 
         return $this->listAction($request);
     }
+
+    public function renderMediaAction($id)
+    {
+        if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))
+            throw new NotFoundHttpException('media '.$this->getParameter('donjohn.media.entity').' '.$id.' cannot be found');
+        return new Response($this->get('donjohn.media.provider.factory')->getProvider($media)->render($this->get('twig'), $media, array(
+            'class' => 'img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block',
+            'filter' => 'thumbnail'
+        )));
+    }
+
 }

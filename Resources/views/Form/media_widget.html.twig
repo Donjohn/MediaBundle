@@ -38,16 +38,16 @@
         {
             var input = $(document).find('#{{ id }}');
             input.val(message);
-            var img = $(input).find('img');
-            img.attr('src', 'hello.jpg');
+
             $.ajax({
-                method: "post",
-                url: $(self).attr('data-target'),
+                method: "get",
+                url: '/media/render/' + message,
                 cache: false,
-                data: $(self).serialize()
+                data: message
             })
                 .done(function(data){
-
+                    var mediaspan = $(document).find('#sonata-ba-field-container-{{ id }} span');
+                    mediaspan.html(data);
                 });
         }
     </script>

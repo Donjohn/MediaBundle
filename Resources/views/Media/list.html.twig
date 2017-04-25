@@ -28,23 +28,15 @@
             })
             .delegate('#media-select-submit','click', function(event){
                 var input = $(this).parent().find('input[checked="checked"]');
-                if (input.length>0) window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().find('input[checked="checked"]').val());
+                if (input.length>0)
+                {
+                    window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().find('input[checked="checked"]').val());
+                    window.close();
+                }
                 else alert("Sélectionnez un media");
 
                 event.preventDefault();
 
-//                var self = this;
-//                $.ajax({
-//                    method:"post",
-//                    url: $(self).attr('action'),
-//                    data: $(self).serialize()
-//                })
-//                    .done(function(data){
-//                        document.location = data;
-//                    })
-//                    .error(function(data){
-//                        $('.modal-content').html(data);
-//                    });
             })
             .delegate('#addImage','click', function(){
                 var imageClicked = $('#donjohn-list-modal').find('input:checked');
