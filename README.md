@@ -1,19 +1,18 @@
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/2d30fe72-c272-4072-a843-17d798b65416/mini.png)](https://insight.sensiolabs.com/projects/2d30fe72-c272-4072-a843-17d798b65416)
 
-Installation instruction
-===================
-First, give credits to Sonata, their inspire this bundle.
+Installation
+=============
+
 
 ### Composer
 
-Type:
 ```
 composer require donjohn/media-bundle
 ```
 
 ### Kernel
 
-Add thoses bundles to your AppKernel.php
+Add this to your AppKernel.php
 
 ```PHP
     new Liip\ImagineBundle\LiipImagineBundle(),
@@ -24,7 +23,7 @@ Add thoses bundles to your AppKernel.php
 
 ### Routing
 
-Add thoses route to your routing.yml
+Add this to your routing.yml
 
 ```yaml
 #app/config/routing.yml
@@ -33,7 +32,7 @@ donjohn_media:
 ```
     
     
-### Config
+### Minimal configuration
 
 Create a new class and extends it with Donjohn\MediaBundle\Media
 ```
@@ -58,7 +57,7 @@ class YourMedia extends BaseMedia
 ```
 
 
-Then add these lines to your config.yml
+Add this to your config.yml
 ```yaml
 
 doctrine:
@@ -82,10 +81,11 @@ liip_imagine:
                 thumbnail: { size: [120, 120], mode: outbound }
 ```
 
-see [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters config
+See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
 
+### Optional configuration
 
-If you want another folder for your uploads, don't forget to modify liip setting as well
+Change folder for uploaded files
 ```
 donjohn_media:
     upload_folder: /AnotherFolder
@@ -97,7 +97,7 @@ liip_imagine:
                 cache_prefix: AnotherFolder/cache
 ```
 
-You can also change the template used to render a media, change the config:
+Change media template used by providers
 ```
 donjohn_media:
     providers:
@@ -105,19 +105,20 @@ donjohn_media:
             template: YouBundle:View:Twig.html.twig
 ```
 
-By default, php.ini setting is maximum but if you want to restrict a maximum uploaded file size, change the setting:
+Restrict uploaded file size
 ```
 donjohn_media:
     file_max_size: 500M
 ```
 
 
-###Providers
-For the moment only Image (alias 'image') and File (alias 'file') provider are available.
+### Providers
+Available providers :
+ - image
+ - file
 
 
-
-### Twig
+### Usage
 To insert a media in the twig, use the block with an optionnal filter name, defined in the liip_imagine.filter_sets section.
 If you don't provider a filter name, 'reference' filter is default. it will return the original media uploaded with any filter or post processing.
 ```

@@ -21,10 +21,10 @@
 
                     })
                     .delegate('#media-select-submit','click', function(event){
-                        var input = $(this).parent().find('input[checked="checked"]');
+                        var input = $(this).parent().parent().find('input[checked="checked"]');
                         if (input.length>0)
                         {
-                            window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().find('input[checked="checked"]').val());
+                            window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().parent().find('input[checked="checked"]').val());
                             window.close();
                         }
                         else alert("Sélectionnez un media");
