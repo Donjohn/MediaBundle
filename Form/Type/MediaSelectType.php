@@ -14,6 +14,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 
 class MediaSelectType extends AbstractType
 {
@@ -50,5 +52,12 @@ class MediaSelectType extends AbstractType
             'data_class' => $this->classMedia,
             'required' => false
         ));
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $vars = $view->vars;
+        if ($vars['value']) $vars['value'] = $vars['data']->getId();
+        $view->vars = $vars;
     }
 }
