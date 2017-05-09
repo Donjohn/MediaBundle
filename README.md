@@ -18,7 +18,8 @@ Add thoses bundles to your AppKernel.php
 ```PHP
     new Liip\ImagineBundle\LiipImagineBundle(),
     new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
+    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),    
+    new Oneup\UploaderBundle\OneupUploaderBundle(),
     new Donjohn\MediaBundle\DonjohnMediaBundle(),
 ```
 
@@ -80,6 +81,18 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
+                
+oneup_uploader:
+    orphanage:
+        maxage: 86400
+    mappings:
+        medias:
+            namer:  donjohn.oneup_uploader.namer.original
+            use_orphanage: true
+            frontend: fineuploader # or any uploader you use in the frontend
+            storage:
+                type: gaufrette
+                filesystem: donjohn.media.local.filesystem
 ```
 
 see [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters config

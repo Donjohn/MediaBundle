@@ -8,14 +8,18 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\Debug;
 use Donjohn\MediaBundle\Model\Media;
 use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -55,6 +59,7 @@ class MediaFineUploaderType extends AbstractType
                 'entry_type' => MediaType::class,
                 'provider' => 'file',
                 'entry_options' => array(),
+                'by_reference' => false
 //                'prototype' => false,
                 ));
 
@@ -74,39 +79,27 @@ class MediaFineUploaderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $formModifier = function(FormEvent $event) use ($options) {
 
-
-
-                $uploadedFiles = $this->filesystemOrphanageStorage->getFiles();
-
-                $data = $event->getData() ?: [] ;
-                /** @var \SplFileInfo $file */
-            foreach ($uploadedFiles as $file){
-                    /** @var Media $media */
-                    $media = new $this->classMedia();
-                    $media->setBinaryContent( new File($file->getPathname()))
-                        ->setProviderName( $options['provider']);
-//                    $media=['binaryContent' => new UploadedFile($file->getPathname(), $file->getBasename())];
-                    array_push($data,$media);
-                }
-
-                $event->setData($data);
-
-
-                };
         $builder->addEventListener(
                 FormEvents::SUBMIT ,
-                $formModifier
+                function (FormEvent $event)use ($options) {
+
+                    $uploadedFiles = $this->filesystemOrphanageStorage->getFiles();
+
+                    $data = $event->getData() ?: [] ;
+                    /** @var \SplFileInfo $file */
+                    foreach ($uploadedFiles as $file)  {
+                        /** @var Media $media */
+                        $media = new $this->classMedia();
+                        $media->setBinaryContent( new File($file->getPathname()) )
+                            ->setProviderName( $options['provider'])
+                            ->setOriginalFilename( $file->getBasename());
+                        $data[]=$media;
+                    }
+
+                    $event->setData($data);
+                }
             );
-
-
-//        $builder->addEventListener(
-//                FormEvents::PRE_SUBMIT ,
-//                function(FormEvent $event){
-//                    Debug::dump($event->getForm()->getData());
-//                }
-//            );
 
     }
 
