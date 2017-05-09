@@ -115,8 +115,14 @@ class FileProvider extends BaseProvider {
     public function postPersist(Media $oMedia)
     {
         if ($oMedia->getBinaryContent() === null) return false;
+        if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
+            $newPath = $this->getFullPath($oMedia);
+            return $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
+        } else {
+            return $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+        }
 
-        return $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+
 
     }
 

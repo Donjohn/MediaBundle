@@ -7,3 +7,11 @@ media.provider.file.label: Fichiers
 media.provider.image.label: Images
 media.file.binaryContent: Fichier
 media.image.binaryContent: Image
+media.oneup.upload.file: Selectionner un fichier
+media.oneup.drop.files: Glissez les fichiers ici
+media.oneup.processing.files: Traitement des fichiers en cours...
+media.oneup.close: Fermer
+media.oneup.yes: Oui
+media.oneup.no: Non
+media.oneup.cancel: Annuler
+media.oneup.ok: Valider

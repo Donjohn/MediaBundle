@@ -9,32 +9,37 @@ namespace Donjohn\MediaBundle\Form\Type;
 
 
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaFineUploaderType extends AbstractType
 {
-    /**
-     * @var ProviderFactory
-     */
-    protected $providerFactory;
+    /** @var FilesystemOrphanageStorage $filesystemOrphanageStorage */
+    protected $filesystemOrphanageStorage;
 
     /**
      * @var string
      */
     protected $classMedia;
 
-    public function __construct( ProviderFactory $providerFactory, $classMedia)
+
+
+    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage)
     {
-        $this->providerFactory = $providerFactory;
         $this->classMedia = $classMedia;
+        $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
+    }
+
+    public function getParent()
+    {
+        return CollectionType::class;
     }
 
 
@@ -43,79 +48,65 @@ class MediaFineUploaderType extends AbstractType
 
         $resolver->setDefaults(array(
                 'translation_domain' => 'DonjohnMediaBundle',
-                'error_bubbling' => true,
-                'provider' => 'file',
-                'label' => 'media',
-                'invalid_message' => 'media.error.transform',
+                'label' => 'medias',
                 'allow_delete' => true,
-                'multiple' => false,
-                'data_class' => $this->classMedia,
-                'required' => false,
-                'delete_empty' => true,
+                'allow_add' => true,
+                'allow_extra_fields' => true,
+                'entry_type' => MediaType::class,
+                'provider' => 'file',
+                'entry_options' => array(),
+//                'prototype' => false,
                 ));
+
+        $entryOptionsNormalizer = function (Options $options, $value) {
+            $value['mediazone'] = false;
+            $value['label'] = false;
+            $value['required'] = false;
+            $value['multiple'] = false;
+            $value['delete_empty'] = false;
+            $value['oneup'] = true;
+            return $value;
+        };
+
+        $resolver->setNormalizer('entry_options', $entryOptionsNormalizer);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
-        $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
-
-
-//        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-//                            'label' => false,
-//                            'error_bubbling' => true,
-//                            'multiple' => $options['multiple'] ? 'multiple' : false,
-//                            'required' => $options['required'],
-//                            'attr' => array('class' => 'hidden' )
-//                        );
-//        if ($media) $provider->addEditForm($builder, $formOptions);
-//        else $provider->addCreateForm($builder, $formOptions);
-//
-//        $builder->add('originalFilename', HiddenType::class);
-//
-//        $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
+        $formModifier = function(FormEvent $event) use ($options) {
 
 
 
-        if ($options['allow_delete']){
-            $formEventUnlink = function(FormEvent $event) use ($options) {
-                if ($event->getData() || $options['multiple']) {
-                    $event->getForm()->add('unlink', CheckboxType::class, array(
-                        'mapped'   => false,
-                        'data'     => false,
-                        'required' => false,
-                        'label' => !$options['multiple'] ? 'media.unlink.label' : false,
-                        'translation_domain' => 'DonjohnMediaBundle'
-                    ));
+                $uploadedFiles = $this->filesystemOrphanageStorage->getFiles();
+
+                $data = $event->getData() ?: [] ;
+                /** @var \SplFileInfo $file */
+            foreach ($uploadedFiles as $file){
+                    /** @var Media $media */
+                    $media = new $this->classMedia();
+                    $media->setBinaryContent( new File($file->getPathname()))
+                        ->setProviderName( $options['provider']);
+//                    $media=['binaryContent' => new UploadedFile($file->getPathname(), $file->getBasename())];
+                    array_push($data,$media);
                 }
-            };
 
-            $builder->addEventListener(
-                FormEvents::PRE_SET_DATA,
-                $formEventUnlink
+                $event->setData($data);
+
+
+                };
+        $builder->addEventListener(
+                FormEvents::SUBMIT ,
+                $formModifier
             );
 
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                $formEventUnlink
-            );
 
-            $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
-                    $event->setData(null);
-                }
-            });
-        }
-
-    }
-
-    public function buildView(
-        FormView $view,
-        FormInterface $form,
-        array $options
-    ) {
-        $view->vars['provider'] = $options['provider'];
+//        $builder->addEventListener(
+//                FormEvents::PRE_SUBMIT ,
+//                function(FormEvent $event){
+//                    Debug::dump($event->getForm()->getData());
+//                }
+//            );
 
     }
 
