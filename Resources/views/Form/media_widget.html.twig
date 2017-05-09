@@ -1,5 +1,4 @@
 {% block media_widget %}
-
     {% if form.vars.mediazone %}
         <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height }}" class="panel">
             {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
@@ -7,6 +6,7 @@
             {{ form_widget(form) }}
         </div>
     {% else %}
+
         {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
         {{ form_widget(form) }}
     {% endif%}
@@ -116,6 +116,10 @@
         element: document.getElementById('fine-uploader{{ id }}'),
         request: {
             endpoint: "{{ oneup_uploader_endpoint('medias') }}"
+        },
+        chunking: {
+            enabled: true,
+            partSize: 100000000
         }
         //TODO: recup les contentType du provider et les balancer dans le js
     });

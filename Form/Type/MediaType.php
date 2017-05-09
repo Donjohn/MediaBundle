@@ -64,20 +64,16 @@ class MediaType extends AbstractType
         $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
 
-//        if (!$options['oneup']) {
-            $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-                                'label' => false,
-                                'multiple' => $options['multiple'] ? 'multiple' : false,
-                                'required' => $options['required'],
-                                //'attr' => array('style' => 'visibility:hidden' ),
-                            );
-            if ($media) $provider->addEditForm($builder, $formOptions);
-            else $provider->addCreateForm($builder, $formOptions);
+        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
+                            'label' => false,
+                            'multiple' => $options['multiple'] ? 'multiple' : false,
+                            'required' => $options['required'],
+                            'attr' => array('style' => $options['oneup']||$options['mediazone'] ? 'visibility:hidden' : ''),
+                        );
+        if ($media) $provider->addEditForm($builder, $formOptions);
+        else $provider->addCreateForm($builder, $formOptions);
 
-            $builder->add('originalFilename', HiddenType::class);
-//        } else {
-//            $builder->add('id',  );
-//        }
+        $builder->add('originalFilename', HiddenType::class);
 
         $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
 

@@ -37,7 +37,7 @@ class FileProvider extends BaseProvider {
     }
 
     public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
-        $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
+        $options['mediaPath'] = $this->getWebPath($media, isset($options['filter']) ? $options['filter'] : null );
         return parent::render($twig, $media, $options);
     }
 
@@ -50,12 +50,17 @@ class FileProvider extends BaseProvider {
         $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
         $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
 
-        return sprintf('%04s/%02s/%s', $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+        return sprintf('%04s/%02s/%s',  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
     public function getFullPath(Media $oMedia, $filter = null)
     {
-        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
+        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getWebPath($oMedia, $filter);
+    }
+
+    public function getWebPath(Media $oMedia, $filter = null)
+    {
+        return $this->filesystem->getUploadFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
     protected function delete(Media $oMedia)
@@ -95,10 +100,7 @@ class FileProvider extends BaseProvider {
         $oMedia->addMetadata('filename', $fileName);
 
         $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' .
-            ($oMedia->getBinaryContent() instanceof \Gaufrette\File
-                ? substr($mimeType, strpos($mimeType, '/')+1)
-                : $oMedia->getBinaryContent()->guessExtension()));
+            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . $oMedia->getBinaryContent()->guessExtension() );
     }
 
     /**
@@ -106,7 +108,7 @@ class FileProvider extends BaseProvider {
      */
     public function postLoad(Media $oMedia)
     {
-        $oMedia->setPaths(array('reference' => $this->getPath($oMedia)));
+        $oMedia->setPaths(array('reference' => $this->getWebPath($oMedia)));
     }
 
     /**
@@ -182,7 +184,6 @@ class FileProvider extends BaseProvider {
 
 
         $file = $this->filesystem->get($this->getPath($oMedia), true);
-
         return new StreamedResponse(function () use ($file) {
             echo $file->getContent();
         }, 200, $headers);

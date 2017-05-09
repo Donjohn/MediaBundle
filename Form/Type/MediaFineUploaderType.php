@@ -8,18 +8,14 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Util\Debug;
 use Donjohn\MediaBundle\Model\Media;
 use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Exception\RuntimeException;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -59,8 +55,8 @@ class MediaFineUploaderType extends AbstractType
                 'entry_type' => MediaType::class,
                 'provider' => 'file',
                 'entry_options' => array(),
-                'by_reference' => false
-//                'prototype' => false,
+                'prototype' => false,
+                'required' => true,
                 ));
 
         $entryOptionsNormalizer = function (Options $options, $value) {
