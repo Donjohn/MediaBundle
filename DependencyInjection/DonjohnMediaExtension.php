@@ -51,6 +51,11 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             $container->setDefinition(sprintf('donjohn.media.api.listener.%s', $config['entity']), $this->createApiListenerService($container->getDefinition('donjohn.media.provider.factory')));
         }
 
+        //delcaration des services api pour toutes les entites dans la conf
+        if (isset($bundles['OneupUploaderBundle'])){
+            $loader->load('oneup_uploader.yml');
+        }
+
     }
 
 
@@ -82,6 +87,13 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
 
     public function prepend(ContainerBuilder $container)
     {
+        $config = $container->getExtensionConfig($this->getAlias());
+        $config = $this->processConfiguration(
+            $container->getExtension($this->getAlias())->getConfiguration($config, $container),
+            $config
+        );
+        $upload_folder = $config['upload_folder'];
+
         if ($container->hasExtension('easy_admin')) {
             $config = $container->getExtensionConfig('easy_admin');
             $config = $this->processConfiguration(
@@ -101,6 +113,12 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             $container->getExtension('liip_imagine')->getConfiguration($config, $container),
             $config
         );
+
+        if (isset($config['loaders']['default']['filesystem']['data_root']))
+        {
+            $config['loaders']['default']['filesystem']['data_root'] = [$upload_folder];
+        }
+
         if (!isset($config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0])) {
             throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
         } else {
