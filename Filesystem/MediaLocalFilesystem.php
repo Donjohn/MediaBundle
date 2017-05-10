@@ -14,25 +14,18 @@ use Gaufrette\Filesystem;
 class MediaLocalFilesystem extends Filesystem
 {
     protected $webFolder;
-    protected $uploadFolder;
 
 
-    public function __construct($webFolder, $uploadFolder)
+    public function __construct($webFolder)
     {
         $this->webFolder = $webFolder;
-        $this->uploadFolder = $uploadFolder;
-        parent::__construct(new Adapter\Local($webFolder.$uploadFolder));
+        parent::__construct(new Adapter\Local($webFolder));
     }
 
 
     public function getWebFolder()
     {
         return $this->webFolder;
-    }
-
-    public function getUploadFolder()
-    {
-        return $this->uploadFolder;
     }
 
 }

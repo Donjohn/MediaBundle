@@ -27,17 +27,20 @@ class FileProvider extends BaseProvider {
 
     protected $fileMaxSize;
 
+    protected $uploadFolder;
 
-    final public function __construct(MediaLocalFilesystem $filesystem, $fileMaxSize)
+
+    final public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
     {
 
         $this->filesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
+        $this->uploadFolder = $uploadFolder;
 
     }
 
     public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
-        $options['mediaPath'] = $this->getWebPath($media, isset($options['filter']) ? $options['filter'] : null );
+        $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
         return parent::render($twig, $media, $options);
     }
 
@@ -50,17 +53,12 @@ class FileProvider extends BaseProvider {
         $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
         $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
 
-        return sprintf('%04s/%02s/%s',  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder,  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
     public function getFullPath(Media $oMedia, $filter = null)
     {
-        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->filesystem->getUploadFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
-    }
-
-    public function getWebPath(Media $oMedia, $filter = null)
-    {
-        return $this->getPath($oMedia, $filter);
+        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
     protected function delete(Media $oMedia)
@@ -100,7 +98,7 @@ class FileProvider extends BaseProvider {
         $oMedia->addMetadata('filename', $fileName);
 
         $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . $oMedia->getBinaryContent()->guessExtension() );
+            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
     }
 
     /**
@@ -108,7 +106,7 @@ class FileProvider extends BaseProvider {
      */
     public function postLoad(Media $oMedia)
     {
-        $oMedia->setPaths(array('reference' => $this->getWebPath($oMedia)));
+        $oMedia->setPaths(array('reference' => $this->getPath($oMedia)));
     }
 
     /**

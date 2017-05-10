@@ -9,17 +9,16 @@ services:
     donjohn.oneup_uploader.namer.original:
         class: "%donjohn.oneup_uploader.namer.original.class%"
 
-
     donjohn.media.local.filesystem:
         class: "%donjohn.media.local.filesystem.class%"
-        arguments: ["%assetic.write_to%", "%donjohn.media.upload_folder%"]
+        arguments: ["%assetic.write_to%"]
 
     donjohn.media.provider.factory:
         class: "%donjohn.media.provider.factory.class%"
 
     donjohn.media.file.provider:
         class: "%donjohn.media.file.provider.class%"
-        arguments: [ "@donjohn.media.local.filesystem", "%donjohn.media.file_max_size%" ]
+        arguments: [ "@donjohn.media.local.filesystem", "%donjohn.media.upload_folder%", "%donjohn.media.file_max_size%" ]
         tags:
             - { name: media.provider, alias: file }
 

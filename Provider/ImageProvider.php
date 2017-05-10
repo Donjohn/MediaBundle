@@ -69,7 +69,7 @@ class ImageProvider extends FileProvider  {
     public function postLoad(Media $oMedia)
     {
         $paths = array('reference' => $this->getPath($oMedia));
-        foreach ($this->filterConfiguration->all() as $filter=> $configuration) $paths[$filter] = $this->getWebPath($oMedia, $filter);
+        foreach ($this->filterConfiguration->all() as $filter=> $configuration) $paths[$filter] = $this->getPath($oMedia, $filter);
         $oMedia->setPaths($paths);
     }
 
