@@ -4,3 +4,9 @@ parameters:
 services:
     donjohn.oneup_uploader.namer.original:
         class: "%donjohn.oneup_uploader.namer.original.class%"
+
+    donjohn.media.fine_uploader.type:
+        class: "%donjohn.media.fine_uploader.type.class%"
+        arguments: ["%donjohn.media.entity%", "@oneup_uploader.orphanage.medias"]
+        tags:
+            - { name: form.type }
