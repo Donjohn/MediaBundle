@@ -2,9 +2,9 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
+use Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
-use Gaufrette\Adapter\Local;
 use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -25,18 +25,17 @@ class FileProvider extends BaseProvider {
 
     public $allowedTypes=array('[a-z]+/[a-z\-]+');
 
-    protected $rootFolder;
-    protected $uploadFolder;
     protected $fileMaxSize;
 
+    protected $uploadFolder;
 
-    final public function __construct($rootFolder, $uploadFolder, $fileMaxSize)
+
+    final public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
     {
 
-        $this->filesystem = new \Gaufrette\Filesystem(new Local($rootFolder, true, 0775));
-        $this->rootFolder = $rootFolder;
-        $this->uploadFolder = $uploadFolder;
+        $this->filesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
+        $this->uploadFolder = $uploadFolder;
 
     }
 
@@ -54,12 +53,12 @@ class FileProvider extends BaseProvider {
         $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
         $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
 
-        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder, $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder,  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
     public function getFullPath(Media $oMedia, $filter = null)
     {
-        return $this->rootFolder.DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
+        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
     protected function delete(Media $oMedia)
@@ -88,7 +87,7 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        $oMedia->setMd5(md5(file_get_contents($oMedia->getBinaryContent()->getRealPath())));
+        $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
         $this->extractMetaData($oMedia);
@@ -99,10 +98,7 @@ class FileProvider extends BaseProvider {
         $oMedia->addMetadata('filename', $fileName);
 
         $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' .
-            ($oMedia->getBinaryContent() instanceof \Gaufrette\File
-                ? substr($mimeType, strpos($mimeType, '/')+1)
-                : $oMedia->getBinaryContent()->guessExtension()));
+            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
     }
 
     /**
@@ -119,8 +115,14 @@ class FileProvider extends BaseProvider {
     public function postPersist(Media $oMedia)
     {
         if ($oMedia->getBinaryContent() === null) return false;
+        if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
+            $newPath = $this->getFullPath($oMedia);
+            return $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
+        } else {
+            return $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+        }
 
-        return $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+
 
     }
 
@@ -129,7 +131,7 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        if ($oMedia->getOldMedia() instanceof Media) $this->preRemove($oMedia->getOldMedia());
+        if ($oMedia->getOldMedia() instanceof Media && $oMedia->getOldMedia()->getOldFilename()) $this->preRemove($oMedia->getOldMedia());
         return $this->postPersist($oMedia);
     }
 
@@ -180,7 +182,6 @@ class FileProvider extends BaseProvider {
 
 
         $file = $this->filesystem->get($this->getPath($oMedia), true);
-
         return new StreamedResponse(function () use ($file) {
             echo $file->getContent();
         }, 200, $headers);

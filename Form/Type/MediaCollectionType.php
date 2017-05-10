@@ -75,7 +75,6 @@ class MediaCollectionType extends AbstractType
 
         $resolver->setDefaults(array(
                 'translation_domain' => 'DonjohnMediaBundle',
-                'error_bubbling' => true,
                 'label' => 'medias',
                 'allow_delete' => true,
                 'allow_add' => true,
@@ -91,6 +90,7 @@ class MediaCollectionType extends AbstractType
             $value['label'] = false;
             $value['required'] = false;
             $value['multiple'] = true;
+            $value['delete_empty'] = false;
             return $value;
         };
 

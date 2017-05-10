@@ -18,7 +18,8 @@ Add thoses bundles to your AppKernel.php
 ```PHP
     new Liip\ImagineBundle\LiipImagineBundle(),
     new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
+    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),    
+    new Oneup\UploaderBundle\OneupUploaderBundle(),
     new Donjohn\MediaBundle\DonjohnMediaBundle(),
 ```
 
@@ -80,6 +81,18 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
+                
+oneup_uploader:
+    orphanage:
+        maxage: 86400
+    mappings:
+        medias:
+            namer:  donjohn.oneup_uploader.namer.original
+            use_orphanage: true
+            frontend: fineuploader # or any uploader you use in the frontend
+            storage:
+                type: gaufrette
+                filesystem: donjohn.media.local.filesystem
 ```
 
 see [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters config
@@ -151,9 +164,38 @@ $builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) );
 
 Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.
   
-If you want to uplod a collection of Medias use the MediaCollection formType. The provider option is still available.
+If you want to upload a collection of Medias use the MediaCollection formType. The provider option is still available.
 ```
 $builder->add(<fieldName>, MediaCollectionType::class );
+```
+
+### OneupUploader
+For very large files, the bundle includes the Fine Uploader feature thanx to OneUpUploaderBundle.
+```
+$builder->add(<fieldName>, MediaFineUploaderType::class );
+```
+In that case don't forget to install the front part, include the css/js in your layout.
+```
+bower install fine-uploader --save 
+```
+Add the OneupUploaderBundle to your AppKernel.php
+```PHP
+    new Oneup\UploaderBundle\OneupUploaderBundle(),
+```
+And to config.yml, add:
+```
+oneup_uploader:
+    chunks:
+        maxage: 86400
+        storage:
+            directory: %kernel.cache_dir%/uploader/chunks
+    orphanage:
+        maxage: 86400
+    mappings:
+        medias:
+            namer:  donjohn.oneup_uploader.namer.original
+            use_orphanage: true
+            frontend: fineuploader
 ```
 
 ### Api
