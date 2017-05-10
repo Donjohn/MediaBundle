@@ -51,6 +51,11 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             $container->setDefinition(sprintf('donjohn.media.api.listener.%s', $config['entity']), $this->createApiListenerService($container->getDefinition('donjohn.media.provider.factory')));
         }
 
+        //delcaration des services api pour toutes les entites dans la conf
+        if (isset($bundles['OneupUploaderBundle'])){
+            $loader->load('oneup_uploader.yml');
+        }
+
     }
 
 

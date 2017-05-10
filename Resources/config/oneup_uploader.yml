@@ -1,0 +1,6 @@
+parameters:
+    donjohn.oneup_uploader.namer.original.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
+
+services:
+    donjohn.oneup_uploader.namer.original:
+        class: "%donjohn.oneup_uploader.namer.original.class%"

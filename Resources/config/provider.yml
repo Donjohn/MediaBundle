@@ -3,12 +3,8 @@ parameters:
     donjohn.media.file.provider.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.image.provider.class: Donjohn\MediaBundle\Provider\ImageProvider
     donjohn.media.local.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
-    donjohn.oneup_uploader.namer.original.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
 
 services:
-    donjohn.oneup_uploader.namer.original:
-        class: "%donjohn.oneup_uploader.namer.original.class%"
-
     donjohn.media.local.filesystem:
         class: "%donjohn.media.local.filesystem.class%"
         arguments: ["%assetic.write_to%"]
