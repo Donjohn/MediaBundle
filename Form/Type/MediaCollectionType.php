@@ -91,6 +91,7 @@ class MediaCollectionType extends AbstractType
             $value['required'] = false;
             $value['multiple'] = true;
             $value['delete_empty'] = false;
+            $value['error_bubbling'] = true;
             return $value;
         };
 

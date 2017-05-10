@@ -45,7 +45,6 @@ class MediaType extends AbstractType
 
         $resolver->setDefaults(array(
                 'translation_domain' => 'DonjohnMediaBundle',
-                'error_bubbling' => true,
                 'provider' => 'file',
                 'mediazone' => true,
                 'label' => 'media',
@@ -55,6 +54,8 @@ class MediaType extends AbstractType
                 'data_class' => $this->classMedia,
                 'required' => false,
                 'delete_empty' => true,
+                'gallery' => false,
+                'oneup' => false,
                 ));
     }
 
@@ -70,15 +71,12 @@ class MediaType extends AbstractType
                             'error_bubbling' => true,
                             'multiple' => $options['multiple'] ? 'multiple' : false,
                             'required' => $options['required'],
-                            'attr' => array('style' => $options['oneup']||$options['mediazone'] ? 'visibility:hidden' : ''),
+                            'attr' => array('class' => $options['oneup']||$options['mediazone'] ? 'hidden' : ''),
                         );
         if ($media) $provider->addEditForm($builder, $formOptions);
         else $provider->addCreateForm($builder, $formOptions);
 
         $builder->add('originalFilename', HiddenType::class);
-
-        $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
-
 
 
         if ($options['allow_delete']){
@@ -104,12 +102,17 @@ class MediaType extends AbstractType
                 $formEventUnlink
             );
 
-            $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
-                if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
-                    $event->setData(null);
+            $builder->addEventListener(
+                FormEvents::SUBMIT,
+                function (FormEvent $event) {
+                    if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
+                        $event->setData(null);
+                    }
                 }
-            });
+            );
         }
+
+        $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
 
     }
 

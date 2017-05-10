@@ -66,6 +66,7 @@ class MediaFineUploaderType extends AbstractType
             $value['multiple'] = false;
             $value['delete_empty'] = false;
             $value['oneup'] = true;
+            $value['error_bubbling'] = true;
             return $value;
         };
 

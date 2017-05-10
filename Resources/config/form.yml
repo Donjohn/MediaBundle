@@ -2,7 +2,7 @@ parameters:
     donjohn.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
     donjohn.media.fine_uploader.type.class: Donjohn\MediaBundle\Form\Type\MediaFineUploaderType
     donjohn.media_collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
-    donjohn.media_select.type.class: Donjohn\MediaBundle\Form\Type\MediaSelectType
+    donjohn.media_gallery.type.class: Donjohn\MediaBundle\Form\Type\MediaGalleryType
 
 services:
     donjohn.media.type:
@@ -24,8 +24,14 @@ services:
         tags:
             - { name: form.type }
 
+    donjohn.media_gallery.type:
+        class: "%donjohn.media_gallery.type.class%"
+        arguments: ["@doctrine.orm.default_entity_manager", "%donjohn.media.entity%"]
+        tags:
+            - { name: form.type }
+
     donjohn.media_select.type:
-        class: "%donjohn.media_select.type.class%"
+        class: Donjohn\MediaBundle\Form\Type\MediaSelectType
         arguments: ["@doctrine.orm.default_entity_manager", "%donjohn.media.entity%"]
         tags:
             - { name: form.type }

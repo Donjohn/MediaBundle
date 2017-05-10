@@ -10,30 +10,6 @@
         <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
         <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
-        <script type="text/javascript">
-            $(document).ready(function(){
-                $('.media-select')
-                    .delegate('ul li img','click', function(){
-                        $('input').attr('checked',false);
-                        $('img').removeClass('choose');
-                        $(this).closest('li').find('input').attr('checked','checked');
-                        $(this).closest('li').find('img').addClass('choose');
-
-                    })
-                    .delegate('#media-select-submit','click', function(event){
-                        var input = $(this).parent().parent().find('input[checked="checked"]');
-                        if (input.length>0)
-                        {
-                            window.opener.clickMedia{{ app.request.query.get('formId') }}($(this).parent().parent().find('input[checked="checked"]').val());
-                            window.close();
-                        }
-                        else alert("Sélectionnez un media");
-
-                        event.preventDefault();
-
-                    })
-            });
-        </script>
     {% endblock %}
 </body>
 </html>

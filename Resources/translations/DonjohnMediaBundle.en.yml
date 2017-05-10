@@ -6,6 +6,9 @@ media.unlink.label: Unlink Media
 media.provider.file.label: Files
 media.provider.image.label: Images
 media.file.binaryContent: File
+media.submit: Upload
+media.gallery.valid: Choose
+media.delete.confirm: Are you sure you want to delete the media ?
 media.image.binaryContent: Image
 media.oneup.upload.file: Upload a file
 media.oneup.drop.files: Drop files here
@@ -15,3 +18,5 @@ media.oneup.yes: Yes
 media.oneup.no: No
 media.oneup.cancel: Cancel
 media.oneup.ok: Ok
+media.gallery.link: MediasBrowser
+media.gallery.select_media: Select a media

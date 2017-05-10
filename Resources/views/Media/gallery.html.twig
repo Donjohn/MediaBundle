@@ -1,0 +1,55 @@
+{% extends '@DonjohnMedia/base.html.twig' %}
+
+{%  block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+            $(function () {
+                $('.modal-body .panel').on('click', function(){
+                        $('.panel').removeClass('panel-primary');
+                        $(this).addClass('panel-primary');
+
+                    });
+                $('#media-select-submit').on('click', function(event){
+                        var chosen = $('.panel.panel-primary');
+                        if (chosen.length>0)
+                        {
+                            window.opener.pickMedia{{ formId }}($(chosen).data('id'));
+                            window.close();
+                        }
+                        else alert("{{ 'media.gallery.select_media'|trans({},'DonjohnMediaBundle') }}");
+
+                        event.preventDefault();
+
+                    })
+            });
+        </script>
+{% endblock %}
+
+{% block body %}
+    <div class="media-select">
+        <div class="modal-header">
+            {{ form(form) }}
+        </div>
+        <div class="modal-body">
+            <div class="row">
+            {% for media in medias %}
+                <div class=" col-xs-4">
+                    <div class="panel panel-default {% if media.id==mediaUploaded.id %}panel-primary{% endif %}" data-id="{{ media.id }}">
+                        <div class="panel-heading">
+                            {% media media, 'thumbnail' with {class: 'thumbnail'} %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+            <div class="row text-center">
+                <div class="pagerfanta">
+                    {{ pagerfanta(pagination, 'twitter_bootstrap3_translated') }}
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="media-select-submit" class="btn btn-success btn-lg">{{ 'media.gallery.valid'|trans({},'DonjohnMediaBundle') }}</button>
+        </div>
+    </div>
+{% endblock %}

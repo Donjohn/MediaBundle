@@ -18,7 +18,7 @@ Add this to your AppKernel.php
     new Liip\ImagineBundle\LiipImagineBundle(),
     new Symfony\Bundle\AsseticBundle\AsseticBundle(),
     new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),    
-    new Oneup\UploaderBundle\OneupUploaderBundle(),
+    new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
     new Donjohn\MediaBundle\DonjohnMediaBundle(),
 ```
 
@@ -171,11 +171,11 @@ $builder->add(<fieldName>, MediaCollectionType::class );
 ```
 
 ### OneupUploader
-For very large files, the bundle includes the Fine Uploader feature thanx to OneUpUploaderBundle.
+For very large files, the bundle includes the Fine Uploader feature thanks to OneUpUploaderBundle.
 ```
 $builder->add(<fieldName>, MediaFineUploaderType::class );
 ```
-In that case don't forget to install the front part, include the css/js in your layout.
+Don't forget to install the front part and include the css/js in your layout.
 ```
 bower install fine-uploader --save 
 ```
