@@ -48,7 +48,3 @@
     </script>
     <button onclick="open('{{ path('donjohn_media_gallery', {formId: id, provider: provider}) }}', '{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}', 'scrollbars=1,resizable=0,height=660,width=770'); return false;" class="show-media-gallery" class="btn btn-download">{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}</button>
 {% endblock %}
-
-{% block media_select_widget %}
-    {{ block('media_gallery_widget') }}
-{% endblock %}

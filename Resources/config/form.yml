@@ -25,9 +25,3 @@ services:
         arguments: ["@doctrine.orm.default_entity_manager", "%donjohn.media.entity%"]
         tags:
             - { name: form.type }
-
-    donjohn.media_select.type:
-        class: Donjohn\MediaBundle\Form\Type\MediaSelectType
-        arguments: ["@doctrine.orm.default_entity_manager", "%donjohn.media.entity%"]
-        tags:
-            - { name: form.type }
