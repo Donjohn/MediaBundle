@@ -13,11 +13,19 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class FormCompilerPass implements CompilerPassInterface
 {
+
+    protected $oneupUploaderBundle;
+    public function __construct($oneupUploaderBundle=false)
+    {
+        $this->oneupUploaderBundle = $oneupUploaderBundle;
+    }
+
     public function process(ContainerBuilder $container)
     {
         $resources = $container->getParameter('twig.form.resources');
 
         $resources[] = 'DonjohnMediaBundle:Form:media_widget.html.twig';
+        if ($this->oneupUploaderBundle) $resources[] = 'DonjohnMediaBundle:Form:media_widget_oneup.html.twig';
 
         $container->setParameter('twig.form.resources', $resources);
     }

@@ -18,8 +18,10 @@ class DonjohnMediaBundle extends Bundle
         if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass'))
             $container->addCompilerPass( DoctrineOrmMappingsPass::createAnnotationMappingDriver( array('Donjohn\MediaBundle\Model') , array(realpath(__DIR__.DIRECTORY_SEPARATOR.'Model')) ));
 
+        $bundles = $container->getParameter('kernel.bundles');
+
         $container->addCompilerPass(new ProviderCompilerPass());
-        $container->addCompilerPass(new FormCompilerPass());
+        $container->addCompilerPass(new FormCompilerPass(isset($bundles['OneupUploaderBundle'])));
         $container->addCompilerPass(new TwigCompilerPass());
 
     }
