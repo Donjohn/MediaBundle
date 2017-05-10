@@ -181,9 +181,8 @@ class FileProvider extends BaseProvider {
         ), $headers);
 
 
-        $file = $this->filesystem->get($this->getPath($oMedia), true);
-        return new StreamedResponse(function () use ($file) {
-            echo $file->getContent();
+        return new StreamedResponse(function () use ($oMedia) {
+            readfile($this->getFullPath($oMedia));
         }, 200, $headers);
     }
 
