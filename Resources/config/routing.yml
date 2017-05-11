@@ -24,3 +24,7 @@ donjohn_media_render_form:
     defaults: { _controller: DonjohnMediaBundle:Media:renderFormMedia }
     requirements:
           id: \d+
+
+donjohn_media_render_fine_uploader:
+    path: /media/fine-uploader
+    defaults: { _controller: DonjohnMediaBundle:Media:renderFineUploaderTemplate }
