@@ -181,7 +181,7 @@ bower install fine-uploader --save
 ```
 A bootstrap template is provided, add this line to the javascript section of your layout.
 ```
-<script type="text/template" id="qq-template-gallery">
+<script type="text/template" id="donjohn-media">
 {{ render(controller('DonjohnMediaBundle:Media:renderFineUploaderTemplate'))|raw }}
 </script>
 ```
