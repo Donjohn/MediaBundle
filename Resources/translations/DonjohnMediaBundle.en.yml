@@ -20,3 +20,8 @@ media.oneup.cancel: Cancel
 media.oneup.ok: Ok
 media.gallery.link: MediasBrowser
 media.gallery.select_media: Select a media
+media.oneup.retry: Retry
+media.oneup.edit_filename: Efit filename
+media.oneup.delete: Delete
+media.oneup.pause: Pause
+media.oneup.continue: Continue

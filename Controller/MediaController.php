@@ -89,4 +89,10 @@ class MediaController extends Controller
         return $this->render('@DonjohnMedia/Form/media_form_show.html.twig', ['media' => $media]);
     }
 
+    public function renderFineUploaderTemplateAction()
+    {
+        $response = new Response('', 200, array('Content-Type' => 'text/template'));
+        return $this->render('@DonjohnMedia/Form/fine_uploader_template.html.twig', [], $response);
+    }
+
 }

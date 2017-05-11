@@ -48,3 +48,43 @@
     </script>
     <button onclick="open('{{ path('donjohn_media_gallery', {formId: id, provider: provider}) }}', '{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}', 'scrollbars=1,resizable=0,height=660,width=770'); return false;" class="show-media-gallery" class="btn btn-download">{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}</button>
 {% endblock %}
+
+{% block media_select_widget %}
+    {{ block('media_gallery_widget') }}
+{% endblock %}
+
+{% block media_fine_uploader_widget %}
+    {{ form_widget(form) }}
+
+<div id="fine-uploader-{{ id }}"></div>
+<div id="alert-{{ id }}"></div>
+
+    <script type="text/javascript">
+        window.addEventListener('DOMContentLoaded', function() {
+            var uploader = new qq.FineUploader({
+                element: document.getElementById('fine-uploader-{{ id }}'),
+                request: {
+                    endpoint: "{{ oneup_uploader_endpoint('medias') }}"
+                },
+                template: 'qq-template-gallery',
+                chunking: {
+                    enabled: true,
+                    partSize: 100000000
+                },
+                classes: {
+                    buttonHover: false,
+                    buttonFocus: false,
+                    hide: 'hidden',
+                    success: 'alert-success',
+                    fail: 'alert-danger'
+                },
+                showMessage: function (message) {
+                    $('#alert-{{ id }}').append('<div class="alert alert-error lead">' + message + '</div>');
+                }
+                //TODO: recup les contentType du provider et les balancer dans le js
+            });
+        }, true);
+
+</script>
+
+{% endblock media_fine_uploader_widget %}

@@ -179,6 +179,13 @@ Don't forget to install the front part and include the css/js in your layout.
 ```
 bower install fine-uploader --save 
 ```
+A bootstrap template is provided, add this line to the javascript section of your layout.
+```
+<script type="text/template" id="qq-template-gallery">
+{{ render(controller('DonjohnMediaBundle:Media:renderFineUploaderTemplate'))|raw }}
+</script>
+```
+
 Add the OneupUploaderBundle to your AppKernel.php
 ```PHP
     new Oneup\UploaderBundle\OneupUploaderBundle(),

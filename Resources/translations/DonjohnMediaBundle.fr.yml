@@ -20,3 +20,8 @@ media.oneup.cancel: Annuler
 media.oneup.ok: Valider
 media.gallery.link: Médiathèque
 media.gallery.select_media: Selectionnez un média
+media.oneup.retry: Relancer
+media.oneup.edit_filename: Editer le nom
+media.oneup.delete: Supprimer
+media.oneup.pause: Pause
+media.oneup.continue: Continuer
