@@ -9,7 +9,6 @@ namespace Donjohn\MediaBundle\Controller;
 
 
 use Donjohn\MediaBundle\Form\Type\MediaType;
-use Donjohn\MediaBundle\Model\Media;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -91,8 +90,7 @@ class MediaController extends Controller
 
     public function renderFineUploaderTemplateAction()
     {
-        $response = new Response('', 200, array('Content-Type' => 'text/template'));
-        return $this->render($this->getParameter('donjohn.media.fine_uploader.template'), [], $response);
+        return $this->render($this->getParameter('donjohn.media.fine_uploader.template'));
     }
 
 }
