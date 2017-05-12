@@ -10,6 +10,6 @@ services:
 
     donjohn.media.fine_uploader.type:
         class: "%donjohn.media.fine_uploader.type.class%"
-        arguments: ["%donjohn.media.entity%", "@oneup_uploader.orphanage.medias"]
+        arguments: ["%donjohn.media.entity%", "@oneup_uploader.orphanage.medias", "%donjohn.media.file_max_size%"]
         tags:
             - { name: form.type }

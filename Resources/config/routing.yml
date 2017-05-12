@@ -25,6 +25,10 @@ donjohn_media_render_form:
     requirements:
           id: \d+
 
-donjohn_media_render_fine_uploader:
-    path: /media/fine-uploader
-    defaults: { _controller: DonjohnMediaBundle:Media:renderFineUploaderTemplate }
+donjohn_media_cancel_fine_uploader:
+    path: /media/fine-uploader/cancel/{id}
+    defaults: { _controller: DonjohnMediaBundle:Media:cancelFineUploader, id: null }
+    methods:
+        - 'DELETE'
+
+

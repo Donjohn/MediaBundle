@@ -15,6 +15,8 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -29,12 +31,15 @@ class MediaFineUploaderType extends AbstractType
      */
     protected $classMedia;
 
+    protected $fileMaxSize;
 
 
-    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage)
+
+    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage, $fileMaxSize)
     {
         $this->classMedia = $classMedia;
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
+        $this->fileMaxSize = $fileMaxSize;
     }
 
     public function getParent()
@@ -98,6 +103,31 @@ class MediaFineUploaderType extends AbstractType
                 }
             );
 
+    }
+
+    protected function getFileMaxSizeBytes()
+    {
+        $number=substr($this->fileMaxSize,0,-1);
+        switch(strtoupper(substr($this->fileMaxSize,-1))){
+            case "K":
+                return $number*1024;
+            case "M":
+                return $number*pow(1024,2);
+            case "G":
+                return $number*pow(1024,3);
+            case "T":
+                return $number*pow(1024,4);
+            case "P":
+                return $number*pow(1024,5);
+            default:
+//                        return $number;
+                return $this->fileMaxSize;
+        }
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['fileMaxSize'] = $this->getFileMaxSizeBytes();
     }
 
 }

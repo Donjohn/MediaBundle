@@ -6,6 +6,7 @@
 
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function() {
+
             var uploader = new qq.FineUploader({
                 element: document.getElementById('fine-uploader-{{ id }}'),
                 request: {
@@ -14,7 +15,16 @@
                 template: 'donjohn-media',
                 chunking: {
                     enabled: true,
-                    partSize: 100000000
+                    partSize: {{ form.vars.fileMaxSize }}
+                },
+                deleteFile: {
+                    enabled: true,
+                    endpoint: "{{ path('donjohn_media_cancel_fine_uploader') }}"
+                },
+                callbacks: {
+                    onSubmitDelete: function(id) {
+                        this.setDeleteFileParams({filename: this.getName(id)}, id);
+                    }
                 },
                 classes: {
                     buttonHover: false,

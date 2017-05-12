@@ -79,8 +79,19 @@ liip_imagine:
             quality: 75
             filters:
                 auto_rotate: ~
-                thumbnail: { size: [120, 120], mode: outbound }                
-
+                thumbnail: { size: [120, 120], mode: outbound }
+                
+oneup_uploader:
+    orphanage:
+        maxage: 86400
+    mappings:
+        medias:
+            namer:  donjohn.oneup_uploader.namer.original
+            use_orphanage: true
+            frontend: fineuploader # or any uploader you use in the frontend
+            storage:
+                type: gaufrette
+                filesystem: donjohn.media.local.filesystem
 ```
 
 See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
@@ -167,10 +178,6 @@ $builder->add(<fieldName>, MediaFineUploaderType::class );
 Don't forget to install the front part and include the css/js in your layout.
 ```
 bower install fine-uploader --save 
-
-'components/fine-uploader/dist/fine-uploader.min.js'
-
-'components/fine-uploader/dist/fine-uploader-gallery.min.css'
 ```
 A bootstrap template is provided, add this line to the javascript section of your layout.
 ```

@@ -25,3 +25,4 @@ media.oneup.edit_filename: Editer le nom
 media.oneup.delete: Supprimer
 media.oneup.pause: Pause
 media.oneup.continue: Continuer
+donjohn.oneup.error.delete: Impossible de supprimer le fichier %filename%
