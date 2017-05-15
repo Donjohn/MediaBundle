@@ -12,6 +12,9 @@
                 request: {
                     endpoint: "{{ oneup_uploader_endpoint('medias') }}"
                 },
+                session: {
+                    endpoint: "{{ path('donjohn_media_init_fine_uploader') }}"
+                },
                 template: 'donjohn-media',
                 chunking: {
                     enabled: true,

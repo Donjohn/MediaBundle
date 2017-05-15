@@ -31,4 +31,10 @@ donjohn_media_cancel_fine_uploader:
     methods:
         - 'DELETE'
 
+donjohn_media_init_fine_uploader:
+    path: /media/fine-uploader/init
+    defaults: { _controller: DonjohnMediaBundle:Media:initFineUploader }
+    methods:
+        - 'GET'
+
 

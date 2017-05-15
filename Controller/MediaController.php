@@ -101,7 +101,7 @@ class MediaController extends Controller
     {
         $response = new JsonResponse([]);
         $response->headers->set('Vary', 'Accept');
-        $response->setData(['succes' => true]);
+        $response->setData(['success' => true]);
 
         foreach ($this->get('oneup_uploader.orphanage.medias')->getFiles() as $file)
         {
@@ -116,6 +116,24 @@ class MediaController extends Controller
             }
         }
 
+        return $response;
+    }
+
+    public function initFineUploaderAction(Request $request)
+    {
+        $data=[];
+        $response = new JsonResponse([]);
+        $response->headers->set('Vary', 'Accept');
+
+
+        $uploadedFiles = $this->get('oneup_uploader.orphanage.medias')->getFiles();
+
+
+        /** @var \SplFileInfo $file */
+        foreach ($uploadedFiles as $file)  {
+            $data[]=['name' => $file->getBasename(), 'uuid' => uniqid(), 'size' => $file->getSize()];
+        }
+        $response->setData($data);
         return $response;
     }
 
