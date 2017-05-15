@@ -203,7 +203,8 @@ oneup_uploader:
         medias:
             namer:  donjohn.oneup_uploader.namer.original
             use_orphanage: true
-            frontend: fineuploader
+            frontend: fineuploader            
+            enable_cancelation: true
 ```
 
 ### Api

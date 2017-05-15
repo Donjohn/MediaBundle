@@ -26,11 +26,18 @@
                         this.setDeleteFileParams({filename: this.getName(id)}, id);
                     }
                 },
+                thumbnails: {
+                    placeholders: {
+                        notAvailablePath: '{{ asset('bundles/donjohnmedia/images/iconmonstr-file-20-72.png') }}',
+                        waitingPath: '{{ asset('bundles/donjohnmedia/images/iconmonstr-file-20-72.png') }}',
+                        waitUntilResponse: true
+                    }
+                },
                 classes: {
                     buttonHover: false,
                     buttonFocus: false,
                     hide: 'hidden',
-                    success: 'alert-success',
+//                    success: 'alert-success',
                     fail: 'alert-danger'
                 },
                 showMessage: function (message) {
