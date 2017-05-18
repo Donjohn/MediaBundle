@@ -1,1 +1,2 @@
 media.error.transform: Ce média est invalide.
+media.error.binary_content.empty: Le contenu ne peut pas être vide à la création

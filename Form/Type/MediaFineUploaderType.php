@@ -120,7 +120,6 @@ class MediaFineUploaderType extends AbstractType
             case "P":
                 return $number*pow(1024,5);
             default:
-//                        return $number;
                 return $this->fileMaxSize;
         }
     }

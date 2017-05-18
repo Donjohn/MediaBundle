@@ -101,7 +101,7 @@ class Media
     protected $md5;
 
     /**
-     * @Assert\IsTrue(message="binaryContent can't be empty or null on creation")
+     * @Assert\IsTrue(message="media.error.binary_content.empty")
      */
     public function isBinaryContentOnCreation()
     {
