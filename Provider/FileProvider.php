@@ -89,8 +89,11 @@ class FileProvider extends BaseProvider {
 
         if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
             $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
-        else
-            $oMedia->setMd5(shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath())));
+        else {
+            $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
+            $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+        }
+
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
         $this->extractMetaData($oMedia);
