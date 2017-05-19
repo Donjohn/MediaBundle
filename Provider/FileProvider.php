@@ -87,7 +87,10 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+        if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+        else
+            $oMedia->setMd5(shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath())));
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
         $this->extractMetaData($oMedia);

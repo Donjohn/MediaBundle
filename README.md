@@ -206,6 +206,11 @@ oneup_uploader:
             frontend: fineuploader            
             enable_cancelation: true
 ```
+Restrict uploaded chunk size
+```
+donjohn_media:
+    chunk_size: 50M
+```
 
 ### Api
 This bundle is compatible with DunglasApiBundle and NelmioApiDocBundle. No config is needed.

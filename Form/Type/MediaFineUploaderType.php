@@ -31,15 +31,15 @@ class MediaFineUploaderType extends AbstractType
      */
     protected $classMedia;
 
-    protected $fileMaxSize;
+    protected $chunkSize;
 
 
 
-    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage, $fileMaxSize)
+    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage, $chunkSize)
     {
         $this->classMedia = $classMedia;
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
-        $this->fileMaxSize = $fileMaxSize;
+        $this->chunkSize = $chunkSize;
     }
 
     public function getParent()
@@ -105,10 +105,10 @@ class MediaFineUploaderType extends AbstractType
 
     }
 
-    protected function getFileMaxSizeBytes()
+    protected function getChunkMaxSizeBytes()
     {
-        $number=substr($this->fileMaxSize,0,-1);
-        switch(strtoupper(substr($this->fileMaxSize,-1))){
+        $number=substr($this->chunkSize,0,-1);
+        switch(strtoupper(substr($this->chunkSize,-1))){
             case "K":
                 return $number*1024;
             case "M":
@@ -120,13 +120,13 @@ class MediaFineUploaderType extends AbstractType
             case "P":
                 return $number*pow(1024,5);
             default:
-                return $this->fileMaxSize;
+                return $this->chunkSize;
         }
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['fileMaxSize'] = $this->getFileMaxSizeBytes();
+        $view->vars['chunkSize'] = $this->getChunkMaxSizeBytes();
     }
 
 }

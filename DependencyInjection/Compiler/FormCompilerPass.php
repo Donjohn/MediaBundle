@@ -25,7 +25,7 @@ class FormCompilerPass implements CompilerPassInterface
         $resources = $container->getParameter('twig.form.resources');
 
         $resources[] = 'DonjohnMediaBundle:Form:media_widget.html.twig';
-        if ($this->oneupUploaderBundle) $resources[] = 'DonjohnMediaBundle:Form:media_widget_oneup.html.twig';
+        if ($this->oneupUploaderBundle) $resources[] = 'DonjohnMediaBundle:Form:media_fine_uploader_widget.html.twig';
 
         $container->setParameter('twig.form.resources', $resources);
     }
