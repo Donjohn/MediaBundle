@@ -31,6 +31,7 @@ class MediaFineUploaderType extends AbstractType
      */
     protected $classMedia;
 
+    /** @var string */
     protected $chunkSize;
 
 

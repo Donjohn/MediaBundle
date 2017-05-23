@@ -8,15 +8,10 @@
     <div class="btn btn-primary qq-upload-button-selector">
         {{ 'media.oneup.upload.file'|trans({},'DonjohnMediaBundle') }}
     </div>
-    {#<span class="qq-drop-processing-selector qq-drop-processing">#}
-        {#<span>{{ 'media.oneup.processing.files'|trans({},'DonjohnMediaBundle') }}</span>#}
-        {#<span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>#}
-    {#</span>#}
 
     <div class="qq-upload-list-selector row" role="region" aria-live="polite" aria-relevant="additions removals">
         <div class="col-lg-3 col-xs-6 col-md-3" style="overflow: hidden">
             <div  style="margin-top: 15px; min-height: 230px; max-height: 230px; background-color: rgb(255, 255, 255); border: 1px solid rgb(221, 221, 221); border-radius: 4px; display: block; line-height: 1.42857; margin-bottom: 20px; transition: border 0.2s ease-in-out 0s; overflow: hidden; padding:15px">
-                {#<span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>#}
                 <img class="img-thumbnail qq-thumbnail-selector" qq-max-size="100" qq-server-scale style="top: 0; transform: none;-moz-transform: none; ms-transform: none;-webkit-transform: none; max-height: 100px; min-height: 100px">
 
 
@@ -24,9 +19,8 @@
                     <div class="qq-file-name">
                         <span class="qq-upload-file-selector qq-upload-file text-nowrap"></span>
                         <span class="qq-upload-size-selector qq-upload-size text-nowrap btn-block"></span>
-                        {#<span class="qq-edit-filename-icon-selector qq-btn qq-edit-filename-icon" aria-label="{{ 'media.oneup.edit_filename'|trans({},'DonjohnMediaBundle') }}"></span>#}
                     </div>
-                    {#<input class="qq-edit-filename-selector qq-edit-filename" tabindex="0" type="text">#}
+
                     <div class="text-center">
                         <img class="qq-upload-spinner-selector btn btn-default btn-xs" src="{{ asset('bundles/donjohnmedia/images/loading.gif') }}">
                         <button type="button" class="btn btn-default qq-upload-pause-selector btn-xs">

@@ -6,7 +6,9 @@
 
     <script type="text/javascript">
         window.addEventListener('DOMContentLoaded', function() {
-
+            qq.uiPrivateApi._isEditFilenameEnabled = function(){
+                return this._templating.isEditFilenamePossible() && qq.FilenameClickHandler && qq.FilenameInputFocusHandler && qq.FilenameInputFocusHandler;
+            };
             var uploader = new qq.FineUploader({
                 element: document.getElementById('fine-uploader-{{ id }}'),
                 request: {
