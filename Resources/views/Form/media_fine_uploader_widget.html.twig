@@ -45,6 +45,7 @@
 //                    success: 'alert-success',
                     fail: 'alert-danger'
                 },
+                multiple: {% if form.vars.multiple|default(false) %}true{% else %}false{% endif %}
                 {#showMessage: function (message) {#}
                     {#$('#alert-{{ id }}').append('<div class="alert alert-error lead">' + message + '</div>');#}
                 {#}#}

@@ -63,6 +63,7 @@ class MediaFineUploaderType extends AbstractType
                 'entry_options' => array(),
                 'prototype' => false,
                 'required' => true,
+                'multiple' => true,
                 ));
 
         $entryOptionsNormalizer = function (Options $options, $value) {
@@ -128,6 +129,7 @@ class MediaFineUploaderType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['chunkSize'] = $this->getChunkMaxSizeBytes();
+        $view->vars['multiple'] = $options['multiple'];
     }
 
 }
