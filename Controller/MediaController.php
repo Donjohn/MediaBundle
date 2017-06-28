@@ -9,13 +9,11 @@ namespace Donjohn\MediaBundle\Controller;
 
 
 use Donjohn\MediaBundle\Form\Type\MediaType;
+use Donjohn\MediaBundle\Model\Media;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Filesystem\Exception\IOException;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -24,12 +22,21 @@ class MediaController extends Controller
 
     public function downloadAction(Request $request, $id)
     {
+        /** @var Media $media */
         if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))
-            throw new NotFoundHttpException('media '.$this->getParameter('donjohn.media.entity').' '.$id.' cannot be found');
+            throw new NotFoundHttpException('media '.$id.' cannot be found');
 
         return $this->get('donjohn.media.provider.factory')->getProvider($media)->getDownloadResponse($media);
     }
 
+    /**
+     * @param Request $request
+     * @param string $provider
+     * @param int $formId
+     * @param int $page
+     * @param int $maxperpage
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function galleryAction(Request $request, $provider, $formId, $page = 1, $maxperpage = 15)
     {
         $classMedia = $this->getParameter('donjohn.media.entity');
@@ -54,7 +61,7 @@ class MediaController extends Controller
         }
 
         $adapter = new DoctrineORMAdapter(
-            $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))
+            $this->get('doctrine.orm.default_entity_manager')->getRepository($classMedia)
                 ->createQueryBuilder("media")
                 ->andWhere('media.providerName = :providerName')
                 ->setParameter('providerName', $provider)
@@ -76,13 +83,11 @@ class MediaController extends Controller
 
     }
 
-//    public function deleteAction(Request $request, Media $media)
-//    {
-//        $this->get('doctrine.orm.default_entity_manager')->remove($media);
-//
-//        return $this->galleryAction($request, );
-//    }
 
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function renderFormMediaAction(Request $request)
     {
         if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($request->query->get('id')))
@@ -91,50 +96,6 @@ class MediaController extends Controller
         return $this->render('@DonjohnMedia/Form/media_form_show.html.twig', ['media' => $media]);
     }
 
-    public function renderFineUploaderTemplateAction()
-    {
-        return $this->render($this->getParameter('donjohn.media.fine_uploader.template'));
-    }
 
-
-    public function cancelFineUploaderAction(Request $request)
-    {
-        $response = new JsonResponse([]);
-        $response->headers->set('Vary', 'Accept');
-        $response->setData(['success' => true]);
-
-        foreach ($this->get('oneup_uploader.orphanage.medias')->getFiles() as $file)
-        {
-            $fs = new Filesystem();
-            try {
-                $fs->remove($file->getRealPath());
-                return $response;
-            } catch (IOException $e) {
-                $response->setData(['error' => $this->get('translator')->trans('donjohn.oneup.error.delete', ['%filename%' => $request->query->get('filename')]. ' - '. $e->getMessage(), 'DonjohnMediaBundle')]);
-                $response->setStatusCode(500);
-                exit;
-            }
-        }
-
-        return $response;
-    }
-
-    public function initFineUploaderAction(Request $request)
-    {
-        $data=[];
-        $response = new JsonResponse([]);
-        $response->headers->set('Vary', 'Accept');
-
-
-        $uploadedFiles = $this->get('oneup_uploader.orphanage.medias')->getFiles();
-
-
-        /** @var \SplFileInfo $file */
-        foreach ($uploadedFiles as $file)  {
-            $data[]=['name' => $file->getBasename(), 'uuid' => uniqid(), 'size' => $file->getSize()];
-        }
-        $response->setData($data);
-        return $response;
-    }
 
 }

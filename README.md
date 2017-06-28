@@ -80,18 +80,6 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
-                
-oneup_uploader:
-    orphanage:
-        maxage: 86400
-    mappings:
-        medias:
-            namer:  donjohn.oneup_uploader.namer.original
-            use_orphanage: true
-            frontend: fineuploader # or any uploader you use in the frontend
-            storage:
-                type: gaufrette
-                filesystem: donjohn.media.local.filesystem
 ```
 
 See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
@@ -132,7 +120,7 @@ Available providers :
 
 
 ### Usage
-To insert a media in the twig, use the block with an optionnal filter name, defined in the liip_imagine.filter_sets section.
+To insert a media in the twig, use the block with an optional filter name, defined in the liip_imagine.filter_sets section.
 If you don't provider a filter name, 'reference' filter is default. it will return the original media uploaded with any filter or post processing.
 ```
 {% media mediaObject, '<filter>' %}
@@ -175,14 +163,19 @@ For very large files, the bundle includes the Fine Uploader feature thanks to On
 ```
 $builder->add(<fieldName>, MediaFineUploaderType::class );
 ```
-Don't forget to install the front part and include the css/js in your layout.
+Don't forget to install the front part 
 ```
 bower install fine-uploader --save 
 ```
-A bootstrap template is provided, add this line to the javascript section of your layout.
+include the css/js in your layout (fix path if needed).
+```twig
+<link href="{{ asset('components/fine-uploader/dist/fine-uploader-gallery.css') }}" rel="stylesheet">
+<script type="text/javascript" src="{{ asset('components/fine-uploader/dist/fine-uploader.min.js') }}"></script>
+```
+A bootstrap template is provided (or use the default one, see to the official documentation), add this line to the javascript section of your layout.
 ```
 <script type="text/template" id="donjohn-media">
-{{ render(controller('DonjohnMediaBundle:Media:renderFineUploaderTemplate'))|raw }}
+{{ render(controller('DonjohnMediaBundle:FineUploader:renderFineUploaderTemplate'))|raw }}
 </script>
 ```
 
@@ -206,10 +199,10 @@ oneup_uploader:
             frontend: fineuploader            
             enable_cancelation: true
 ```
-Restrict uploaded chunk size
+You can change the uploaded chunk size
 ```
 donjohn_media:
-    chunk_size: 50M
+    chunk_size: 50M #default
 ```
 
 ### Api

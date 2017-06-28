@@ -9,7 +9,7 @@
             qq.uiPrivateApi._isEditFilenameEnabled = function(){
                 return this._templating.isEditFilenamePossible() && qq.FilenameClickHandler && qq.FilenameInputFocusHandler && qq.FilenameInputFocusHandler;
             };
-            var uploader = new qq.FineUploader({
+            var uploader{{ id }} = new qq.FineUploader({
                 element: document.getElementById('fine-uploader-{{ id }}'),
                 request: {
                     endpoint: "{{ oneup_uploader_endpoint('medias') }}"

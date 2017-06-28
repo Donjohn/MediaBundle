@@ -151,7 +151,7 @@ $(function () {
             files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             if(files.length) {
                 $(files).each(function(){
-                    if (this.name!='') {
+                    if (this.name!=='') {
                         var formGroup = createOrGetFormGroup($(_this).closest('[data-mediazone="on"]'));
                         switchInputFileToInputText(formGroup);
                         processFile(this, formGroup);

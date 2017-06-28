@@ -12,13 +12,6 @@ donjohn_media_gallery:
           id: \d+
           page: \d+
 
-#donjohn_media_delete:
-#    path: /media/delete/{id}
-#    defaults: { _controller: DonjohnMediaBundle:Media:delete}
-#    requirements:
-#          id: \d+
-#          id_image: \d+
-
 donjohn_media_render_form:
     path: /media/render
     defaults: { _controller: DonjohnMediaBundle:Media:renderFormMedia }
@@ -27,13 +20,13 @@ donjohn_media_render_form:
 
 donjohn_media_cancel_fine_uploader:
     path: /media/fine-uploader/cancel/{id}
-    defaults: { _controller: DonjohnMediaBundle:Media:cancelFineUploader, id: null }
+    defaults: { _controller: DonjohnMediaBundle:FineUploader:cancelFineUploader, id: null }
     methods:
         - 'DELETE'
 
 donjohn_media_init_fine_uploader:
     path: /media/fine-uploader/init
-    defaults: { _controller: DonjohnMediaBundle:Media:initFineUploader }
+    defaults: { _controller: DonjohnMediaBundle:FineUploader:initFineUploader }
     methods:
         - 'GET'
 
