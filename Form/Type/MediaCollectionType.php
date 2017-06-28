@@ -45,7 +45,8 @@ class MediaCollectionType extends AbstractType
                         {
                             if (!isset($media['binaryContent'])) continue;
                             if (is_array($media['binaryContent'])) {
-                                for ($i=0; $i<count($media['binaryContent']); $i++) {
+                                $totalBinary = count($media['binaryContent']);
+                                for ($i=0; $i<$totalBinary; $i++) {
                                     if (!empty($media['binaryContent'][$i])) {
                                         $cloneMedia = $media;
                                         $cloneMedia['binaryContent'] = $media['binaryContent'][$i];

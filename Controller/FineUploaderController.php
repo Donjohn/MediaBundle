@@ -46,11 +46,9 @@ class FineUploaderController extends Controller
             $fs = new Filesystem();
             try {
                 $fs->remove([$file->getRealPath()]);
-                return $response;
             } catch (IOException $e) {
                 $response->setData(['error' => $this->get('translator')->trans('donjohn.oneup.error.delete', ['%filename%' => $request->query->get('filename')]. ' - '. $e->getMessage(), 'DonjohnMediaBundle')]);
                 $response->setStatusCode(500);
-                exit;
             }
         }
 
