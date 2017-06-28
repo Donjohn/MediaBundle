@@ -72,7 +72,7 @@ donjohn_media:
     entity: YourBundle\Entity\YourMedia
 
 liip_imagine:
-    filter_sets: #example set, define yours
+    filter_sets:
         full: 
             quality: 100
         thumbnail:
@@ -80,6 +80,7 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
+         #add yours
 ```
 
 See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
@@ -167,7 +168,7 @@ Don't forget to install the front part
 ```
 bower install fine-uploader --save 
 ```
-include the css/js in your layout (fix path if needed).
+include the css/js in your layout (fix path if needed). 
 ```twig
 <link href="{{ asset('components/fine-uploader/dist/fine-uploader-gallery.css') }}" rel="stylesheet">
 <script type="text/javascript" src="{{ asset('components/fine-uploader/dist/fine-uploader.min.js') }}"></script>
@@ -256,3 +257,7 @@ The bundle is jquery dependant, you must add it before the media.js provided
 <script src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
 ```
 In case you don't want the awesome javascript feature, set the "mediazone" option to false in either MediaType or MediaCollectionType. You will fall back to raw file inputs
+
+
+### Bootstrap
+The bundle is bootstrap dependant, you must add it in your layout
