@@ -46,22 +46,9 @@ abstract class BaseProvider implements ProviderInterface {
     }
 
     /**
-     * @param string $alias
-     * @return $this
-     */
-    final public function setAlias($alias)
-    {
-        $this->alias = $alias;
-        return $this;
-    }
-
-    /**
      * @return string
      */
-    final public function getAlias()
-    {
-        return $this->alias;
-    }
+    abstract public function getAlias();
 
     /**
      * @inheritdoc

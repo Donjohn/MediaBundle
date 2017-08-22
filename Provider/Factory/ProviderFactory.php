@@ -22,9 +22,8 @@ class ProviderFactory {
      * @param ProviderInterface $provider
      * @param string $alias
      */
-    public function addProvider(ProviderInterface $provider, $alias) {
-        $provider->setAlias($alias);
-        $this->providers[$alias] = $provider;
+    public function addProvider(ProviderInterface $provider) {
+        $this->providers[$provider->getAlias()] = $provider;
     }
 
     /**

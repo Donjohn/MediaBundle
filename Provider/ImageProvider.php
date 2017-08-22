@@ -25,11 +25,26 @@ class ImageProvider extends FileProvider  {
      */
     protected $filterConfiguration;
 
+    /**
+     * @return string alias
+     */
+    public function getAlias()
+    {
+        return 'image';
+    }
+
+    /**
+     * @param CacheManager $cacheManager
+     * @required
+     */
     public function setCacheManager(CacheManager $cacheManager)
     {
         $this->cacheManager = $cacheManager;
     }
 
+    /**
+     * @required
+     */
     public function setFilterConfiguration(FilterConfiguration $filterConfiguration)
     {
         $this->filterConfiguration = $filterConfiguration;

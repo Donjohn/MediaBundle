@@ -39,6 +39,15 @@ class FileProvider extends BaseProvider {
 
     }
 
+    /**
+     * @return string alias
+     */
+    public function getAlias()
+    {
+        return 'file';
+    }
+
+
     public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
         $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
         return parent::render($twig, $media, $options);

@@ -1,0 +1,28 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Donjohn\MediaBundle\:
+        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
+        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Entity,Repository,Controller,Model,DependencyInjection}'
+
+    Donjohn\MediaBundle\Provider\:
+        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Provider/*'
+        tags:
+            - { name: media.provider }
+
+    Donjohn\MediaBundle\Form\Type\:
+        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/*'
+        arguments:
+            $classMedia: "%donjohn.media.entity%"
+
+    Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
+        arguments:
+            $classMedia: "%donjohn.media.entity%"
+            $chunkSize: "%donjohn.media.chunk_size%"
+
+    Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
+        arguments:
+            $webFolder: "%assetic.write_to%"

@@ -45,7 +45,7 @@ class Configuration implements ConfigurationInterface
                        ->children()
                             ->scalarNode('template')->end()
                         ->end()
-                    ->end()
+                    ->end()->defaultValue(['file' => ['template' => 'DonjohnMediaBundle:Provider:media.file.html.twig'], 'image' => ['template' => 'DonjohnMediaBundle:Provider:media.image.html.twig'] ])
                 ->end()
                 ->scalarNode('upload_folder')->isRequired()->cannotBeEmpty()->end()
             ->end();

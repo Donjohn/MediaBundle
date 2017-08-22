@@ -9,7 +9,9 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
+use Doctrine\ORM\EntityManager;
 use Donjohn\MediaBundle\Form\Transformer\MediaIdTransformer;
+use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,7 +21,9 @@ use Symfony\Component\Form\FormView;
 
 class MediaGalleryType extends AbstractType
 {
-
+    /**
+     * @var EntityManager
+     */
     protected $em;
 
     /**
@@ -27,7 +31,7 @@ class MediaGalleryType extends AbstractType
      */
     protected $classMedia;
 
-    public function __construct($em, $classMedia)
+    public function __construct(EntityManager $em, $classMedia)
     {
         $this->em = $em;
         $this->classMedia = $classMedia;
@@ -58,7 +62,9 @@ class MediaGalleryType extends AbstractType
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $vars = $view->vars;
-        if ($vars['value']) $vars['value'] = $vars['data']->getId();
+        /** @var Media $media */
+        $media = $vars['data'];
+        if ($vars['value']) $vars['value'] = $media->getId();
         $vars['provider'] = $options['provider'];
         $view->vars = $vars;
     }

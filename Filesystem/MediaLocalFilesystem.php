@@ -13,6 +13,9 @@ use Gaufrette\Filesystem;
 
 class MediaLocalFilesystem extends Filesystem
 {
+    /**
+     * @var string
+     */
     protected $webFolder;
 
 

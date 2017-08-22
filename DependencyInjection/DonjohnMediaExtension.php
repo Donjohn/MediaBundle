@@ -25,13 +25,14 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $config = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('donjohn.media.upload_folder', $config['upload_folder']);
 
-        $bundles = $container->getParameter('kernel.bundles');
+//        $bundles = $container->getParameter('kernel.bundles');
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('provider.yml');
-        $loader->load('doctrine.yml');
-        $loader->load('form.yml');
-        $loader->load('twig.yml');
+        $loader->load('services.yml');
+//        $loader->load('provider.yml');
+//        $loader->load('doctrine.yml');
+//        $loader->load('form.yml');
+//        $loader->load('twig.yml');
 
         //on sauve la liste des entites media
         $container->setParameter('donjohn.media.entity', $config['entity']);
@@ -41,22 +42,11 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         if (isset($config['providers']) && count($config['providers'])){
             foreach ($config['providers'] as $providerAlias => $configProvider) {
                 $container->setParameter('donjohn.media.provider.'.$providerAlias.'.template', $configProvider['template']);
+
             }
-
         }
 
-
-        //delcaration des services api pour toutes les entites dans la conf
-        if (isset($bundles['DunglasApiBundle'])){
-            $container->setDefinition(sprintf('donjohn.media.api.resource.%s', $config['entity']), $this->createApiService($config['entity'], $config['api']));
-            $container->setDefinition(sprintf('donjohn.media.api.listener.%s', $config['entity']), $this->createApiListenerService($container->getDefinition('donjohn.media.provider.factory')));
-        }
-
-        //delcaration des services api pour toutes les entites dans la conf
-        if (isset($bundles['OneupUploaderBundle'])){
-            $loader->load('oneup_uploader.yml');
-        }
-
+//        $container->get(ProviderFactory::class);
     }
 
 

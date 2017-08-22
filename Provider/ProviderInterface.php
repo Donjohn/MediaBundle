@@ -24,11 +24,6 @@ interface ProviderInterface {
     public function getTemplate();
 
     /**
-     * @param string $alias provider alias
-     */
-    public function setAlias($alias);
-
-    /**
      * @return string alias
      */
     public function getAlias();
