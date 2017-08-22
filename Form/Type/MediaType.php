@@ -67,7 +67,7 @@ class MediaType extends AbstractType
 
 
         $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-                            'label' => false,
+                            'label' => $options['mediazone'] ? false : $options['label'],
                             'error_bubbling' => true,
                             'multiple' => $options['multiple'] ? 'multiple' : false,
                             'required' => $options['required'],
