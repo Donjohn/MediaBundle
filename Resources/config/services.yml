@@ -8,10 +8,28 @@ services:
         resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
         exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Entity,Repository,Controller,Model,DependencyInjection}'
 
-    Donjohn\MediaBundle\Provider\:
-        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Provider/*'
+    Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         tags:
-            - { name: media.provider }
+            - { name: doctrine.event_subscriber }
+
+    _instanceof:
+        Donjohn\MediaBundle\Provider\ProviderInterface:
+            tags:
+                - { name: media.provider }
+
+    Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
+        arguments:
+            $templates: "%donjohn.media.providers.templates%"
+
+    Donjohn\MediaBundle\Provider\FileProvider:
+        arguments:
+            $uploadFolder: "%donjohn.media.upload_folder%"
+            $fileMaxSize: "%donjohn.media.file_max_size%"
+
+    Donjohn\MediaBundle\Provider\ImageProvider:
+        arguments:
+            $uploadFolder: "%donjohn.media.upload_folder%"
+            $fileMaxSize: "%donjohn.media.file_max_size%"
 
     Donjohn\MediaBundle\Form\Type\:
         resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/*'
@@ -26,3 +44,9 @@ services:
     Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
         arguments:
             $webFolder: "%assetic.write_to%"
+
+    Twig_Extensions_Extension_Text:
+       class: Twig_Extensions_Extension_Text
+
+    Twig_Extensions_Extension_Intl:
+        class: Twig_Extensions_Extension_Intl

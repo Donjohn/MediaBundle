@@ -33,6 +33,7 @@ abstract class BaseProvider implements ProviderInterface {
      */
     final public function setTemplate($template)
     {
+        if (empty($template)) throw new \InvalidArgumentException('please provide a template name for '.$this->getAlias().' provider');
         $this->template = $template;
         return $this;
     }

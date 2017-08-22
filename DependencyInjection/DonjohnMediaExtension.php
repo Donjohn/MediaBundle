@@ -25,56 +25,17 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $config = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('donjohn.media.upload_folder', $config['upload_folder']);
 
-//        $bundles = $container->getParameter('kernel.bundles');
-
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
-//        $loader->load('provider.yml');
-//        $loader->load('doctrine.yml');
-//        $loader->load('form.yml');
-//        $loader->load('twig.yml');
 
-        //on sauve la liste des entites media
+        //on init les params
         $container->setParameter('donjohn.media.entity', $config['entity']);
         $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
+        $container->setParameter('donjohn.media.providers.templates', array_map(function($item) {return $item['template'];}, $config['providers']) );
 
-        if (isset($config['providers']) && count($config['providers'])){
-            foreach ($config['providers'] as $providerAlias => $configProvider) {
-                $container->setParameter('donjohn.media.provider.'.$providerAlias.'.template', $configProvider['template']);
-
-            }
-        }
-
-//        $container->get(ProviderFactory::class);
     }
 
-
-    /**
-     * @param $classMedia
-     * @return \Symfony\Component\DependencyInjection\Definition
-     */
-    protected function createApiService($classMedia, $configClassMedia)
-    {
-        $definition = new Definition('Dunglas\ApiBundle\Api\Resource', array($classMedia));
-        $definition
-                ->addMethodCall('initNormalizationContext', array(array('groups' => $configClassMedia['group_output'])))
-                ->addMethodCall('initDenormalizationContext', array(array('groups' => $configClassMedia['group_input'])))
-                ->addTag('api.resource');
-        return $definition;
-    }
-
-    /**
-     * @param $classMedia
-     * @return \Symfony\Component\DependencyInjection\Definition
-     */
-    protected function createApiListenerService($providerFactoryClass)
-    {
-        $definition = new Definition('Donjohn\MediaBundle\Listener\ApiListener', array($providerFactoryClass));
-        $definition->addTag('kernel.event_listener', array('event' => 'api.pre_create', 'method' => 'onPreCreate'));
-        $definition->addTag('kernel.event_listener', array('event' => 'api.post_create', 'method' => 'onPostCreate'));
-        return $definition;
-    }
 
     public function prepend(ContainerBuilder $container)
     {

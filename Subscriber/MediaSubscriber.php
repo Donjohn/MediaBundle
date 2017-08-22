@@ -1,5 +1,5 @@
 <?php
-namespace Donjohn\MediaBundle\Listener;
+namespace Donjohn\MediaBundle\Subscriber;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;

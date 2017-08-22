@@ -13,9 +13,19 @@ use RuntimeException;
  */
 class ProviderFactory {
 
+    /**
+     * @var array $providers
+     */
     protected $providers = array();
-    protected $filesystemMap;
-    protected $filesystem;
+    /**
+     * @var  array $templates
+     */
+    protected $templates=array();
+
+    public function __construct(array $templates)
+    {
+        $this->templates = $templates;
+    }
 
     /**
      * 
@@ -24,6 +34,8 @@ class ProviderFactory {
      */
     public function addProvider(ProviderInterface $provider) {
         $this->providers[$provider->getAlias()] = $provider;
+
+        $provider->setTemplate($this->getTemplate($provider->getAlias()));
     }
 
     /**
@@ -41,6 +53,13 @@ class ProviderFactory {
         }
 
         throw new NotFoundProviderException('no provider defined for media ' . $alias);
+    }
+
+
+    private function getTemplate($providerAlias){
+
+        return isset($this->templates[$providerAlias]) ? $this->templates[$providerAlias] : false;
+
     }
 
 }

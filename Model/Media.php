@@ -21,9 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Media
 {
-    /**
-    * @Groups({"api_output"})
-    */
     protected $id;
 
     use ORMBehaviors\Timestampable\Timestampable;
@@ -31,20 +28,17 @@ class Media
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"api_output","api_input"})
      */
     protected $name;
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
-     * @Groups({"api_output","api_input"})
      */
     protected $providerName;
     
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"api_output"})
      */
     protected $filename;
 
@@ -55,20 +49,17 @@ class Media
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"api_output","api_input"})
      */
     protected $originalFilename;
 
     /**
      * @var array collection of paths
-     * @Groups({"api_output"})
      */
     protected $paths=array();
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
-     * @Groups({"api_output"})
      */
     protected $mimeType;
 
@@ -77,26 +68,22 @@ class Media
     /**
      * @var string
      * @ORM\Column(type="text", nullable=true)
-     * @Groups({"api_output","api_input"})
      */
     protected $description;
 
     /**
      * @var array
      * @ORM\Column(type="json_array", nullable=true)
-     * @Groups({"api_output"})
      */
     protected $metadata=array();
 
     /**
      * @var string|File|UploadedFile
-     * @Groups({"api_input"})
      */
     protected $binaryContent;
 
     /**
      * @ORM\Column(type="string", nullable=true)
-     * @Groups({"api_output"})
      */
     protected $md5;
 

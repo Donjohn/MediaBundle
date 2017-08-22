@@ -34,7 +34,7 @@
             <div class="row">
             {% for media in medias %}
                 <div class=" col-xs-4">
-                    <div class="panel panel-default {% if media.id==mediaUploaded.id %}panel-primary{% endif %}" data-id="{{ media.id }}">
+                    <div class="panel panel-default {% if media.id==form.data.id|default(false) %}panel-primary{% endif %}" data-id="{{ media.id }}">
                         <div class="panel-heading">
                             {% media media, 'thumbnail' with {class: 'thumbnail'} %}
                         </div>

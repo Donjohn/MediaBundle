@@ -50,8 +50,7 @@ class YourMedia extends BaseMedia
      * @var integer
      * @ORM\Id
      * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")     
-     * @Groups({"api_output"})
+     * @ORM\GeneratedValue(strategy="IDENTITY")
     */
     protected $id;
 }
@@ -206,49 +205,10 @@ donjohn_media:
     chunk_size: 50M #default
 ```
 
-### Api
-This bundle is compatible with DunglasApiBundle and NelmioApiDocBundle. No config is needed.
-2 api groups are already defined for input and output serialization (api_input and api_output). If you want to change the groups or add new one. Modify the @Groups annotation in your extended class
-
-```
-namespace YourBundle\Entity;
-use Donjohn\MediaBundle\Model\Media as BaseMedia;
-
-/**
- * @ORM\Table()
- * @ORM\Entity()
- */
-class YourMedia extends BaseMedia
-{
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Groups({"new_group_input","another_group_input","new_group_ouput"})
-     */
-    protected $name;
-}
-```
-
-and the in the config.yml, modify the configuration
-
-```
-donjohn_media:
-    ...
-    api:
-        group_input: ['new_group_input', 'another_group_input']
-        group_output: ['new_group_ouput']
-            
-```
 
 ### Custom MediaProvider
-To implement your own provider, use the ProviderInterface or extends the BaseProvider (easier) 
-then defined it as a service with the tag media.provider (beware, the alias must be the same as YourProvider->getAlias())
-
-```
-app.media.your_type.provider:
-        class: YouApp\YourBundle\YourProvider
-        tags:
-            - { name: media.provider, alias: file }
-``` 
+To implement your own provider, use the ProviderInterface or extends the BaseProvider (easier)
+Autowiring does the job...
 
 
 ### Javascript
