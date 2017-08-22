@@ -25,4 +25,4 @@ media.oneup.edit_filename: Edit filename
 media.oneup.delete: Delete
 media.oneup.pause: Pause
 media.oneup.continue: Continue
-donjohn.oneup.error.delete: Unable to delete %filename%
+media.oneup.error.delete: Unable to delete %filename%

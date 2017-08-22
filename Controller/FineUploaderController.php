@@ -8,9 +8,6 @@
 namespace Donjohn\MediaBundle\Controller;
 
 
-use Gaufrette\File;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -47,7 +44,7 @@ class FineUploaderController extends Controller
             try {
                 $fs->remove([$file->getRealPath()]);
             } catch (IOException $e) {
-                $response->setData(['error' => $this->get('translator')->trans('donjohn.oneup.error.delete', ['%filename%' => $request->query->get('filename')]. ' - '. $e->getMessage(), 'DonjohnMediaBundle')]);
+                $response->setData(['error' => $this->get('translator')->trans('media.oneup.error.delete', ['%filename%' => $request->query->get('filename')]. ' - '. $e->getMessage(), 'DonjohnMediaBundle')]);
                 $response->setStatusCode(500);
             }
         }
@@ -56,10 +53,9 @@ class FineUploaderController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return JsonResponse
      */
-    public function initFineUploaderAction(Request $request)
+    public function initFineUploaderAction()
     {
         $data=[];
         $response = new JsonResponse([]);

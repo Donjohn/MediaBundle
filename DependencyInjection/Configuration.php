@@ -29,9 +29,11 @@ class Configuration implements ConfigurationInterface
                        ->children()
                             ->scalarNode('template')->end()
                         ->end()
-                    ->end()->defaultValue(['file' => ['template' => 'DonjohnMediaBundle:Provider:media.file.html.twig'], 'image' => ['template' => 'DonjohnMediaBundle:Provider:media.image.html.twig'] ])
+                    ->end()->defaultValue(['file' => ['template' => 'DonjohnMediaBundle:Provider:media.file.html.twig'],
+                                            'image' => ['template' => 'DonjohnMediaBundle:Provider:media.image.html.twig'] ])
                 ->end()
                 ->scalarNode('upload_folder')->isRequired()->cannotBeEmpty()->end()
+                ->scalarNode('fine_uploader_template')->defaultValue('DonjohnMediaBundle:Form:fine_uploader_template.html.twig')->end()
             ->end();
 
         return $treeBuilder;

@@ -194,15 +194,16 @@ oneup_uploader:
         maxage: 86400
     mappings:
         medias:
-            namer:  donjohn.oneup_uploader.namer.original
+            namer:  Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
             use_orphanage: true
             frontend: fineuploader            
             enable_cancelation: true
 ```
-You can change the uploaded chunk size
+You can change the uploaded chunk size or the template used to render the fineuploader frame
 ```
 donjohn_media:
     chunk_size: 50M #default
+    fine_uploader_template: YourFineUploaderTempalte.twig.html
 ```
 
 

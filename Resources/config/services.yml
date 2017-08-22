@@ -6,7 +6,7 @@ services:
 
     Donjohn\MediaBundle\:
         resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
-        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Entity,Repository,Controller,Model,DependencyInjection}'
+        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Controller,Model,DependencyInjection}'
 
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         tags:
@@ -50,3 +50,6 @@ services:
 
     Twig_Extensions_Extension_Intl:
         class: Twig_Extensions_Extension_Intl
+
+    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+        public: true
