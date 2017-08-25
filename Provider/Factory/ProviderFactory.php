@@ -17,14 +17,17 @@ class ProviderFactory {
      * @var array $providers
      */
     protected $providers = array();
+    /** @var array $allowedTypes */
+    protected $allowedTypes = array();
     /**
      * @var  array $templates
      */
     protected $templates=array();
 
-    public function __construct(array $templates)
+    public function __construct(array $templates, array $allowedTypes)
     {
         $this->templates = $templates;
+        $this->allowedTypes = $allowedTypes;
     }
 
     /**
@@ -36,6 +39,7 @@ class ProviderFactory {
         $this->providers[$provider->getAlias()] = $provider;
 
         $provider->setTemplate($this->getTemplate($provider->getAlias()));
+        $provider->setAllowedTypes($this->getAllowedTypes($provider->getAlias()));
     }
 
     /**
@@ -59,6 +63,11 @@ class ProviderFactory {
     private function getTemplate($providerAlias){
 
         return isset($this->templates[$providerAlias]) ? $this->templates[$providerAlias] : false;
+
+    }
+    private function getAllowedTypes($providerAlias){
+
+        return isset($this->allowedTypes[$providerAlias]) ? $this->allowedTypes[$providerAlias] : false;
 
     }
 

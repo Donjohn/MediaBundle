@@ -9,15 +9,17 @@
 namespace Donjohn\MediaBundle\Form\Transformer;
 
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\DataTransformerInterface;
 
 class MediaIdTransformer implements DataTransformerInterface
 {
+    /** @var EntityManagerInterface $em */
     private $em;
+    /** @var string $classMedia */
     private $classMedia;
 
-    public function __construct(EntityManager $em, $classMedia)
+    public function __construct(EntityManagerInterface $em, $classMedia)
     {
         $this->em = $em;
         $this->classMedia = $classMedia;

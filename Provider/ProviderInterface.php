@@ -27,6 +27,9 @@ interface ProviderInterface {
      * @return string alias
      */
     public function getAlias();
+
+
+    public function setAllowedTypes(array $allowedTypes);
     
     /**
      * validate the mimeType of the file

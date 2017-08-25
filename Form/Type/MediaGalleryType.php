@@ -9,7 +9,7 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Donjohn\MediaBundle\Form\Transformer\MediaIdTransformer;
 use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Form\AbstractType;
@@ -22,7 +22,7 @@ use Symfony\Component\Form\FormView;
 class MediaGalleryType extends AbstractType
 {
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     protected $em;
 
@@ -31,7 +31,7 @@ class MediaGalleryType extends AbstractType
      */
     protected $classMedia;
 
-    public function __construct(EntityManager $em, $classMedia)
+    public function __construct(EntityManagerInterface $em, $classMedia)
     {
         $this->em = $em;
         $this->classMedia = $classMedia;

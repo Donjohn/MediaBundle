@@ -28,9 +28,10 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                        ->children()
                             ->scalarNode('template')->end()
+                            ->scalarNode('allowed_mimetype')->end()
                         ->end()
-                    ->end()->defaultValue(['file' => ['template' => 'DonjohnMediaBundle:Provider:media.file.html.twig'],
-                                            'image' => ['template' => 'DonjohnMediaBundle:Provider:media.image.html.twig'] ])
+                    ->end()->defaultValue(['file' => ['template' => 'DonjohnMediaBundle:Provider:media.file.html.twig', 'allowed_types' => ['[a-z]+/[a-z\-]+']],
+                                            'image' => ['template' => 'DonjohnMediaBundle:Provider:media.image.html.twig', 'allowed_types'=> ['image/bmp', 'image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/tiff', 'image/jpeg', 'image/png']] ])
                 ->end()
                 ->scalarNode('upload_folder')->isRequired()->cannotBeEmpty()->end()
                 ->scalarNode('fine_uploader_template')->defaultValue('DonjohnMediaBundle:Form:fine_uploader_template.html.twig')->end()

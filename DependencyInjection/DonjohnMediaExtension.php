@@ -32,6 +32,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
         $container->setParameter('donjohn.media.providers.templates', array_map(function($item) {return $item['template'];}, $config['providers']) );
+        $container->setParameter('donjohn.media.providers.allowed_types', array_map(function($item) {return $item['allowed_types'];}, $config['providers']) );
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
 
 

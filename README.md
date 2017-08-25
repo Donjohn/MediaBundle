@@ -98,12 +98,13 @@ liip_imagine:
                 cache_prefix: AnotherFolder/cache
 ```
 
-Change media template used by providers
+Change media template used by providers or the allowed types
 ```
 donjohn_media:
     providers:
         image: ##provider alias
             template: YouBundle:View:Twig.html.twig
+            allowed_types: ['image/jpg']
 ```
 
 Restrict uploaded file size
@@ -189,7 +190,7 @@ oneup_uploader:
     chunks:
         maxage: 86400
         storage:
-            directory: %kernel.cache_dir%/uploader/chunks
+            directory: "%kernel.cache_dir%/uploader/chunks"
     orphanage:
         maxage: 86400
     mappings:

@@ -15,7 +15,7 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @var string
      */
-    protected $alias='';
+    protected $alias;
 
     /**
      * @var string
@@ -25,7 +25,7 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @var array
      */
-    public $allowedTypes=array();
+    public $allowedTypes;
 
     /**
      * @param $template
@@ -33,15 +33,26 @@ abstract class BaseProvider implements ProviderInterface {
      */
     final public function setTemplate($template)
     {
-        if (empty($template)) throw new \InvalidArgumentException('please provide a template name for '.$this->getAlias().' provider');
+        if (empty($template)) throw new \InvalidArgumentException('please configure a template name for '.$this->getAlias().' provider');
         $this->template = $template;
+        return $this;
+    }
+
+    /**
+     * @param array $allowedTypes
+     * @return $this
+     */
+    final public function setAllowedTypes(array $allowedTypes)
+    {
+        if (empty($allowedTypes)) throw new \InvalidArgumentException('please configure allowed_types for '.$this->getAlias().' provider');
+        $this->allowedTypes = $allowedTypes;
         return $this;
     }
 
     /**
      * @return string
      */
-   final  public function getTemplate()
+    final public function getTemplate()
     {
         return $this->template;
     }
