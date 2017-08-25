@@ -214,7 +214,14 @@ donjohn_media:
 
 
 ### Custom MediaProvider
-To implement your own provider, extends the BaseProvider and redefine getAlias and add template + allowed_types in config.yml
+To implement your own provider, extends the BaseProvider and redefine getAlias and add configuration in the providers_ext path in config.yml
+```
+donjohn_media:
+    providers_ext:
+        custom: ##provider alias
+            template: YouBundle:View:Twig.html.twig
+            allowed_types: ['application/custom']
+```
 Autowiring should do the job...
 
 

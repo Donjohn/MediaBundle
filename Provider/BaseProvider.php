@@ -18,17 +18,12 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @var string
      */
-    protected $alias;
-
-    /**
-     * @var string
-     */
-    protected $template;
+    private $template;
 
     /**
      * @var array
      */
-    public $allowedTypes;
+    private $allowedTypes;
 
     /**
      * @param $template
@@ -51,10 +46,16 @@ abstract class BaseProvider implements ProviderInterface {
         return $this;
     }
 
+
+    final protected function getAllowedTypes()
+    {
+        return $this->allowedTypes;
+    }
+
     /**
      * @return string
      */
-    final public function getTemplate()
+    final protected function getTemplate()
     {
         return $this->template;
     }

@@ -15,7 +15,6 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class ImageProvider extends FileProvider  {
     
-    public $allowedTypes=array('image/bmp', 'image/gif', 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png', 'image/tiff', 'image/jpeg', 'image/png');
     /**
      * @var CacheManager $cacheManager
      */
@@ -54,7 +53,7 @@ class ImageProvider extends FileProvider  {
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
                         'maxSize' => $this->fileMaxSize,
-                        'mimeTypes' => $this->allowedTypes
+                        'mimeTypes' => $this->getAllowedTypes()
                     ]));
         $builder->add('binaryContent', FileType::class, $options );
     }
@@ -63,7 +62,7 @@ class ImageProvider extends FileProvider  {
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
                         'maxSize' => $this->fileMaxSize,
-                        'mimeTypes' => $this->allowedTypes
+                        'mimeTypes' => $this->getAllowedTypes()
                     ]));
         $builder->add('binaryContent', FileType::class, $options );
     }

@@ -20,11 +20,6 @@ interface ProviderInterface {
     public function setTemplate($template);
 
     /**
-     * @return string template
-     */
-    public function getTemplate();
-
-    /**
      * @return string alias
      */
     public function getAlias();

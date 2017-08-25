@@ -19,8 +19,7 @@ services:
 
     Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
         arguments:
-            $templates: "%donjohn.media.providers.templates%"
-            $allowedTypes :  "%donjohn.media.providers.allowed_types%"
+            $config: "%donjohn.media.providers.config%"
 
     Donjohn\MediaBundle\Provider\FileProvider:
         arguments:

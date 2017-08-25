@@ -44,8 +44,8 @@ class ProviderFactory {
         if ($this->enables[$provider->getAlias()]) {
             $this->providers[$provider->getAlias()] = $provider;
 
-            $provider->setTemplate($this->getTemplate($provider->getAlias()));
-            $provider->setAllowedTypes($this->getAllowedTypes($provider->getAlias()));
+            $provider->setTemplate($this->getTemplateProvider($provider->getAlias()));
+            $provider->setAllowedTypes($this->getAllowedTypesProvider($provider->getAlias()));
         }
     }
 
@@ -90,12 +90,14 @@ class ProviderFactory {
     }
 
 
-    private function getTemplate($providerAlias){
+    private function getTemplateProvider($providerAlias){
 
         return isset($this->templates[$providerAlias]) ? $this->templates[$providerAlias] : false;
 
     }
-    private function getAllowedTypes($providerAlias){
+
+
+    private function getAllowedTypesProvider($providerAlias){
 
         return isset($this->allowedTypes[$providerAlias]) ? $this->allowedTypes[$providerAlias] : false;
 

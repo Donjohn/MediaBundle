@@ -23,8 +23,6 @@ class FileProvider extends BaseProvider {
      */
     protected $filesystem;
 
-    public $allowedTypes=array('[a-z]+/[a-z\-]+');
-
     protected $fileMaxSize;
 
     protected $uploadFolder;
