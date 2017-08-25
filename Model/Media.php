@@ -4,8 +4,6 @@ namespace Donjohn\MediaBundle\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -22,8 +20,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Media
 {
     protected $id;
-
-    use ORMBehaviors\Timestampable\Timestampable;
     
     /**
      * @var string
