@@ -16,8 +16,6 @@ Add this to your AppKernel.php
 
 ```PHP
     new Liip\ImagineBundle\LiipImagineBundle(),
-    new Symfony\Bundle\AsseticBundle\AsseticBundle(),
-    new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),    
     new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
     new Donjohn\MediaBundle\DonjohnMediaBundle(),
 ```
