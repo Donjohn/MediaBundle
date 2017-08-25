@@ -44,7 +44,6 @@ abstract class BaseProvider implements ProviderInterface {
      */
     final public function setAllowedTypes(array $allowedTypes)
     {
-        if (empty($allowedTypes)) throw new \InvalidArgumentException('please configure allowed_types for '.$this->getAlias().' provider');
         $this->allowedTypes = $allowedTypes;
         return $this;
     }

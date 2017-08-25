@@ -8,7 +8,6 @@
 namespace Donjohn\MediaBundle\Controller;
 
 
-use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -39,7 +38,7 @@ class FineUploaderController extends Controller
         $response->setData(['success' => true]);
 
         /** @var \SplFileInfo $file */
-        foreach ($this->get(FilesystemOrphanageStorage::class)->getFiles() as $file)
+        foreach ($this->get('oneup_uploader.orphanage.medias')->getFiles() as $file)
         {
             $fs = new Filesystem();
             try {
@@ -63,7 +62,7 @@ class FineUploaderController extends Controller
         $response->headers->set('Vary', 'Accept');
 
 
-        $uploadedFiles = $this->get(FilesystemOrphanageStorage::class)->getFiles();
+        $uploadedFiles = $this->get('oneup_uploader.orphanage.medias')->getFiles();
 
 
         /** @var \SplFileInfo $file */
