@@ -5,6 +5,7 @@ namespace Donjohn\MediaBundle\Provider;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -36,6 +37,13 @@ interface ProviderInterface {
      * @throws InvalidMimeTypeException
      */
     public function validateMimeType($type);
+
+    /**
+     * use to find the provider
+     * @param File $file
+     * @return mixed
+     */
+    public function guess($file = null);
 
     /**
      * @param \Twig_Environment $twig_Environment

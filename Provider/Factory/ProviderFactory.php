@@ -4,8 +4,10 @@ namespace Donjohn\MediaBundle\Provider\Factory;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
+use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
 use RuntimeException;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * description 
@@ -19,15 +21,18 @@ class ProviderFactory {
     protected $providers = array();
     /** @var array $allowedTypes */
     protected $allowedTypes = array();
+    /** @var array $enables */
+    protected $enables = array();
     /**
      * @var  array $templates
      */
     protected $templates=array();
 
-    public function __construct(array $templates, array $allowedTypes)
+    public function __construct(array $config)
     {
-        $this->templates = $templates;
-        $this->allowedTypes = $allowedTypes;
+        $this->templates = array_map(function($item) {return $item['template'];}, $config);
+        $this->allowedTypes = array_map(function($item) {return $item['allowed_types'];}, $config);;
+        $this->enables = array_map(function($item) {return $item['enabled'];}, $config);;
     }
 
     /**
@@ -36,10 +41,12 @@ class ProviderFactory {
      * @param string $alias
      */
     public function addProvider(ProviderInterface $provider) {
-        $this->providers[$provider->getAlias()] = $provider;
+        if ($this->enables[$provider->getAlias()]) {
+            $this->providers[$provider->getAlias()] = $provider;
 
-        $provider->setTemplate($this->getTemplate($provider->getAlias()));
-        $provider->setAllowedTypes($this->getAllowedTypes($provider->getAlias()));
+            $provider->setTemplate($this->getTemplate($provider->getAlias()));
+            $provider->setAllowedTypes($this->getAllowedTypes($provider->getAlias()));
+        }
     }
 
     /**
@@ -57,6 +64,29 @@ class ProviderFactory {
         }
 
         throw new NotFoundProviderException('no provider defined for media ' . $alias);
+    }
+
+    /**
+     * @return array providers
+     */
+    public function getProviders() {
+        return $this->providers;
+    }
+
+    /**
+     * @param File $file
+     * @return null|ProviderGuess
+     */
+    public function guessProvider($file = null)
+    {
+        $guesses = array();
+
+        /** @var ProviderInterface $provider */
+        foreach ($this->providers as $provider) {
+            $guesses[] = $provider->guess($file);
+        }
+
+        return ProviderGuess::getBestGuess($guesses);
     }
 
 

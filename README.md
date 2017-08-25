@@ -98,13 +98,14 @@ liip_imagine:
                 cache_prefix: AnotherFolder/cache
 ```
 
-Change media template used by providers or the allowed types
+You can change the template used to render the media foreach provider as well as the allowed types. Or Disable the provider...
 ```
 donjohn_media:
     providers:
         image: ##provider alias
             template: YouBundle:View:Twig.html.twig
             allowed_types: ['image/jpg']
+            enabled: true #default
 ```
 
 Restrict uploaded file size
@@ -146,10 +147,14 @@ example:
 
 ### FormType
 An Donjohn\MediaBundle\Form\Type\MediaType is available
-'provider' option default value is 'file', change it if you wanna create a media with another provider (ex 'image').
+```
+$builder->add(<fieldName>, MediaType::class ) );
+```
+
+provider option default value is null. A guesser will try on the fly to detect the best provider fo each file until you force by yourself the option. The default guess is 'file'.
 In case you're editing a persisted media object, the option is overwritten by $media->getProviderName() value in any case
 ```
-$builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) );
+$builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) ); //to force file to be process with ImageProvider
 ```
 
 Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.
@@ -209,8 +214,8 @@ donjohn_media:
 
 
 ### Custom MediaProvider
-To implement your own provider, use the ProviderInterface or extends the BaseProvider (easier)
-Autowiring does the job...
+To implement your own provider, extends the BaseProvider and redefine getAlias and add template + allowed_types in config.yml
+Autowiring should do the job...
 
 
 ### Javascript

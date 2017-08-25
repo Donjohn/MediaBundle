@@ -4,6 +4,9 @@ namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
+use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
+use Symfony\Component\Form\Guess\Guess;
+use Symfony\Component\HttpFoundation\File\File;
 
 
 /**
@@ -78,6 +81,26 @@ abstract class BaseProvider implements ProviderInterface {
         if (count($this->allowedTypes) && !preg_match('#'.implode('|',$this->allowedTypes).'#', $type)) throw new InvalidMimeTypeException(sprintf('%s is not supported', $type));
 
         return true;
+    }
+
+    /**
+     * @param File $file
+     */
+    final public function guess($file = null){
+
+        $guesses = [];
+        if (count($this->allowedTypes) && $file) {
+            if (preg_match('#'.implode('|',$this->allowedTypes).'#', $file->getMimeType())) {
+                $guesses[] = new ProviderGuess($this->getAlias(), Guess::HIGH_CONFIDENCE);
+            } else {
+                $guesses[] = new ProviderGuess($this->getAlias(), Guess::LOW_CONFIDENCE);
+            }
+        } else {
+            $guesses[] = new ProviderGuess($this->getAlias(), Guess::MEDIUM_CONFIDENCE);
+        }
+
+        return ProviderGuess::getBestGuess($guesses);
+
     }
 
 

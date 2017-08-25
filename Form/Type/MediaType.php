@@ -24,7 +24,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediaType extends AbstractType
 {
     /**
-     * @var ProviderFactory
+     * @var ProviderFactory $providerFactory
      */
     protected $providerFactory;
 
@@ -63,7 +63,7 @@ class MediaType extends AbstractType
     {
 
         $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
-        $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $options['provider']);
+        $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $this->providerFactory->guessProvider(null)->getProviderAlias());
 
 
         $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
@@ -112,7 +112,7 @@ class MediaType extends AbstractType
             );
         }
 
-        $builder->addModelTransformer(new MediaDataTransformer($provider, $this->classMedia));
+        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $this->classMedia));
 
     }
 

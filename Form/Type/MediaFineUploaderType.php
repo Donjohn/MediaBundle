@@ -9,6 +9,7 @@ namespace Donjohn\MediaBundle\Form\Type;
 
 
 use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -26,6 +27,9 @@ class MediaFineUploaderType extends AbstractType
     /** @var FilesystemOrphanageStorage $filesystemOrphanageStorage */
     protected $filesystemOrphanageStorage;
 
+    /** @var  ProviderFactory $providerFactory */
+    protected $providerFactory;
+
     /**
      * @var string
      */
@@ -36,10 +40,11 @@ class MediaFineUploaderType extends AbstractType
 
 
 
-    public function __construct( $classMedia, FilesystemOrphanageStorage $filesystemOrphanageStorage, $chunkSize)
+    public function __construct( FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory, $classMedia, $chunkSize)
     {
-        $this->classMedia = $classMedia;
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
+        $this->providerFactory = $providerFactory;
+        $this->classMedia = $classMedia;
         $this->chunkSize = $chunkSize;
     }
 
@@ -92,11 +97,13 @@ class MediaFineUploaderType extends AbstractType
 
                     $data = $event->getData() ?: [] ;
                     /** @var \SplFileInfo $file */
-                    foreach ($uploadedFiles as $file)  {
+                    foreach ($uploadedFiles as $uploadedFile)  {
                         /** @var Media $media */
+                        $file = new File($uploadedFile->getPathname());
+
                         $media = new $this->classMedia();
-                        $media->setBinaryContent( new File($file->getPathname()) )
-                            ->setProviderName( $options['provider'])
+                        $media->setBinaryContent( $file )
+                            ->setProviderName( $this->providerFactory->guessProvider($file)->getProviderAlias())
                             ->setOriginalFilename( $file->getBasename());
                         $data[]=$media;
                     }

@@ -81,7 +81,7 @@ class MediaCollectionType extends AbstractType
                 'allow_add' => true,
                 'allow_extra_fields' => true,
                 'entry_type' => MediaType::class,
-                'provider' => 'file',
+                'provider' => null,
                 'mediazone' => true,
                 'entry_options' => array()
                 ));
