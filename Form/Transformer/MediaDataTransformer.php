@@ -56,9 +56,6 @@ class MediaDataTransformer implements DataTransformerInterface
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
 
 
-
-//        $oMedia->setProviderName( $oMedia->getProviderName() ? $oMedia->getProviderName() : $this->provider->getAlias() );
-
         /** @var $oNewMedia Media */
         $oNewMedia = new $this->mediaClass();
         $oNewMedia->setBinaryContent($oMedia->getBinaryContent());

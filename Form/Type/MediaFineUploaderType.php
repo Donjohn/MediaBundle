@@ -91,7 +91,7 @@ class MediaFineUploaderType extends AbstractType
 
         $builder->addEventListener(
                 FormEvents::SUBMIT ,
-                function (FormEvent $event)use ($options) {
+                function (FormEvent $event) {
 
                     $uploadedFiles = $this->filesystemOrphanageStorage->getFiles();
 
