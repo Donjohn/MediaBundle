@@ -354,6 +354,10 @@ class Media
     }
 
 
+    /**
+     * @param $format
+     * @return mixed
+     */
     public function getPath($format)
     {
         if (!isset($this->paths[$format])) throw new \RuntimeException('format '.$format.' for media '.$this->getId().' is not defined in config');

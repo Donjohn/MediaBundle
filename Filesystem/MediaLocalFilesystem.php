@@ -14,18 +14,23 @@ use Gaufrette\Filesystem;
 class MediaLocalFilesystem extends Filesystem
 {
     /**
-     * @var string
+     * @var string $webFolder
      */
     protected $webFolder;
 
-
+    /**
+     * MediaLocalFilesystem constructor.
+     * @param string $webFolder
+     */
     public function __construct($webFolder)
     {
         $this->webFolder = $webFolder;
         parent::__construct(new Adapter\Local($webFolder));
     }
 
-
+    /**
+     * @return string
+     */
     public function getWebFolder()
     {
         return $this->webFolder;

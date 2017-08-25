@@ -46,7 +46,9 @@ abstract class BaseProvider implements ProviderInterface {
         return $this;
     }
 
-
+    /**
+     * @return array
+     */
     final protected function getAllowedTypes()
     {
         return $this->allowedTypes;
@@ -85,7 +87,8 @@ abstract class BaseProvider implements ProviderInterface {
     }
 
     /**
-     * @param File $file
+     * @inheritdoc
+     * @param null|File $file
      */
     final public function guess($file = null){
 

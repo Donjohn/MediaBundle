@@ -20,8 +20,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MediaController extends Controller
 {
-
-    public function downloadAction(Request $request, $id)
+    /**
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function downloadAction($id)
     {
         /** @var Media $media */
         if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))

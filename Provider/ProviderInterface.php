@@ -4,7 +4,9 @@ namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
+use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -34,9 +36,8 @@ interface ProviderInterface {
     public function validateMimeType($type);
 
     /**
-     * use to find the provider
-     * @param File $file
-     * @return mixed
+     * @param null|File $file
+     * @return ProviderGuess|null|Guess
      */
     public function guess($file = null);
 

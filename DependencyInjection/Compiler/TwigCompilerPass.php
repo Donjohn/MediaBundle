@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TwigCompilerPass implements CompilerPassInterface
 {
+    /**
+     * @inheritdoc
+     */
     public function process(ContainerBuilder $container)
     {
         $container->getDefinition('twig')->addMethodCall('addGlobal', array('media_mediazone_border_color', $container->getParameter('media_mediazone_border_color')));

@@ -29,10 +29,15 @@ class MediaType extends AbstractType
     protected $providerFactory;
 
     /**
-     * @var string
+     * @var string $classMedia
      */
     protected $classMedia;
 
+    /**
+     * MediaType constructor.
+     * @param ProviderFactory $providerFactory
+     * @param string $classMedia
+     */
     public function __construct( ProviderFactory $providerFactory, $classMedia)
     {
         $this->providerFactory = $providerFactory;
@@ -40,6 +45,9 @@ class MediaType extends AbstractType
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
 
@@ -59,6 +67,9 @@ class MediaType extends AbstractType
                 ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
@@ -116,6 +127,9 @@ class MediaType extends AbstractType
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildView(
         FormView $view,
         FormInterface $form,

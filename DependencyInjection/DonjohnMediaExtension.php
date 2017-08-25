@@ -36,7 +36,9 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
 
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function prepend(ContainerBuilder $container)
     {
         $config = $container->getExtensionConfig($this->getAlias());

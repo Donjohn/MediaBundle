@@ -21,20 +21,30 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediaCollectionType extends AbstractType
 {
     /**
-     * @var string
+     * @var string $classMedia
      */
     protected $classMedia;
 
+    /**
+     * MediaCollectionType constructor.
+     * @param $classMedia
+     */
     public function __construct( $classMedia )
     {
         $this->classMedia = $classMedia;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getParent()
     {
         return CollectionType::class;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
@@ -71,6 +81,9 @@ class MediaCollectionType extends AbstractType
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
 
@@ -99,7 +112,9 @@ class MediaCollectionType extends AbstractType
         $resolver->setNormalizer('entry_options', $entryOptionsNormalizer);
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function buildView(
         FormView $view,
         FormInterface $form,

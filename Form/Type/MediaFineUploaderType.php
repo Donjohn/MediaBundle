@@ -31,15 +31,21 @@ class MediaFineUploaderType extends AbstractType
     protected $providerFactory;
 
     /**
-     * @var string
+     * @var string $classMedia
      */
     protected $classMedia;
 
-    /** @var string */
+    /** @var string $chunkSize */
     protected $chunkSize;
 
 
-
+    /**
+     * MediaFineUploaderType constructor.
+     * @param FilesystemOrphanageStorage $filesystemOrphanageStorage
+     * @param ProviderFactory $providerFactory
+     * @param string $classMedia
+     * @param string $chunkSize
+     */
     public function __construct( FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory, $classMedia, $chunkSize)
     {
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
@@ -48,12 +54,17 @@ class MediaFineUploaderType extends AbstractType
         $this->chunkSize = $chunkSize;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getParent()
     {
         return CollectionType::class;
     }
 
-
+    /**
+     * @inheritdoc
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
 
@@ -85,6 +96,9 @@ class MediaFineUploaderType extends AbstractType
         $resolver->setNormalizer('entry_options', $entryOptionsNormalizer);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
@@ -114,6 +128,9 @@ class MediaFineUploaderType extends AbstractType
 
     }
 
+    /**
+     * @return bool|string
+     */
     protected function getChunkMaxSizeBytes()
     {
         $number=substr($this->chunkSize,0,-1);
@@ -133,6 +150,9 @@ class MediaFineUploaderType extends AbstractType
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $view->vars['chunkSize'] = $this->getChunkMaxSizeBytes();

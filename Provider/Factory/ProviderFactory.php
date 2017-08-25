@@ -28,6 +28,10 @@ class ProviderFactory {
      */
     protected $templates=array();
 
+    /**
+     * ProviderFactory constructor.
+     * @param array $config
+     */
     public function __construct(array $config)
     {
         $this->templates = array_map(function($item) {return $item['template'];}, $config);
@@ -89,14 +93,20 @@ class ProviderFactory {
         return ProviderGuess::getBestGuess($guesses);
     }
 
-
+    /**
+     * @param string $providerAlias
+     * @return bool|string
+     */
     private function getTemplateProvider($providerAlias){
 
         return isset($this->templates[$providerAlias]) ? $this->templates[$providerAlias] : false;
 
     }
 
-
+    /**
+     * @param $providerAlias
+     * @return bool|array
+     */
     private function getAllowedTypesProvider($providerAlias){
 
         return isset($this->allowedTypes[$providerAlias]) ? $this->allowedTypes[$providerAlias] : false;

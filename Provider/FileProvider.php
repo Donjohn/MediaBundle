@@ -23,11 +23,18 @@ class FileProvider extends BaseProvider {
      */
     protected $filesystem;
 
+    /** @var string $fileMaxSize */
     protected $fileMaxSize;
 
+    /** @var string $uploadFolder */
     protected $uploadFolder;
 
-
+    /**
+     * FileProvider constructor.
+     * @param MediaLocalFilesystem $filesystem
+     * @param string $uploadFolder
+     * @param string $fileMaxSize
+     */
     final public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
     {
 
@@ -38,7 +45,7 @@ class FileProvider extends BaseProvider {
     }
 
     /**
-     * @return string alias
+     * @inheritdoc
      */
     public function getAlias()
     {
@@ -46,12 +53,18 @@ class FileProvider extends BaseProvider {
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
         $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
         return parent::render($twig, $media, $options);
     }
 
 
+    /**
+     * @inheritdoc
+     */
     public function getPath(Media $oMedia, $filter= null)
     {
         $firstLevel=100000;
@@ -63,11 +76,18 @@ class FileProvider extends BaseProvider {
         return sprintf('%s/%04s/%02s/%s', $this->uploadFolder,  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getFullPath(Media $oMedia, $filter = null)
     {
         return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
+    /**
+     * @param Media $oMedia
+     * @return bool
+     */
     protected function delete(Media $oMedia)
     {
         try {
@@ -157,11 +177,17 @@ class FileProvider extends BaseProvider {
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public function extractMetaData(Media $oMedia)
     {
         //Implement extractMetaData() method.
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
@@ -170,6 +196,9 @@ class FileProvider extends BaseProvider {
         $builder->add('binaryContent', FileType::class, $options );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
@@ -181,9 +210,7 @@ class FileProvider extends BaseProvider {
 
 
     /**
-     * @param Media $oMedia
-     * @param array $headers
-     * @return StreamedResponse
+     * @inheritdoc
      */
     public function getDownloadResponse(Media $oMedia, array $headers = array())
     {

@@ -26,6 +26,12 @@ class MediaDataTransformer implements DataTransformerInterface
      */
     protected $mediaClass;
 
+    /**
+     * MediaDataTransformer constructor.
+     * @param ProviderFactory $providerFactory
+     * @param null $providerAlias
+     * @param string $mediaClass
+     */
     public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $mediaClass)
     {
         $this->providerAlias = $providerAlias;

@@ -14,12 +14,21 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class FormCompilerPass implements CompilerPassInterface
 {
 
+    /** @var bool $oneupUploaderBundle */
     protected $oneupUploaderBundle;
+
+    /**
+     * FormCompilerPass constructor.
+     * @param bool $oneupUploaderBundle
+     */
     public function __construct($oneupUploaderBundle=false)
     {
         $this->oneupUploaderBundle = $oneupUploaderBundle;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function process(ContainerBuilder $container)
     {
         $resources = $container->getParameter('twig.form.resources');

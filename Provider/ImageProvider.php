@@ -49,6 +49,9 @@ class ImageProvider extends FileProvider  {
         $this->filterConfiguration = $filterConfiguration;
     }
     
+    /**
+     * @inheritdoc
+     */
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
@@ -58,6 +61,9 @@ class ImageProvider extends FileProvider  {
         $builder->add('binaryContent', FileType::class, $options );
     }
 
+    /**
+     * @inheritdoc
+     */
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
         $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
@@ -67,6 +73,9 @@ class ImageProvider extends FileProvider  {
         $builder->add('binaryContent', FileType::class, $options );
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function delete(Media $oMedia, $filter=null)
     {
         try {
@@ -98,6 +107,9 @@ class ImageProvider extends FileProvider  {
         return true;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPath(Media $oMedia, $filter= null)
     {
         $path = parent::getPath($oMedia);

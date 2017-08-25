@@ -19,7 +19,10 @@ class MediaSubscriber implements EventSubscriber {
     public function __construct(ProviderFactory $providerFactory) {
         $this->providerFactory = $providerFactory;
     }
-    
+
+    /**
+     * @inheritdoc
+     */
     public function getSubscribedEvents() {
         return array(
             'postLoad',

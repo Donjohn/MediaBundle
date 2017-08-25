@@ -22,31 +22,45 @@ use Symfony\Component\Form\FormView;
 class MediaGalleryType extends AbstractType
 {
     /**
-     * @var EntityManagerInterface
+     * @var EntityManagerInterface $em
      */
     protected $em;
 
     /**
-     * @var string
+     * @var string $classMedia
      */
     protected $classMedia;
 
+    /**
+     * MediaGalleryType constructor.
+     * @param EntityManagerInterface $em
+     * @param string $classMedia
+     */
     public function __construct(EntityManagerInterface $em, $classMedia)
     {
         $this->em = $em;
         $this->classMedia = $classMedia;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getParent()
     {
         return TextType::class;
     }
 
-     public function buildForm(FormBuilderInterface $builder, array $options)
+     /**
+     * @inheritdoc
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
      {
          $builder->addModelTransformer(new MediaIdTransformer($this->em, $this->classMedia));
      }
 
+    /**
+     * @inheritdoc
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
 
@@ -59,6 +73,9 @@ class MediaGalleryType extends AbstractType
         ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
         $vars = $view->vars;
