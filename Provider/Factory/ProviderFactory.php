@@ -63,7 +63,7 @@ class ProviderFactory {
             return $this->providers[$alias];
         }
 
-        throw new NotFoundProviderException('no provider defined for media ' . $alias);
+        throw new NotFoundProviderException('no provider "' . $alias . '" defined');
     }
 
     /**
