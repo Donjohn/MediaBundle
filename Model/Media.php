@@ -86,10 +86,9 @@ class Media
     /**
      * @Assert\IsTrue(message="media.error.binary_content.empty")
      */
-    private function isBinaryContentOnCreation()
+    public function hasBinaryContentOnCreation()
     {
         return $this->id ||(!$this->id && $this->binaryContent);
-        //id ou (pas id et binary)
     }
 
     /**
