@@ -154,7 +154,7 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        if ($oMedia->getOldMedia() instanceof Media && $oMedia->getOldMedia()->getOldFilename()) $this->preRemove($oMedia->getOldMedia());
+        if ($oldMedia = $oMedia->initOldMedia() instanceof Media) $this->preRemove($oldMedia);
         return $this->postPersist($oMedia);
     }
 

@@ -24,7 +24,8 @@
 
     },
     "suggest": {
-        "oneup/uploader-bundle": "for the awesome upload big files features"
+        "oneup/uploader-bundle": "for the awesome upload big files features",
+        "api-platform/core": "for the awesome api feature"
     },
     "autoload" : {
         "psr-0" : {

@@ -41,7 +41,7 @@ class Media
     /**
      * @var string old filename to delete old file after update
      */
-    protected $oldFilename;
+    private $oldFilename;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -51,7 +51,7 @@ class Media
     /**
      * @var array collection of paths
      */
-    protected $paths=array();
+    private $paths=array();
 
     /**
      * @var string
@@ -86,7 +86,7 @@ class Media
     /**
      * @Assert\IsTrue(message="media.error.binary_content.empty")
      */
-    public function isBinaryContentOnCreation()
+    private function isBinaryContentOnCreation()
     {
         return $this->id ||(!$this->id && $this->binaryContent);
         //id ou (pas id et binary)
@@ -94,25 +94,16 @@ class Media
 
     /**
      * return old Media
-     * @return Media
-     */
-    public function getOldMedia()
-    {
-        $oldMedia = clone $this;
-        $oldMedia->setFilename($this->oldFilename);
-        $oldMedia->setMimeType($this->oldMimeType);
-        return $oldMedia;
-    }
-
-    /**
-     * init old value
-     * @return Media
+     * @return Media|null
      */
     public function initOldMedia()
     {
-        $this->oldMimeType=$this->mimeType;
-        $this->oldFilename=$this->filename;
-        return $this;
+        $oldMedia = clone $this;
+        if ($this->oldFilename) {
+            $oldMedia->setFilename($this->oldFilename);
+            return $oldMedia;
+        }
+        return null;
     }
 
 
@@ -281,15 +272,6 @@ class Media
         return $this->filename;
     }
 
-    /**
-     * return old filename for delete/update
-     * @return string
-     */
-    public function getOldFilename()
-    {
-        return $this->oldFilename;
-    }
-
 
     /**
      * Set filename
@@ -351,17 +333,6 @@ class Media
     public function setPaths($paths)
     {
         $this->paths = $paths;
-    }
-
-
-    /**
-     * @param $format
-     * @return mixed
-     */
-    public function getPath($format)
-    {
-        if (!isset($this->paths[$format])) throw new \RuntimeException('format '.$format.' for media '.$this->getId().' is not defined in config');
-        return $this->paths[$format];
     }
 
 
