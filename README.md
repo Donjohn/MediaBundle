@@ -164,6 +164,8 @@ You can also ask for the path directly
 In order to download a media, pls use the following to get the download link 
 ```twig
 <a href="{% download media%}">Download</a>
+or
+<a href="{{path('donjohn_media_download', {id: media.id})}}">Download</a>
 ```
 
 
