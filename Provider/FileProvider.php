@@ -52,17 +52,7 @@ class FileProvider extends BaseProvider {
         return 'file';
     }
 
-
-    /**
-     * @inheritdoc
-     */
-    public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
-        $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
-        return parent::render($twig, $media, $options);
-    }
-
-
-    /**
+     /**
      * @inheritdoc
      */
     public function getPath(Media $oMedia, $filter= null)

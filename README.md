@@ -158,7 +158,9 @@ You can also pass class/width/height/alt options to the media rendering:
 
 You can also ask for the path directly
 ```twig
-{% path media, '<filter>' %}
+<a href="{% path media, '<filter>' %}">{{ media.name }}</a>
+or 
+<a href="{{ media|mediaPath('<filter>') ">{{ media.name }}</a>
 ```
 
 In order to download a media, pls use the following to get the download link 

@@ -46,7 +46,7 @@ interface ProviderInterface {
      * @param \Donjohn\MediaBundle\Model\Media $media
      * @return string
      */
-    public function render(\Twig_Environment $twig_Environment, Media $media, $options = array());
+    public function render(\Twig_Environment $twig_Environment, Media $media, $filter = null, $options = array());
 
 
     /**

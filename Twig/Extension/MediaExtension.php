@@ -61,6 +61,13 @@ class MediaExtension extends \Twig_Extension
         );
     }
 
+    public function getFilters()
+    {
+        return array(
+            new \Twig_SimpleFilter('mediaPath', array($this, 'path')),
+        );
+    }
+
     public function getName()
     {
         return 'donjohn_media';
@@ -75,8 +82,7 @@ class MediaExtension extends \Twig_Extension
         catch (NotFoundProviderException $e) {
             return '';
         }
-        $attributes = array_merge($attributes, array('filter' => $filter));
-        return $provider->render($this->twig, $media, $attributes);
+        return $provider->render($this->twig, $media, $filter, $attributes);
 
     }
 

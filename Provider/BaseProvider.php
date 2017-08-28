@@ -70,9 +70,11 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @inheritdoc
      */
-    public function render(\Twig_Environment $twig, Media $media, $options = array()){
+    public function render(\Twig_Environment $twig, Media $media, $filter = null, $options = array()){
         return $twig->render($this->getTemplate(),
-                            array_merge($options, array('media' => $media))
+                            array('media' => $media,
+                                'filter' => $filter,
+                                'options' => $options)
                             );
     }
 
