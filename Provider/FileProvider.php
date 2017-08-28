@@ -35,7 +35,7 @@ class FileProvider extends BaseProvider {
      * @param string $uploadFolder
      * @param string $fileMaxSize
      */
-    final public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
+    public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
     {
 
         $this->filesystem = $filesystem;
@@ -154,7 +154,8 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        if ($oldMedia = $oMedia->initOldMedia() instanceof Media) $this->preRemove($oldMedia);
+        $oldMedia = $oMedia->initOldMedia();
+        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
         return $this->postPersist($oMedia);
     }
 

@@ -94,7 +94,7 @@ class Media
 
     /**
      * return old Media
-     * @return Media|null
+     * @return Media
      */
     public function initOldMedia()
     {
