@@ -62,12 +62,12 @@ class ProviderFactory {
     public function getProvider($mixed) {
 
         $alias = $mixed instanceof Media ? $mixed->getProviderName() : $mixed;
-        
+
         if (array_key_exists($alias, $this->providers)) {
             return $this->providers[$alias];
         }
 
-        throw new NotFoundProviderException('no provider "' . $alias . '" defined');
+        throw new NotFoundProviderException('no provider "' . $alias . '" enabled');
     }
 
     /**
