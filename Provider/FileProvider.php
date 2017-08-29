@@ -121,7 +121,7 @@ class FileProvider extends BaseProvider {
         $oMedia->addMetadata('filename', $fileName);
 
         $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
+            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
     }
 
     /**

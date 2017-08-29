@@ -44,7 +44,9 @@ class Media
     private $oldFilename;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=false)
+     * @Assert\NotBlank()
+     * @Assert\NotNull()
      */
     protected $originalFilename;
 
