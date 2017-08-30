@@ -53,3 +53,9 @@ services:
 
     Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
         public: true
+
+    Donjohn\MediaBundle\Event\Listener\ApiListener:
+        arguments:
+            $classMedia: "%donjohn.media.entity%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.view,  priority: 33 }

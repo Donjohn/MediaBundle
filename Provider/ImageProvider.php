@@ -8,6 +8,7 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 /**
  * description 
@@ -19,6 +20,9 @@ class ImageProvider extends FileProvider  {
      * @var CacheManager $cacheManager
      */
     protected $cacheManager;
+
+    /** @var RouterInterface $router */
+    protected $router;
     /**
      * @var FilterConfiguration $filterConfiguration
      */
@@ -39,6 +43,15 @@ class ImageProvider extends FileProvider  {
     public function setCacheManager(CacheManager $cacheManager)
     {
         $this->cacheManager = $cacheManager;
+    }
+
+    /**
+     * @param RouterInterface $router
+     * @required
+     */
+    public function setRouter(RouterInterface $router)
+    {
+        $this->router = $router;
     }
 
     /**
@@ -91,7 +104,7 @@ class ImageProvider extends FileProvider  {
      */
     public function postLoad(Media $oMedia)
     {
-        $paths = array('reference' => $this->getPath($oMedia));
+        $paths = array('reference' => $this->router->getContext()->getScheme().'://'.$this->router->getContext()->getHost().$this->getPath($oMedia));
         foreach ($this->filterConfiguration->all() as $filter=> $configuration) $paths[$filter] = $this->getPath($oMedia, $filter);
         $oMedia->setPaths($paths);
     }
@@ -115,5 +128,6 @@ class ImageProvider extends FileProvider  {
         $path = parent::getPath($oMedia);
         return  ($filter && $filter!='reference') ? $this->cacheManager->getBrowserPath($path, $filter) : $path;
     }
+
     
 }

@@ -35,7 +35,7 @@ class FileProvider extends BaseProvider {
      * @param string $uploadFolder
      * @param string $fileMaxSize
      */
-    final public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
+    public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
     {
 
         $this->filesystem = $filesystem;
@@ -52,17 +52,7 @@ class FileProvider extends BaseProvider {
         return 'file';
     }
 
-
-    /**
-     * @inheritdoc
-     */
-    public function render( \Twig_Environment $twig, Media $media, $options = array() ) {
-        $options['mediaPath'] = $this->getPath($media, isset($options['filter']) ? $options['filter'] : null );
-        return parent::render($twig, $media, $options);
-    }
-
-
-    /**
+     /**
      * @inheritdoc
      */
     public function getPath(Media $oMedia, $filter= null)
@@ -131,7 +121,7 @@ class FileProvider extends BaseProvider {
         $oMedia->addMetadata('filename', $fileName);
 
         $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
+            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
     }
 
     /**
@@ -147,16 +137,15 @@ class FileProvider extends BaseProvider {
      */
     public function postPersist(Media $oMedia)
     {
-        if ($oMedia->getBinaryContent() === null) return false;
+        if ($oMedia->getBinaryContent() === null) return;
         if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
             $newPath = $this->getFullPath($oMedia);
-            return $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
+            $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
+            $oMedia->setBinaryContent(null);
         } else {
-            return $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+            $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
+            $oMedia->setBinaryContent(null);
         }
-
-
-
     }
 
     /**
@@ -164,8 +153,9 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        if ($oMedia->getOldMedia() instanceof Media && $oMedia->getOldMedia()->getOldFilename()) $this->preRemove($oMedia->getOldMedia());
-        return $this->postPersist($oMedia);
+        $oldMedia = $oMedia->initOldMedia();
+        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
+        $this->postPersist($oMedia);
     }
 
     /**
