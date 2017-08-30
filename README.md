@@ -1,5 +1,7 @@
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/2d30fe72-c272-4072-a843-17d798b65416/mini.png)](https://insight.sensiolabs.com/projects/2d30fe72-c272-4072-a843-17d798b65416)
 
+Give credits to Sonata, they inspired this bundle.
+
 Installation
 =============
 
@@ -261,3 +263,7 @@ In case you don't want the awesome javascript feature, set the "mediazone" optio
 
 ### Bootstrap
 The bundle is bootstrap dependant, you must add it in your layout
+
+
+### Api platform
+The bundle is compatible with [APIPlatform](https://api-platform.com/).
