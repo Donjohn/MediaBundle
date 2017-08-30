@@ -2,7 +2,6 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
-use Doctrine\Common\Util\Debug;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\DataTransformerInterface;
@@ -80,8 +79,6 @@ class MediaDataTransformer implements DataTransformerInterface
             fclose($destination);
             $fileName = $oMedia->getOriginalFilename();
             $oNewMedia->setBinaryContent(new File($tmpFile));
-
-            Debug::dump($oNewMedia->getBinaryContent());
 
 
         } elseif ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
