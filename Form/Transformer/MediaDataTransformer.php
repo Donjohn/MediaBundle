@@ -2,6 +2,7 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
+use Doctrine\Common\Util\Debug;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\DataTransformerInterface;
@@ -24,7 +25,7 @@ class MediaDataTransformer implements DataTransformerInterface
     /**
      * @var string
      */
-    protected $mediaClass;
+    protected $classMedia;
 
     /**
      * MediaDataTransformer constructor.
@@ -32,11 +33,11 @@ class MediaDataTransformer implements DataTransformerInterface
      * @param null $providerAlias
      * @param string $mediaClass
      */
-    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $mediaClass)
+    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia)
     {
         $this->providerAlias = $providerAlias;
         $this->providerFactory = $providerFactory;
-        $this->mediaClass = $mediaClass;
+        $this->classMedia = $classMedia;
     }
 
     /**
@@ -63,7 +64,7 @@ class MediaDataTransformer implements DataTransformerInterface
 
 
         /** @var $oNewMedia Media */
-        $oNewMedia = new $this->mediaClass();
+        $oNewMedia = new $this->classMedia();
         $oNewMedia->setBinaryContent($oMedia->getBinaryContent());
         $matches=array();
         $fileName='';
@@ -71,14 +72,16 @@ class MediaDataTransformer implements DataTransformerInterface
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
         if (preg_match('#data:(.*);base64,.*#', $oMedia->getBinaryContent(),$matches)) {
 
-            $tmpFile = tempnam(sys_get_temp_dir(), 'base64');
+            $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$oMedia->getOriginalFilename();
             $source = fopen($oMedia->getBinaryContent(), 'r');
             $destination = fopen($tmpFile, 'w');
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);
             $fileName = $oMedia->getOriginalFilename();
-            $oNewMedia->setBinaryContent(new UploadedFile($tmpFile, $fileName, $matches[1]));
+            $oNewMedia->setBinaryContent(new File($tmpFile));
+
+            Debug::dump($oNewMedia->getBinaryContent());
 
 
         } elseif ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
@@ -88,12 +91,12 @@ class MediaDataTransformer implements DataTransformerInterface
             $fileName = $oNewMedia->getBinaryContent()->getBasename();
         }
 
-        $oNewMedia->setOriginalFilename($fileName);
-        $oNewMedia->setProviderName($this->providerAlias ?: $this->providerFactory->guessProvider($oNewMedia->getBinaryContent())->getProviderAlias());
-
         if (empty($fileName)) {
             throw new TransformationFailedException('invalid media, no filename');
         }
+
+        $oNewMedia->setOriginalFilename($fileName);
+        $oNewMedia->setProviderName($this->providerAlias ?: $this->providerFactory->guessProvider($oNewMedia->getBinaryContent())->getProviderAlias());
 
         try {
             $this->providerFactory->getProvider($oNewMedia->getProviderName())->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
