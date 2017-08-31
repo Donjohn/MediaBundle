@@ -43,7 +43,7 @@ interface ProviderInterface {
 
     /**
      * @param \Twig_Environment $twig_Environment
-     * @param \Donjohn\MediaBundle\Model\Media $media
+     * @param Media $media
      * @return string
      */
     public function render(\Twig_Environment $twig_Environment, Media $media, $filter = null, $options = array());
@@ -52,51 +52,57 @@ interface ProviderInterface {
     /**
      * extract data from media, size/height/etc..;
      * @param Media $oMedia
-     * @return array metadatas
+     * @return array metadata
      */
     public function extractMetaData(Media $oMedia);
 
     /**
-     * function called on postLoad Dcotrine Event on Media entity
+     * function called on postLoad Doctrine Event on Media entity
      * @param Media $oMedia
      */
     public function postLoad(Media $oMedia);
 
 
     /**
-     * function called on prePersist Dcotrine Event on v entity
+     * function called on prePersist Doctrine Event on v entity
      * @param Media $oMedia
      */
     public function prePersist(Media $oMedia);
 
     /**
-     * function called on postPersist Dcotrine Event on Media entity
+     * function called on postPersist Doctrine Event on Media entity
      * @param Media $oMedia
      */
     public function postPersist(Media $oMedia);
 
     /**
-     * function called on postUpdate Dcotrine Event on Media entity
+     * function called on preUpdate Doctrine Event on Media entity
+     * @param Media $oMedia
+     */
+    public function preUpdate(Media $oMedia);
+
+    /**
+     * function called on postUpdate Doctrine Event on Media entity
      * @param Media $oMedia
      */
     public function postUpdate(Media $oMedia);
 
     /**
-     * function called on preRemove Dcotrine Event on Media entity
+     * function called on preRemove Doctrine Event on Media entity
      * @param Media $oMedia
      */
     public function preRemove(Media $oMedia);
 
     /**
      * add edit fields for the defined provider
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @param FormBuilderInterface $builder
      * @return mixed
      */
     public function addEditForm(FormBuilderInterface $builder, array $options);
 
     /**
      * add create fields for the defined provider
-     * @param \Symfony\Component\Form\FormBuilderInterface $builder
+     * @param FormBuilderInterface $builder
      * @return mixed
      */
     public function addCreateForm(FormBuilderInterface $builder, array $options);

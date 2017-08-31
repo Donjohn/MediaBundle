@@ -104,11 +104,16 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-            $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
-        else {
-            $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
-            $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+        if (!empty($binaryContent = $oMedia->getBinaryContent()) )  {
+
+            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+
+            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+            else {
+                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
+                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+            }
         }
 
         $mimeType = $oMedia->getBinaryContent()->getMimeType();
@@ -120,8 +125,6 @@ class FileProvider extends BaseProvider {
         $oMedia->setName($oMedia->getName() ? : $fileName); //to keep oldname
         $oMedia->addMetadata('filename', $fileName);
 
-        $oMedia->setFilename(
-            sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
     }
 
     /**
@@ -137,14 +140,29 @@ class FileProvider extends BaseProvider {
      */
     public function postPersist(Media $oMedia)
     {
-        if ($oMedia->getBinaryContent() === null) return;
         if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
             $newPath = $this->getFullPath($oMedia);
             $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
             $oMedia->setBinaryContent(null);
-        } else {
-            $this->filesystem->write($this->getPath($oMedia), file_get_contents($oMedia->getBinaryContent()->getRealPath()));
-            $oMedia->setBinaryContent(null);
+        }
+        $this->postLoad($oMedia);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function preUpdate(Media $oMedia)
+    {
+        if (!empty($binaryContent = $oMedia->getBinaryContent()) )  {
+
+            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+
+            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+            else {
+                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
+                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+            }
         }
     }
 
@@ -153,9 +171,10 @@ class FileProvider extends BaseProvider {
      */
     public function postUpdate(Media $oMedia)
     {
-        $oldMedia = $oMedia->initOldMedia();
-        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
         $this->postPersist($oMedia);
+        $oldMedia = $oMedia->oldMedia();
+        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
+
     }
 
     /**

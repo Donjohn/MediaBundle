@@ -28,13 +28,14 @@ class MediaSubscriber implements EventSubscriber {
             'postLoad',
             'prePersist',
             'postPersist',
+            'preUpdate',
             'postUpdate',
             'preRemove',
         );
     }
 
     /**
-     * event declenché à la creation de l'objet, sert à loader les paths
+     * event declenché à lecture de l'objet, sert à loader les paths
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
     public function postLoad(LifecycleEventArgs $args) {
@@ -58,6 +59,15 @@ class MediaSubscriber implements EventSubscriber {
     public function postPersist(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
         if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->postPersist($oMedia);
+    }
+
+    /**
+     * declenché à l'update de l'objet, sert à delete l'ancien fichier si yen a un nouveau
+     * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
+     */
+    public function preUpdate(LifecycleEventArgs $args) {
+        $oMedia = $args->getEntity();
+        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->preUpdate($oMedia);
     }
 
     /**

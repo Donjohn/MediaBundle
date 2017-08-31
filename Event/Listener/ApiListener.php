@@ -16,12 +16,16 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
 class ApiListener
 {
-    /** @var MediaDataTransformer $mediaDataTransformer  */
-    protected $mediaDataTransformer;
+    /** @var ProviderFactory $providerFactory  */
+    protected $providerFactory;
+
+    /** @var string $classMedia  */
+    protected $classMedia;
 
     public function __construct(ProviderFactory $providerFactory, $classMedia)
     {
-        $this->mediaDataTransformer = new MediaDataTransformer($providerFactory, null, $classMedia);
+        $this->providerFactory = $providerFactory;
+        $this->classMedia = $classMedia;
     }
 
 
@@ -37,8 +41,10 @@ class ApiListener
 
             return;
         }
-        $transformedMedia = $this->mediaDataTransformer->reverseTransform($media);
-        $event->setControllerResult($transformedMedia);
+        $mediaDataTransformer = new MediaDataTransformer($this->providerFactory, null, $this->classMedia , (bool) !$media->getId());
+        $mediaTransformed = $mediaDataTransformer->reverseTransform($media);
+        $event->setControllerResult($mediaTransformed);
+
 
     }
 }

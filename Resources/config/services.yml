@@ -58,4 +58,4 @@ services:
         arguments:
             $classMedia: "%donjohn.media.entity%"
         tags:
-            - { name: kernel.event_listener, event: kernel.view,  priority: 33 }
+            - { name: kernel.event_listener, event: kernel.view,  priority: 63 }

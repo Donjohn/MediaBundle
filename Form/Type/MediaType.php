@@ -64,6 +64,7 @@ class MediaType extends AbstractType
                 'delete_empty' => true,
                 'gallery' => false,
                 'oneup' => false,
+                'create_on_update' => false
                 ));
     }
 
@@ -123,7 +124,7 @@ class MediaType extends AbstractType
             );
         }
 
-        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $this->classMedia));
+        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $this->classMedia, $options['create_on_update']));
 
     }
 

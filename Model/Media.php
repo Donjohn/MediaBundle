@@ -97,10 +97,10 @@ class Media
      * return old Media
      * @return Media
      */
-    public function initOldMedia()
+    public function oldMedia()
     {
-        $oldMedia = clone $this;
         if ($this->oldFilename) {
+            $oldMedia = clone $this;
             $oldMedia->setFilename($this->oldFilename);
             return $oldMedia;
         }
@@ -211,9 +211,15 @@ class Media
      * @param $binaryContent
      * @return $this
      */
-    public function setBinaryContent($binaryContent)
+    public function setBinaryContent($binaryContent=null)
     {
-        $this->initOldMedia();
+        if (!empty($binaryContent)) {
+            $this->oldFilename = $this->filename;
+            $this->filename = null;
+        } elseif (!empty($this->oldFilename)) {
+            $this->filename = $this->oldFilename;
+            $this->oldFilename= null;
+        }
         $this->binaryContent = $binaryContent;
         return $this;
     }

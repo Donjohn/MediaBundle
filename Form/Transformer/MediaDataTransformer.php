@@ -26,17 +26,21 @@ class MediaDataTransformer implements DataTransformerInterface
      */
     protected $classMedia;
 
+    /** @var bool $createOnUpdate  */
+    protected $createOnUpdate;
+
     /**
      * MediaDataTransformer constructor.
      * @param ProviderFactory $providerFactory
      * @param null $providerAlias
      * @param string $mediaClass
      */
-    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia)
+    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia, $createOnUpdate)
     {
         $this->providerAlias = $providerAlias;
         $this->providerFactory = $providerFactory;
         $this->classMedia = $classMedia;
+        $this->createOnUpdate = $createOnUpdate;
     }
 
     /**
@@ -63,22 +67,30 @@ class MediaDataTransformer implements DataTransformerInterface
 
 
         /** @var $oNewMedia Media */
-        $oNewMedia = new $this->classMedia();
-        $oNewMedia->setBinaryContent($oMedia->getBinaryContent());
+        if ($this->createOnUpdate && $oMedia->getId()) {
+            $oNewMedia = new $this->classMedia();
+            $oNewMedia->setBinaryContent($oMedia->getBinaryContent());
+            $oMedia->setBinaryContent(null);
+        }
+        else {
+            $oNewMedia = $oMedia;
+        }
+
         $matches=array();
         $fileName='';
 
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
-        if (preg_match('#data:(.*);base64,.*#', $oMedia->getBinaryContent(),$matches)) {
+        if (preg_match('#data:(.*);base64,.*#', $oNewMedia->getBinaryContent(),$matches)) {
 
-            $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$oMedia->getOriginalFilename();
-            $source = fopen($oMedia->getBinaryContent(), 'r');
+            $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$oNewMedia->getOriginalFilename();
+            $source = fopen($oNewMedia->getBinaryContent(), 'r');
             $destination = fopen($tmpFile, 'w');
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);
-            $fileName = $oMedia->getOriginalFilename();
-            $oNewMedia->setBinaryContent(new File($tmpFile));
+            $fileName = $oNewMedia->getOriginalFilename();
+            $newFile = new File($tmpFile);
+            $oNewMedia->setBinaryContent($newFile);
 
 
         } elseif ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
