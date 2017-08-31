@@ -41,7 +41,7 @@ class ApiListener
 
             return;
         }
-        $mediaDataTransformer = new MediaDataTransformer($this->providerFactory, null, $this->classMedia , (bool) !$media->getId());
+        $mediaDataTransformer = new MediaDataTransformer($this->providerFactory, null, $this->classMedia, false);
         $mediaTransformed = $mediaDataTransformer->reverseTransform($media);
         $event->setControllerResult($mediaTransformed);
 

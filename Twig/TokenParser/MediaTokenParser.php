@@ -8,7 +8,6 @@
 namespace Donjohn\MediaBundle\Twig\TokenParser;
 
 use Donjohn\MediaBundle\Twig\Node\MediaNode;
-use Symfony\Component\Debug\Debug;
 
 class MediaTokenParser extends \Twig_TokenParser
 {

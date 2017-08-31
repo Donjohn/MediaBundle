@@ -14,6 +14,7 @@ use Donjohn\MediaBundle\Twig\Node\PathNode;
 
 class PathTokenParser extends \Twig_TokenParser
 {
+    /** @var string $extensionName */
     protected $extensionName;
 
     /**
@@ -38,7 +39,7 @@ class PathTokenParser extends \Twig_TokenParser
             $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
         }
 
-        return new PathNode($this->extensionName, $media, $filter, $token->getLine(), $this->getTag());
+        return new PathNode(array($this->extensionName), $media, $filter, $token->getLine(), $this->getTag());
     }
 
     /**

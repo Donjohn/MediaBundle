@@ -281,9 +281,9 @@ class Media
 
 
     /**
-     * Set filename
+     * Set originalFilename
      *
-     * @param string $filename
+     * @param string $originalFilename
      * @return Media
      */
     public function setOriginalFilename($originalFilename)
@@ -293,7 +293,7 @@ class Media
     }
 
     /**
-     * Get filename
+     * Get originalFilename
      *
      * @return string
      */

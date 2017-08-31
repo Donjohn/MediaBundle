@@ -31,6 +31,7 @@ interface ProviderInterface {
     
     /**
      * validate the mimeType of the file
+     * @param string $type
      * @throws InvalidMimeTypeException
      */
     public function validateMimeType($type);
@@ -44,6 +45,8 @@ interface ProviderInterface {
     /**
      * @param \Twig_Environment $twig_Environment
      * @param Media $media
+     * @param null $filter
+     * @param array $options
      * @return string
      */
     public function render(\Twig_Environment $twig_Environment, Media $media, $filter = null, $options = array());
@@ -96,6 +99,7 @@ interface ProviderInterface {
     /**
      * add edit fields for the defined provider
      * @param FormBuilderInterface $builder
+     * @param array $options
      * @return mixed
      */
     public function addEditForm(FormBuilderInterface $builder, array $options);
@@ -103,6 +107,7 @@ interface ProviderInterface {
     /**
      * add create fields for the defined provider
      * @param FormBuilderInterface $builder
+     * @param array $options
      * @return mixed
      */
     public function addCreateForm(FormBuilderInterface $builder, array $options);
@@ -112,6 +117,7 @@ interface ProviderInterface {
     /**
      * return path of the media, depends on the media ^^
      * @param \Donjohn\MediaBundle\Model\Media $oMedia
+     * @param string|null $filter
      * @return mixed
      */
     public function getPath(Media $oMedia, $filter= null);
@@ -119,6 +125,7 @@ interface ProviderInterface {
     /**
      * return the full path of the media on the server, depends on the media ^^
      * @param \Donjohn\MediaBundle\Model\Media $oMedia
+     * @param string|null $filter
      * @return mixed
      */
     public function getFullPath(Media $oMedia, $filter= null);

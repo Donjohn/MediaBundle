@@ -42,7 +42,6 @@ class ProviderFactory {
     /**
      * 
      * @param ProviderInterface $provider
-     * @param string $alias
      */
     public function addProvider(ProviderInterface $provider) {
         if ($this->enables[$provider->getAlias()]) {

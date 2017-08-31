@@ -129,7 +129,7 @@ $(function () {
                     $(formGroup).removeClass('hidden');
                     e.preventDefault();
                     e.stopPropagation();
-                    files = $(this).prop('files');
+                    var files = $(this).prop('files');
                     if(files.length) {
                         $(files).each(function(){
                             if (!formGroup) {
@@ -148,7 +148,7 @@ $(function () {
             e.preventDefault();
             e.stopPropagation();
             var _this = this;
-            files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
+            var files =  e.originalEvent.dataTransfer ? e.originalEvent.dataTransfer.files : $(this).prop('files');
             if(files.length) {
                 $(files).each(function(){
                     if (this.name!=='') {

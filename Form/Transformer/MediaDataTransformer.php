@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class MediaDataTransformer implements DataTransformerInterface
 {
     /**
-     * @var string
+     * @var string $providerAlias
      */
     protected $providerAlias;
 
@@ -22,7 +22,7 @@ class MediaDataTransformer implements DataTransformerInterface
     protected $providerFactory;
 
     /**
-     * @var string
+     * @var string $classMedia
      */
     protected $classMedia;
 
@@ -33,7 +33,8 @@ class MediaDataTransformer implements DataTransformerInterface
      * MediaDataTransformer constructor.
      * @param ProviderFactory $providerFactory
      * @param null $providerAlias
-     * @param string $mediaClass
+     * @param string $classMedia
+     * @param boolean $createOnUpdate
      */
     public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia, $createOnUpdate)
     {

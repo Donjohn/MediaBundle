@@ -9,6 +9,7 @@ use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Validator\Constraints\File;
 
 /**
  * description 
@@ -55,6 +56,7 @@ class ImageProvider extends FileProvider  {
     }
 
     /**
+     * @param FilterConfiguration $filterConfiguration
      * @required
      */
     public function setFilterConfiguration(FilterConfiguration $filterConfiguration)
@@ -79,7 +81,7 @@ class ImageProvider extends FileProvider  {
      */
     public function addCreateForm(FormBuilderInterface $builder, array $options)
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
+        $options['constraints'] = array(new File([
                         'maxSize' => $this->fileMaxSize,
                         'mimeTypes' => $this->getAllowedTypes()
                     ]));

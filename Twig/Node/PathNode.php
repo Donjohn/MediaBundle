@@ -13,12 +13,12 @@ class PathNode extends \Twig_Node
     protected $extensionName;
 
     /**
-     * @param string                 $extensionName
+     * PathNode constructor.
+     * @param array $extensionName
      * @param \Twig_Node_Expression $media
      * @param \Twig_Node_Expression $filter
-     * @param \Twig_Node_Expression $attributes
-     * @param int                   $lineno
-     * @param string                $tag
+     * @param null|string $lineno
+     * @param null $tag
      */
     public function __construct($extensionName, \Twig_Node_Expression $media, \Twig_Node_Expression $filter, $lineno, $tag = null)
     {

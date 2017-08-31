@@ -4,14 +4,13 @@
 #media {
     display: inline-block;
 }
-#media #media_submit {
+#media button[type="submit"] {
     padding: 10px 16px;
     font-size: 18px;
     line-height: 1.3333333;
     border-radius: 6px;
     color: #fff;
     background-color: #5cb85c;
-    border-color: #4cae4c;
     border: 1px solid transparent;
     display: inline-block;
     font-weight: 400;
