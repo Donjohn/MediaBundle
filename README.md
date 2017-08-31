@@ -186,6 +186,8 @@ $builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) ); //t
 ```
 
 Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.
+
+Set 'create_on_update' option to true if you don't want to update the current media when uploading a file but rather create a new media instead. Old one is not removed.
   
 If you want to upload a collection of Medias use the MediaCollection formType. The provider option is still available.
 ```php
