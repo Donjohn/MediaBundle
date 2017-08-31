@@ -28,9 +28,8 @@
         "api-platform/core": "for the awesome api feature"
     },
     "autoload" : {
-        "psr-0" : {
+        "psr-4" : {
             "Donjohn\\MediaBundle" : ""
         }
-    },
-    "target-dir" : "Donjohn/MediaBundle"
+    }
 }
