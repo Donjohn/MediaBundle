@@ -29,8 +29,6 @@
     },
 
     "autoload": {
-        "psr-4": {
-            "Donjohn\\MediaBundle\\": ""
-        }
+        "psr-4": { "Donjohn\\MediaBundle\\": "" }
     }
 }
