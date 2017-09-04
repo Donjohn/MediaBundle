@@ -27,8 +27,9 @@
         "oneup/uploader-bundle": "for the awesome upload big files features",
         "api-platform/core": "for the awesome api feature"
     },
-
-    "autoload": {
-        "psr-4": { "Donjohn\\MediaBundle\\": "" }
+    "autoload" : {
+        "psr-4" : {
+            "Donjohn\\MediaBundle\\" : ""
+        }
     }
 }
