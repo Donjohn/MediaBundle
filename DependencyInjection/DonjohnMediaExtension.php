@@ -38,6 +38,9 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         if (isset($bundles['ApiPlatformBundle'])) {
             $loader->load('api.yml');
         }
+        if (isset($bundles['OneupUploaderBundle'])) {
+            $loader->load('oneup.yml');
+        }
 
     }
 

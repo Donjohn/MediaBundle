@@ -1,0 +1,16 @@
+parameters:
+    donjohn.media.form.media.fine_uploader.type.class: Donjohn\MediaBundle\Form\Type\MediaFineUploaderType
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: true
+
+    Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
+        class: "%donjohn.media.form.media.fine_uploader.type.class%"
+        arguments:
+            $classMedia: "%donjohn.media.entity%"
+            $chunkSize: "%donjohn.media.chunk_size%"
+
+    donjohn.media.fine_uploader.type: '@Donjohn\MediaBundle\Form\Type\MediaFineUploaderType'
