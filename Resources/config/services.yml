@@ -83,3 +83,15 @@ services:
 
     Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
         class: "%donjohn.media.uploader.naming.original_namer.class%"
+
+    donjohn.media.type: '@Donjohn\MediaBundle\Form\Type\MediaType'
+    donjohn.media_collection.type: '@Donjohn\MediaBundle\Form\Type\MediaCollectionType'
+    donjohn.media_gallery.type: '@Donjohn\MediaBundle\Form\Type\MediaGalleryType'
+    donjohn.media.subscriber: '@Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber'
+    donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
+    donjohn.media.fine_uploader.type: '@Donjohn\MediaBundle\Form\Type\MediaFineUploaderType'
+    donjohn.media.local.filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
+    donjohn.media.provider.factory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+    donjohn.media.file.provider: '@Donjohn\MediaBundle\Provider\FileProvider'
+    donjohn.media.image.provider: '@Donjohn\MediaBundle\Provider\ImageProvider'
+    donjohn.media.twig.extension: '@Donjohn\MediaBundle\Twig\Extension\MediaExtension'
