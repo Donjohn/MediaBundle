@@ -4,7 +4,6 @@ parameters:
     donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
     donjohn.media.form.media.collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
-    donjohn.media.form.media.fine_uploader.type.class: Donjohn\MediaBundle\Form\Type\MediaFineUploaderType
     donjohn.media.form.media.gallery.type.class: Donjohn\MediaBundle\Form\Type\MediaGalleryType
     donjohn.media.form.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
     donjohn.media.filesystem.media.locale.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
@@ -51,12 +50,6 @@ services:
         arguments:
             $classMedia: "%donjohn.media.entity%"
 
-    Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
-        class: "%donjohn.media.form.media.fine_uploader.type.class%"
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
-            $chunkSize: "%donjohn.media.chunk_size%"
-
     Donjohn\MediaBundle\Form\Type\MediaGalleryType:
         class: "%donjohn.media.form.media.gallery.type.class%"
         arguments:
@@ -89,7 +82,6 @@ services:
     donjohn.media_gallery.type: '@Donjohn\MediaBundle\Form\Type\MediaGalleryType'
     donjohn.media.subscriber: '@Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber'
     donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
-    donjohn.media.fine_uploader.type: '@Donjohn\MediaBundle\Form\Type\MediaFineUploaderType'
     donjohn.media.local.filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
     donjohn.media.provider.factory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
     donjohn.media.file.provider: '@Donjohn\MediaBundle\Provider\FileProvider'
