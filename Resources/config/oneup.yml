@@ -12,5 +12,3 @@ services:
         arguments:
             $classMedia: "%donjohn.media.entity%"
             $chunkSize: "%donjohn.media.chunk_size%"
-
-    donjohn.media.fine_uploader.type: '@Donjohn\MediaBundle\Form\Type\MediaFineUploaderType'
