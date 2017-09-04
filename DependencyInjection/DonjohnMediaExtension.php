@@ -33,6 +33,12 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
 
+        // get all bundles
+        $bundles = $container->getParameter('kernel.bundles');
+        if (isset($bundles['ApiPlatformBundle'])) {
+            $loader->load('api.yml');
+        }
+
     }
 
     /**

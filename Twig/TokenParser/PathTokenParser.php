@@ -30,6 +30,7 @@ class PathTokenParser extends \Twig_TokenParser
      */
     public function parse(\Twig_Token $token)
     {
+
         $media = $this->parser->getExpressionParser()->parseExpression();
         $filter = new \Twig_Node_Expression_Constant('reference',$token->getLine());
 
@@ -39,7 +40,7 @@ class PathTokenParser extends \Twig_TokenParser
             $this->parser->getStream()->expect(\Twig_Token::BLOCK_END_TYPE);
         }
 
-        return new PathNode(array($this->extensionName), $media, $filter, $token->getLine(), $this->getTag());
+        return new PathNode($this->extensionName, $media, $filter, $token->getLine(), $this->getTag());
     }
 
     /**
