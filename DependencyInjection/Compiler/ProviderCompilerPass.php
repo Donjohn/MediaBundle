@@ -14,7 +14,6 @@ class ProviderCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        
         $definition = $container->getDefinition(
             ProviderFactory::class
         );

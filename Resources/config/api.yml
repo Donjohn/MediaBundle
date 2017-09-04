@@ -1,0 +1,12 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Donjohn\MediaBundle\Event\Listener\ApiListener:
+        class: Donjohn\MediaBundle\Event\Listener\ApiListener
+        arguments:
+            $classMedia: "%donjohn.media.entity%"
+        tags:
+            - { name: kernel.event_listener, event: kernel.view,  priority: 63 }
