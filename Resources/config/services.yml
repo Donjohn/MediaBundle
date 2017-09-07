@@ -1,5 +1,5 @@
 parameters:
-    donjohn.media.event.subscriber.class: Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber
+    donjohn.media.event.media_subscriber.class: Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber
     donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
     donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
@@ -18,7 +18,7 @@ services:
         public: true
 
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
-        class: "%donjohn.media.event.subscriber.class%"
+        class: "%donjohn.media.event.media_subscriber.class%"
         tags:
             - { name: doctrine.event_subscriber }
 

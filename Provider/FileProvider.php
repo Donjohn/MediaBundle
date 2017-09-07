@@ -104,7 +104,7 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        if (!empty($binaryContent = $oMedia->getBinaryContent()) )  {
+        if (!empty($oMedia->getBinaryContent()) )  {
 
             $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
@@ -153,7 +153,7 @@ class FileProvider extends BaseProvider {
      */
     public function preUpdate(Media $oMedia)
     {
-        if (!empty($binaryContent = $oMedia->getBinaryContent()) )  {
+        if (!empty($oMedia->getBinaryContent()) )  {
 
             $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
