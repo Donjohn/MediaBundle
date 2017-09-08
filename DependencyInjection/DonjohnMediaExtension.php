@@ -2,6 +2,7 @@
 
 namespace Donjohn\MediaBundle\DependencyInjection;
 
+use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -41,6 +42,8 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         if (isset($bundles['OneupUploaderBundle'])) {
             $loader->load('oneup.yml');
         }
+
+        $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
 
     }
 
