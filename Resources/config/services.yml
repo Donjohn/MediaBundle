@@ -3,12 +3,8 @@ parameters:
     donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
     donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
-    donjohn.media.form.media.collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
-    donjohn.media.form.media.gallery.type.class: Donjohn\MediaBundle\Form\Type\MediaGalleryType
-    donjohn.media.form.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
     donjohn.media.filesystem.media.locale.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
     donjohn.media.twig.extension.media.class: Donjohn\MediaBundle\Twig\Extension\MediaExtension
-    donjohn.media.uploader.naming.original_namer.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
 
 
 services:
@@ -19,7 +15,7 @@ services:
 
     Donjohn\MediaBundle\:
         resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
-        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Controller,Model,DependencyInjection,Event/Listener,Form/Type/MediaFineUploaderType*}'
+        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Controller,Model,DependencyInjection,Event/Listener,Form/Transformer,Form/Type/MediaFineUploaderType*,Provider/Guesser,Twig/Node,Twig/TokenParser}'
 
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
@@ -49,14 +45,9 @@ services:
             tags:
                 - { name: media.provider }
 
-    Donjohn\MediaBundle\Form\Type\MediaCollectionType:
-        class: "%donjohn.media.form.media.collection.type.class%"
+    Donjohn\MediaBundle\Form\Type\:
+        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/*'
         exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/MediaFineUploaderType*'
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
-
-    Donjohn\MediaBundle\Form\Type\MediaType:
-        class: "%donjohn.media.form.media.type.class%"
         arguments:
             $classMedia: "%donjohn.media.entity%"
 
@@ -74,11 +65,8 @@ services:
     Donjohn\MediaBundle\Twig\Extension\MediaExtension:
         class: "%donjohn.media.twig.extension.media.class%"
 
-    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
-        class: "%donjohn.media.uploader.naming.original_namer.class%"
 
     donjohn.media.subscriber: '@Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber'
-    donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
     donjohn.media.local.filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
     donjohn.media.provider.factory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
     donjohn.media.file.provider: '@Donjohn\MediaBundle\Provider\FileProvider'

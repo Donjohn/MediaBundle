@@ -1,5 +1,6 @@
 parameters:
     donjohn.media.form.media.fine_uploader.type.class: Donjohn\MediaBundle\Form\Type\MediaFineUploaderType
+    donjohn.media.uploader.naming.original_namer.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
 
 services:
     _defaults:
@@ -14,4 +15,8 @@ services:
             $chunkSize: "%donjohn.media.chunk_size%"
 
     Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+        class: "%donjohn.media.uploader.naming.original_namer.class%"
         public: true
+
+    donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
+
