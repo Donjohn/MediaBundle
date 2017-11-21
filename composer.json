@@ -14,7 +14,7 @@
     ],
 	"prefer-stable": true,
     "require" : {
-        "php": ">=5.5.9",
+        "php": ">=7",
         "symfony/symfony": "^3.3",
         "doctrine/doctrine-bundle": "^1.6",
         "liip/imagine-bundle": "^1.7",

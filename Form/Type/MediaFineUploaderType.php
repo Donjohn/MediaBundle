@@ -46,7 +46,7 @@ class MediaFineUploaderType extends AbstractType
      * @param string $classMedia
      * @param string $chunkSize
      */
-    public function __construct( FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory, $classMedia, $chunkSize)
+    public function __construct($classMedia, $chunkSize, FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory)
     {
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
         $this->providerFactory = $providerFactory;

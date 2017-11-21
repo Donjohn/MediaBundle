@@ -12,3 +12,6 @@ services:
         arguments:
             $classMedia: "%donjohn.media.entity%"
             $chunkSize: "%donjohn.media.chunk_size%"
+
+    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+        public: true

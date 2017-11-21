@@ -17,6 +17,10 @@ services:
         autoconfigure: true
         public: true
 
+    Donjohn\MediaBundle\:
+        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
+        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Controller,Model,DependencyInjection,Event/Listener,Form/Type/MediaFineUploaderType*}'
+
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
         tags:
@@ -47,11 +51,7 @@ services:
 
     Donjohn\MediaBundle\Form\Type\MediaCollectionType:
         class: "%donjohn.media.form.media.collection.type.class%"
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
-
-    Donjohn\MediaBundle\Form\Type\MediaGalleryType:
-        class: "%donjohn.media.form.media.gallery.type.class%"
+        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/MediaFineUploaderType*'
         arguments:
             $classMedia: "%donjohn.media.entity%"
 
