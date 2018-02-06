@@ -30,6 +30,9 @@ Add this to your routing.yml
 #app/config/routing.yml
 donjohn_media:
     resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
+    
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.yaml"
 ```
     
     
