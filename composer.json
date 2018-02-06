@@ -15,11 +15,11 @@
 	"prefer-stable": true,
     "require" : {
         "php": ">=7",
-        "symfony/symfony": "^3.3",
+        "symfony/symfony": "^3.3 || ^4.0",
         "doctrine/doctrine-bundle": "^1.6",
-        "liip/imagine-bundle": "^1.7",
+        "liip/imagine-bundle": "^2.0@dev",
         "twig/extensions": "^1.4",
-        "knplabs/gaufrette": "^0.4.0",
+        "knplabs/gaufrette": "~0.4.0",
         "white-october/pagerfanta-bundle": "^1.0"
 
     },
