@@ -2,6 +2,7 @@
 
 namespace Donjohn\MediaBundle\DependencyInjection;
 
+use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
@@ -33,12 +34,15 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
 
-        if (key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
+        if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('oneup.yml');
         }
-        if (key_exists('ApiPlatformBundle', $container->getParameter('kernel.bundles'))) {
+        if (array_key_exists('ApiPlatformBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('api.yml');
         }
+
+
+        $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
 
     }
 
@@ -81,10 +85,9 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
 
         if (!isset($config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0])) {
             throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
-        } else {
-
-            $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
         }
+
+        $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
     }
 
 

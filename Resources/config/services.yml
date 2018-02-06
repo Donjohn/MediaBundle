@@ -40,11 +40,6 @@ services:
             $uploadFolder: "%donjohn.media.upload_folder%"
             $fileMaxSize: "%donjohn.media.file_max_size%"
 
-    _instanceof:
-        Donjohn\MediaBundle\Provider\ProviderInterface:
-            tags:
-                - { name: media.provider }
-
     Donjohn\MediaBundle\Form\Type\:
         resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/*'
         exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/MediaFineUploaderType*'
