@@ -14,7 +14,7 @@
     ],
 	"prefer-stable": true,
     "require" : {
-        "php": ">=7.1",
+        "php": ">=7",
         "symfony/symfony": "^4.0",
         "symfony/orm-pack": "^1.0",
         "liip/imagine-bundle": "^2.0@dev",
