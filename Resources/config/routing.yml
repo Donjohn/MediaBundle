@@ -1,3 +1,6 @@
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"
+
 donjohn_media_download:
     path: /media/download/{id}
     defaults: { _controller: DonjohnMediaBundle:Media:download }

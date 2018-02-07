@@ -14,8 +14,8 @@ services:
         public: true
 
     Donjohn\MediaBundle\:
-        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/*'
-        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/{Controller,Model,DependencyInjection,Event/Listener,Form/Transformer,Form/Type/MediaFineUploaderType*,Provider/Guesser,Twig/Node,Twig/TokenParser}'
+        resource: '../../*'
+        exclude: '../../{Controller,Model,DependencyInjection,Event/Listener,Form/Transformer,Form/Type/MediaFineUploaderType*,Provider/Guesser,Twig/Node,Twig/TokenParser,Uploader}'
 
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
@@ -41,15 +41,15 @@ services:
             $fileMaxSize: "%donjohn.media.file_max_size%"
 
     Donjohn\MediaBundle\Form\Type\:
-        resource: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/*'
-        exclude: '%kernel.root_dir%/../src/Donjohn/MediaBundle/Form/Type/MediaFineUploaderType*'
+        resource: '../../Form/Type/*'
+        exclude: '../../Form/Type/MediaFineUploaderType*'
         arguments:
             $classMedia: "%donjohn.media.entity%"
 
     Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
         class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
         arguments:
-            $webFolder: "%assetic.write_to%"
+            $webFolder: "%kernel.project_dir%/public"
 
     twig.extension.text:
        class: Twig_Extensions_Extension_Text
