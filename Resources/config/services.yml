@@ -39,6 +39,8 @@ services:
         arguments:
             $uploadFolder: "%donjohn.media.upload_folder%"
             $fileMaxSize: "%donjohn.media.file_max_size%"
+        calls:
+            - [setFilterConfiguration, "@liip_imagine.filter.configuration"]
 
     Donjohn\MediaBundle\Form\Type\:
         resource: '../../Form/Type/*'

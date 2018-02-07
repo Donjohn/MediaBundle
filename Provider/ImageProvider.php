@@ -57,7 +57,6 @@ class ImageProvider extends FileProvider  {
 
     /**
      * @param FilterConfiguration $filterConfiguration
-     * @required
      */
     public function setFilterConfiguration(FilterConfiguration $filterConfiguration)
     {
