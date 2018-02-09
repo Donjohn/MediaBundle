@@ -10,7 +10,6 @@ namespace Donjohn\MediaBundle\Controller;
 
 use Donjohn\MediaBundle\Form\Type\MediaType;
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -30,7 +29,7 @@ class MediaController extends Controller
         if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))
             throw new NotFoundHttpException('media '.$id.' cannot be found');
 
-        return $this->get(ProviderFactory::class)->getProvider($media)->getDownloadResponse($media);
+        return $this->get('donjohn.media.provider.factory')->getProvider($media)->getDownloadResponse($media);
     }
 
     /**

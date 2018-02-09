@@ -67,7 +67,7 @@ class FineUploaderController extends Controller
 
         /** @var \SplFileInfo $file */
         foreach ($uploadedFiles as $file)  {
-            $data[]=['name' => $file->getBasename(), 'uuid' => uniqid(), 'size' => $file->getSize()];
+            $data[]=['name' => $file->getBasename(), 'uuid' => uniqid("", false), 'size' => $file->getSize()];
         }
         $response->setData($data);
         return $response;
