@@ -1,10 +1,10 @@
 parameters:
         donjohn.media.event.api_listener.class: Donjohn\MediaBundle\Event\Listener\ApiListener
 services:
-    Donjohn\MediaBundle\Event\Listener\ApiListener:
+    donjohn.media.event.api_listener:
         class: "%donjohn.media.event.api_listener.class%"
         arguments:
-            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+            $providerFactory: "@donjohn.media.provider.factory"
             $classMedia: "%donjohn.media.entity%"
         tags:
             - { name: kernel.event_listener, event: kernel.view,  priority: 63 }

@@ -4,16 +4,13 @@ parameters:
 
 services:
     Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
-        class: "%donjohn.media.form.media.fine_uploader.type.class%"
         arguments:
             $classMedia: "%donjohn.media.entity%"
             $chunkSize: "%donjohn.media.chunk_size%"
             $filesystemOrphanageStorage: "@oneup_uploader.orphanage.medias"
-            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+            $providerFactory: "@donjohn.media.provider.factory"
 
-    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+    donjohn.oneup_uploader.namer.original:
         class: "%donjohn.media.uploader.naming.original_namer.class%"
-        public: true
 
-    donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
 

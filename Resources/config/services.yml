@@ -8,33 +8,29 @@ parameters:
 
 
 services:
-    Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
+    donjohn.media.subscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
-        alias: donjohn.media.subscriber
         arguments:
-            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+            $providerFactory: "@donjohn.media.provider.factory"
         tags:
             - { name: doctrine.event_subscriber }
 
 
-    Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
+    donjohn.media.provider.factory:
         class: "%donjohn.media.provider.factory.class%"
-        alias: donjohn.media.provider.factory
         arguments:
             $config: "%donjohn.media.providers.config%"
 
-    Donjohn\MediaBundle\Provider\FileProvider:
+    donjohn.media.file.provider:
         class: "%donjohn.media.provider.file.class%"
-        alias: donjohn.media.file.provider
         arguments:
-            $filesystem: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
+            $filesystem: "@donjohn.media.local.filesystem"
             $uploadFolder: "%donjohn.media.upload_folder%"
             $fileMaxSize: "%donjohn.media.file_max_size%"
 
-    Donjohn\MediaBundle\Provider\ImageProvider:
+    donjohn.media.image.provider:
         class: "%donjohn.media.provider.image.class%"
-        alias: donjohn.media.image.provider
-        parent: Donjohn\MediaBundle\Provider\FileProvider
+        parent: "@donjohn.media.file.provider"
         calls:
             - [setFilterConfiguration, ["@liip_imagine.filter.configuration"] ]
 
@@ -49,19 +45,17 @@ services:
 
     Donjohn\MediaBundle\Form\Type\MediaType:
         arguments:
-            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+            $providerFactory: "@donjohn.media.provider.factory"
             $classMedia: "%donjohn.media.entity%"
 
-    Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
+    donjohn.media.local.filesystem:
         class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
-        alias: donjohn.media.local.filesystem
         arguments:
             $webFolder: "%kernel.project_dir%/public"
 
-    Donjohn\MediaBundle\Twig\Extension\MediaExtension:
+    donjohn.media.twig.extension:
         class: "%donjohn.media.twig.extension.media.class%"
-        alias: donjohn.media.twig.extension
         arguments:
-            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
-            $twig: \Twig_Environment
+            $providerFactory: "@donjohn.media.provider.factory"
+            $twig: "@twig"
             $router: "@router"
