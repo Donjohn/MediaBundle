@@ -8,64 +8,60 @@ parameters:
 
 
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: true
-
-    Donjohn\MediaBundle\:
-        resource: '../../*'
-        exclude: '../../{Controller,Model,DependencyInjection,Event/Listener,Form/Transformer,Form/Type/MediaFineUploaderType*,Provider/Guesser,Twig/Node,Twig/TokenParser,Uploader}'
-
     Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
+        alias: donjohn.media.subscriber
+        arguments:
+            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
         tags:
             - { name: doctrine.event_subscriber }
 
 
     Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
         class: "%donjohn.media.provider.factory.class%"
+        alias: donjohn.media.provider.factory
         arguments:
             $config: "%donjohn.media.providers.config%"
 
     Donjohn\MediaBundle\Provider\FileProvider:
         class: "%donjohn.media.provider.file.class%"
+        alias: donjohn.media.file.provider
         arguments:
+            $filesystem: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
             $uploadFolder: "%donjohn.media.upload_folder%"
             $fileMaxSize: "%donjohn.media.file_max_size%"
 
     Donjohn\MediaBundle\Provider\ImageProvider:
         class: "%donjohn.media.provider.image.class%"
-        arguments:
-            $uploadFolder: "%donjohn.media.upload_folder%"
-            $fileMaxSize: "%donjohn.media.file_max_size%"
+        alias: donjohn.media.image.provider
+        parent: Donjohn\MediaBundle\Provider\FileProvider
         calls:
             - [setFilterConfiguration, ["@liip_imagine.filter.configuration"] ]
 
-    Donjohn\MediaBundle\Form\Type\:
-        resource: '../../Form/Type/*'
-        exclude: '../../Form/Type/MediaFineUploaderType*'
+    Donjohn\MediaBundle\Form\Type\MediaCollectionType:
         arguments:
+            $classMedia: "%donjohn.media.entity%"
+
+    Donjohn\MediaBundle\Form\Type\MediaGalleryType:
+        arguments:
+            $em: "@doctrine.orm.entity_manager"
+            $classMedia: "%donjohn.media.entity%"
+
+    Donjohn\MediaBundle\Form\Type\MediaType:
+        arguments:
+            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
             $classMedia: "%donjohn.media.entity%"
 
     Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
         class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
+        alias: donjohn.media.local.filesystem
         arguments:
             $webFolder: "%kernel.project_dir%/public"
 
-    twig.extension.text:
-       class: Twig_Extensions_Extension_Text
-
-    twig.extension.intl:
-        class: Twig_Extensions_Extension_Intl
-
     Donjohn\MediaBundle\Twig\Extension\MediaExtension:
         class: "%donjohn.media.twig.extension.media.class%"
-
-
-    donjohn.media.subscriber: '@Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber'
-    donjohn.media.local.filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
-    donjohn.media.provider.factory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
-    donjohn.media.file.provider: '@Donjohn\MediaBundle\Provider\FileProvider'
-    donjohn.media.image.provider: '@Donjohn\MediaBundle\Provider\ImageProvider'
-    donjohn.media.twig.extension: '@Donjohn\MediaBundle\Twig\Extension\MediaExtension'
+        alias: donjohn.media.twig.extension
+        arguments:
+            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+            $twig: \Twig_Environment
+            $router: "@router"

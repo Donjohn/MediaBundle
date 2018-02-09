@@ -3,16 +3,13 @@ parameters:
     donjohn.media.uploader.naming.original_namer.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
 
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: true
-
     Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
         class: "%donjohn.media.form.media.fine_uploader.type.class%"
         arguments:
             $classMedia: "%donjohn.media.entity%"
             $chunkSize: "%donjohn.media.chunk_size%"
+            $filesystemOrphanageStorage: "@oneup_uploader.orphanage.medias"
+            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
 
     Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
         class: "%donjohn.media.uploader.naming.original_namer.class%"

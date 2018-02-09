@@ -35,11 +35,12 @@ class MediaController extends Controller
 
     /**
      * @param Request $request
-     * @param string $provider
-     * @param int $formId
+     * @param $provider
+     * @param $formId
      * @param int $page
      * @param int $maxperpage
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function galleryAction(Request $request, $provider, $formId, $page = 1, $maxperpage = 15)
     {

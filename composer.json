@@ -19,7 +19,8 @@
         "liip/imagine-bundle": "^2.0@dev",
         "symfony/templating": "^4.0",
         "knplabs/gaufrette": "^0.5.0",
-        "white-october/pagerfanta-bundle": "^1.1.0"
+        "white-october/pagerfanta-bundle": "^1.1.0",
+        "twig/extensions": "^1.5"
 
     },
     "suggest": {
