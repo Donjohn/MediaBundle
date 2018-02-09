@@ -29,6 +29,7 @@ class MediaController extends Controller
         if (!$media = $this->get('doctrine.orm.default_entity_manager')->getRepository($this->getParameter('donjohn.media.entity'))->find($id))
             throw new NotFoundHttpException('media '.$id.' cannot be found');
 
+
         return $this->get('donjohn.media.provider.factory')->getProvider($media)->getDownloadResponse($media);
     }
 

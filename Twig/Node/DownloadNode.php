@@ -15,7 +15,7 @@ class DownloadNode extends \Twig_Node
 
     /**
      * DownloadNode constructor.
-     * @param array $extensionName
+     * @param string $extensionName
      * @param \Twig_Node_Expression $media
      * @param int $lineno
      * @param null $tag

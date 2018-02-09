@@ -72,6 +72,12 @@ class MediaExtension extends \Twig_Extension
         return 'donjohn_media';
     }
 
+    /**
+     * @param Media|null $media
+     * @param $filter
+     * @param $attributes
+     * @return string
+     */
     public function media(Media $media = null, $filter, $attributes)
     {
 

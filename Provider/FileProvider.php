@@ -8,9 +8,9 @@ use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * description 
@@ -104,9 +104,9 @@ class FileProvider extends BaseProvider {
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        if (!empty($oMedia->getBinaryContent()) )  {
+        if ($oMedia->getBinaryContent() !== null )  {
 
-            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+            $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
             if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
                 $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
@@ -140,7 +140,7 @@ class FileProvider extends BaseProvider {
      */
     public function postPersist(Media $oMedia)
     {
-        if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
+        if ($oMedia->getBinaryContent() instanceof File) {
             $newPath = $this->getFullPath($oMedia);
             $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
             $oMedia->setBinaryContent(null);
@@ -153,9 +153,9 @@ class FileProvider extends BaseProvider {
      */
     public function preUpdate(Media $oMedia)
     {
-        if (!empty($oMedia->getBinaryContent()) )  {
+        if ($oMedia->getBinaryContent() != null )  {
 
-            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+            $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
             if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
                 $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
@@ -230,9 +230,7 @@ class FileProvider extends BaseProvider {
         ), $headers);
 
 
-        return new StreamedResponse(function () use ($oMedia) {
-            readfile($this->getFullPath($oMedia));
-        }, 200, $headers);
+        return new BinaryFileResponse($this->getFullPath($oMedia), 200, $headers);
     }
 
 

@@ -14,7 +14,7 @@ class PathNode extends \Twig_Node
 
     /**
      * PathNode constructor.
-     * @param array $extensionName
+     * @param string $extensionName
      * @param \Twig_Node_Expression $media
      * @param \Twig_Node_Expression $filter
      * @param null|string $lineno

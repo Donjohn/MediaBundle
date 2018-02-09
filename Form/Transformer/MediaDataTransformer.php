@@ -62,7 +62,7 @@ class MediaDataTransformer implements DataTransformerInterface
         if (!$oMedia instanceof Media) return $oMedia;
 
         // no binary content and no media id return null
-        if (empty($oMedia->getBinaryContent()) && $oMedia->getId() === null) return null;
+        if ($oMedia->getBinaryContent() === null && $oMedia->getId() === null) return null;
 
         if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
 
@@ -84,8 +84,8 @@ class MediaDataTransformer implements DataTransformerInterface
         if (preg_match('#data:(.*);base64,.*#', $oNewMedia->getBinaryContent(),$matches)) {
 
             $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$oNewMedia->getOriginalFilename();
-            $source = fopen($oNewMedia->getBinaryContent(), 'r');
-            $destination = fopen($tmpFile, 'w');
+            $source = fopen($oNewMedia->getBinaryContent(), 'rb');
+            $destination = fopen($tmpFile, 'wb');
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);

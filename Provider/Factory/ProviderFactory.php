@@ -88,8 +88,9 @@ class ProviderFactory {
         foreach ($this->providers as $provider) {
             $guesses[] = $provider->guess($file);
         }
-
-        return ProviderGuess::getBestGuess($guesses);
+        $result = ProviderGuess::getBestGuess($guesses);
+        if ($result === null) throw new NotFoundProviderException('could not guess a provider for file '.$file->getFilename());
+        return $result;
     }
 
     /**

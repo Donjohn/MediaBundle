@@ -127,7 +127,7 @@ class ImageProvider extends FileProvider  {
     public function getPath(Media $oMedia, $filter= null)
     {
         $path = parent::getPath($oMedia);
-        return  ($filter && $filter!='reference') ? $this->cacheManager->getBrowserPath($path, $filter) : $path;
+        return  ($filter && $filter!=='reference') ? $this->cacheManager->getBrowserPath($path, $filter) : $path;
     }
 
     
