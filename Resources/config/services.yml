@@ -30,7 +30,7 @@ services:
 
     donjohn.media.image.provider:
         class: "%donjohn.media.provider.image.class%"
-        parent: "@donjohn.media.file.provider"
+        parent: donjohn.media.file.provider
         calls:
             - [setFilterConfiguration, ["@liip_imagine.filter.configuration"] ]
 
