@@ -2,10 +2,11 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
+use Doctrine\Common\Util\ClassUtils;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\DataTransformerInterface;
-use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -21,11 +22,6 @@ class MediaDataTransformer implements DataTransformerInterface
     /** @var  ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
-
     /** @var bool $createOnUpdate  */
     protected $createOnUpdate;
 
@@ -33,14 +29,12 @@ class MediaDataTransformer implements DataTransformerInterface
      * MediaDataTransformer constructor.
      * @param ProviderFactory $providerFactory
      * @param null $providerAlias
-     * @param string $classMedia
      * @param boolean $createOnUpdate
      */
-    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia, $createOnUpdate)
+    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $createOnUpdate)
     {
         $this->providerAlias = $providerAlias;
         $this->providerFactory = $providerFactory;
-        $this->classMedia = $classMedia;
         $this->createOnUpdate = $createOnUpdate;
     }
 
@@ -55,21 +49,22 @@ class MediaDataTransformer implements DataTransformerInterface
 
     /**
      * @param mixed $oMedia
-     * @return Media|mixed|null
+     * @return MediaInterface|mixed|null
      */
     public function reverseTransform($oMedia)
     {
-        if (!$oMedia instanceof Media) return $oMedia;
+        if (!$oMedia instanceof MediaInterface) return $oMedia;
 
         // no binary content and no media id return null
         if ($oMedia->getBinaryContent() === null && $oMedia->getId() === null) return null;
 
-        if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
+        if (!($oMedia instanceof MediaInterface) || (!$oMedia->getBinaryContent())) return $oMedia;
 
 
-        /** @var $oNewMedia Media */
+        /** @var $oNewMedia MediaInterface */
         if ($this->createOnUpdate && $oMedia->getId()) {
-            $oNewMedia = new $this->classMedia();
+            $classMedia = ClassUtils::getRealClass($oMedia);
+            $oNewMedia = new $classMedia;
             $oNewMedia->setBinaryContent($oMedia->getBinaryContent());
             $oMedia->setBinaryContent(null);
         }

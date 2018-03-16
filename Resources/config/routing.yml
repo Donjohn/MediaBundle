@@ -1,20 +1,3 @@
-donjohn_media_download:
-    path: /media/download/{id}
-    defaults: { _controller: DonjohnMediaBundle:Media:download }
-
-donjohn_media_gallery:
-    path: /media/gallery/{provider}/{formId}/{page}
-    defaults: { _controller: DonjohnMediaBundle:Media:gallery, page: 1 }
-    requirements:
-          id: \d+
-          page: \d+
-
-donjohn_media_render_form:
-    path: /media/render
-    defaults: { _controller: DonjohnMediaBundle:Media:renderFormMedia }
-    requirements:
-          id: \d+
-
 donjohn_media_cancel_fine_uploader:
     path: /media/fine-uploader/cancel/{id}
     defaults: { _controller: DonjohnMediaBundle:FineUploader:cancelFineUploader, id: null }

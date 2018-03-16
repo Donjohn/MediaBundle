@@ -8,7 +8,7 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
@@ -30,11 +30,6 @@ class MediaFineUploaderType extends AbstractType
     /** @var  ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
-
     /** @var string $chunkSize */
     protected $chunkSize;
 
@@ -43,14 +38,12 @@ class MediaFineUploaderType extends AbstractType
      * MediaFineUploaderType constructor.
      * @param FilesystemOrphanageStorage $filesystemOrphanageStorage
      * @param ProviderFactory $providerFactory
-     * @param string $classMedia
      * @param string $chunkSize
      */
-    public function __construct($classMedia, $chunkSize, FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory)
+    public function __construct($chunkSize, FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory)
     {
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
         $this->providerFactory = $providerFactory;
-        $this->classMedia = $classMedia;
         $this->chunkSize = $chunkSize;
     }
 
@@ -74,13 +67,15 @@ class MediaFineUploaderType extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
                 'allow_extra_fields' => true,
-                'entry_type' => MediaType::class,
                 'provider' => 'file',
                 'entry_options' => array(),
                 'prototype' => false,
                 'required' => true,
                 'multiple' => true,
                 ));
+
+
+        $resolver->setRequired(['entry_type']);
 
         $entryOptionsNormalizer = function (Options $options, $value) {
             $value['mediazone'] = false;
@@ -105,17 +100,17 @@ class MediaFineUploaderType extends AbstractType
 
         $builder->addEventListener(
                 FormEvents::SUBMIT ,
-                function (FormEvent $event) {
+                function (FormEvent $event) use ($options) {
 
                     $uploadedFiles = $this->filesystemOrphanageStorage->getFiles();
 
                     $data = $event->getData() ?: [] ;
                     /** @var \SplFileInfo $file */
                     foreach ($uploadedFiles as $uploadedFile)  {
-                        /** @var Media $media */
+                        /** @var MediaInterface $media */
                         $file = new File($uploadedFile->getPathname());
 
-                        $media = new $this->classMedia();
+                        $media = new $options['entry_type'];
                         $media->setBinaryContent( $file )
                             ->setProviderName( $this->providerFactory->guessProvider($file)->getProviderAlias())
                             ->setOriginalFilename( $file->getBasename());
@@ -135,15 +130,15 @@ class MediaFineUploaderType extends AbstractType
     {
         $number=substr($this->chunkSize,0,-1);
         switch(strtoupper(substr($this->chunkSize,-1))){
-            case "K":
+            case 'K':
                 return $number*1024;
-            case "M":
+            case 'M':
                 return $number*pow(1024,2);
-            case "G":
+            case 'G':
                 return $number*pow(1024,3);
-            case "T":
+            case 'T':
                 return $number*pow(1024,4);
-            case "P":
+            case 'P':
                 return $number*pow(1024,5);
             default:
                 return $this->chunkSize;

@@ -3,9 +3,10 @@
 namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem;
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Gaufrette\Exception\FileNotFound;
+use Gaufrette\FilesystemInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileProvider extends BaseProvider {
 
     /**
-     * @var \Gaufrette\Filesystem
+     * @var MediaLocalFilesystem
      */
     protected $filesystem;
 
@@ -31,11 +32,11 @@ class FileProvider extends BaseProvider {
 
     /**
      * FileProvider constructor.
-     * @param MediaLocalFilesystem $filesystem
+     * @param FilesystemInterface $filesystem
      * @param string $uploadFolder
      * @param string $fileMaxSize
      */
-    public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
+    public function __construct(FilesystemInterface $filesystem, $uploadFolder, $fileMaxSize)
     {
 
         $this->filesystem = $filesystem;
@@ -55,7 +56,7 @@ class FileProvider extends BaseProvider {
      /**
      * @inheritdoc
      */
-    public function getPath(Media $oMedia, $filter= null)
+    public function getPath(MediaInterface $oMedia, $filter= null)
     {
         $firstLevel=100000;
         $secondLevel=1000;
@@ -69,16 +70,16 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function getFullPath(Media $oMedia, $filter = null)
+    public function getFullPath(MediaInterface $oMedia, $filter = null)
     {
         return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
     }
 
     /**
-     * @param Media $oMedia
+     * @param MediaInterface $oMedia
      * @return bool
      */
-    protected function delete(Media $oMedia)
+    protected function delete(MediaInterface $oMedia)
     {
         try {
             return $this->filesystem->delete($this->getPath($oMedia));
@@ -92,7 +93,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function prePersist(Media $oMedia)
+    public function prePersist(MediaInterface $oMedia)
     {
         $fileName='';
         if ($oMedia->getBinaryContent() instanceof UploadedFile) {
@@ -108,7 +109,7 @@ class FileProvider extends BaseProvider {
 
             $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
-            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            if(stripos(PHP_OS, 'WIN') === 0)
                 $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
             else {
                 $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
@@ -130,7 +131,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function postLoad(Media $oMedia)
+    public function postLoad(MediaInterface $oMedia)
     {
         $oMedia->setPaths(array('reference' => $this->getPath($oMedia)));
     }
@@ -138,7 +139,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function postPersist(Media $oMedia)
+    public function postPersist(MediaInterface $oMedia)
     {
         if ($oMedia->getBinaryContent() instanceof File) {
             $newPath = $this->getFullPath($oMedia);
@@ -151,13 +152,13 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function preUpdate(Media $oMedia)
+    public function preUpdate(MediaInterface $oMedia)
     {
-        if ($oMedia->getBinaryContent() != null )  {
+        if ($oMedia->getBinaryContent() !== null )  {
 
             $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
 
-            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            if(stripos(PHP_OS, 'WIN') === 0)
                 $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
             else {
                 $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
@@ -169,18 +170,18 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function postUpdate(Media $oMedia)
+    public function postUpdate(MediaInterface $oMedia)
     {
         $this->postPersist($oMedia);
         $oldMedia = $oMedia->oldMedia();
-        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
+        if ($oldMedia instanceof MediaInterface) $this->preRemove($oldMedia);
 
     }
 
     /**
      * @inheritdoc
      */
-    public function preRemove(Media $oMedia)
+    public function preRemove(MediaInterface $oMedia)
     {
         return $this->delete($oMedia);
 
@@ -189,7 +190,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function extractMetaData(Media $oMedia)
+    public function extractMetaData(MediaInterface $oMedia)
     {
         //Implement extractMetaData() method.
     }
@@ -221,7 +222,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function getDownloadResponse(Media $oMedia, array $headers = array())
+    public function getDownloadResponse(MediaInterface $oMedia, array $headers = array())
     {
         // build the default headers
         $headers = array_merge(array(

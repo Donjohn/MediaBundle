@@ -13,10 +13,6 @@ class ProviderCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition(
-            'donjohn.media.provider.factory'
-        );
-
         $taggedServices = $container->findTaggedServiceIds(
             'media.provider'
         );
@@ -24,10 +20,11 @@ class ProviderCompilerPass implements CompilerPassInterface
 
         foreach ($taggedServices as $id => $tagAttributes) {
             foreach ($tagAttributes as $attributes) {
-                $definition->addMethodCall(
-                    'addProvider',
-                    array(new Reference($id))
-                );
+                $container->getDefinition('donjohn.media.provider.factory')
+                            ->addMethodCall('addProvider', array(new Reference($id)) );
+
+                $container->getDefinition($id)
+                            ->addMethodCall('setTwig', [new Reference('twig')]);
             }
         }
     }

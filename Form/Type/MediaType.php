@@ -8,8 +8,8 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -29,19 +29,12 @@ class MediaType extends AbstractType
     protected $providerFactory;
 
     /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
-
-    /**
      * MediaType constructor.
      * @param ProviderFactory $providerFactory
-     * @param string $classMedia
      */
-    public function __construct( ProviderFactory $providerFactory, $classMedia)
+    public function __construct( ProviderFactory $providerFactory)
     {
         $this->providerFactory = $providerFactory;
-        $this->classMedia = $classMedia;
     }
 
 
@@ -59,13 +52,13 @@ class MediaType extends AbstractType
                 'invalid_message' => 'media.error.transform',
                 'allow_delete' => true,
                 'multiple' => false,
-                'data_class' => $this->classMedia,
                 'required' => false,
                 'delete_empty' => true,
                 'gallery' => false,
                 'oneup' => false,
                 'create_on_update' => false
                 ));
+        $resolver->setRequired(['data_class']);
     }
 
     /**
@@ -74,7 +67,7 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
+        $media = ($builder->getData() instanceof MediaInterface && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $this->providerFactory->guessProvider(null)->getProviderAlias());
 
 
@@ -93,7 +86,7 @@ class MediaType extends AbstractType
 
         if ($options['allow_delete']){
             $formEventUnlink = function(FormEvent $event) use ($options) {
-                if ($event->getData() || $options['multiple']) {
+                if ($options['multiple'] || $event->getData()) {
                     $event->getForm()->add('unlink', CheckboxType::class, array(
                         'mapped'   => false,
                         'data'     => false,
@@ -124,7 +117,7 @@ class MediaType extends AbstractType
             );
         }
 
-        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $this->classMedia, $options['create_on_update']));
+        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $options['create_on_update']));
 
     }
 

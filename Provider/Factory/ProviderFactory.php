@@ -2,11 +2,12 @@
 
 namespace Donjohn\MediaBundle\Provider\Factory;
 
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
 use RuntimeException;
+use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -35,8 +36,8 @@ class ProviderFactory {
     public function __construct(array $config)
     {
         $this->templates = array_map(function($item) {return $item['template'];}, $config);
-        $this->allowedTypes = array_map(function($item) {return $item['allowed_types'];}, $config);;
-        $this->enables = array_map(function($item) {return $item['enabled'];}, $config);;
+        $this->allowedTypes = array_map(function($item) {return $item['allowed_types'];}, $config);
+        $this->enables = array_map(function($item) {return $item['enabled'];}, $config);
     }
 
     /**
@@ -54,13 +55,13 @@ class ProviderFactory {
 
     /**
      * get Media
-     * @param string|Media $mixed or Media
+     * @param string|MediaInterface $mixed or Media
      * @return ProviderInterface $provider
      * @throws RuntimeException
      */
     public function getProvider($mixed) {
 
-        $alias = $mixed instanceof Media ? $mixed->getProviderName() : $mixed;
+        $alias = $mixed instanceof MediaInterface ? $mixed->getProviderName() : $mixed;
 
         if (array_key_exists($alias, $this->providers)) {
             return $this->providers[$alias];
@@ -78,7 +79,8 @@ class ProviderFactory {
 
     /**
      * @param File $file
-     * @return null|ProviderGuess
+     * @return ProviderGuess|Guess
+     * @throws NotFoundProviderException
      */
     public function guessProvider($file = null)
     {

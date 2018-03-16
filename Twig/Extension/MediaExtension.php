@@ -8,13 +8,11 @@
 namespace Donjohn\MediaBundle\Twig\Extension;
 
 
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
-use Donjohn\MediaBundle\Twig\TokenParser\DownloadTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
-use Symfony\Component\Routing\RouterInterface;
 
 
 class MediaExtension extends \Twig_Extension
@@ -25,26 +23,12 @@ class MediaExtension extends \Twig_Extension
     protected $providerFactory;
 
     /**
-     * @var \Twig_Environment $twig
-     */
-    protected $twig;
-
-    /**
-     * @var RouterInterface $router
-     */
-    protected $router;
-
-    /**
      * MediaExtension constructor.
      * @param ProviderFactory $providerFactory
-     * @param \Twig_Environment $twig
-     * @param RouterInterface $router
      */
-    public function __construct(ProviderFactory $providerFactory, \Twig_Environment $twig, RouterInterface $router)
+    public function __construct(ProviderFactory $providerFactory)
     {
         $this->providerFactory = $providerFactory;
-        $this->twig = $twig;
-        $this->router = $router;
     }
 
 
@@ -56,7 +40,6 @@ class MediaExtension extends \Twig_Extension
         return array(
             new MediaTokenParser(self::class),
             new PathTokenParser(self::class),
-            new DownloadTokenParser(self::class),
         );
     }
 
@@ -73,40 +56,38 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param Media|null $media
+     * @param MediaInterface|null $media
      * @param $filter
      * @param $attributes
      * @return string
      */
-    public function media(Media $media = null, $filter, $attributes)
+    public function media(MediaInterface $media = null, $filter, $attributes)
     {
-
-        try {
-            $provider = $this->providerFactory->getProvider($media);
+        if ($media !== null) {
+            try {
+                $provider = $this->providerFactory->getProvider($media);
+                return $provider->render($media, $filter, $attributes);
+            }
+            catch (NotFoundProviderException $e){}
+            catch (\Twig_Error $e){}
         }
-        catch (NotFoundProviderException $e) {
-            return '';
-        }
-        return $provider->render($this->twig, $media, $filter, $attributes);
+        return '';
 
     }
 
 
-    public function path(Media $media = null, $filter)
+    public function path(MediaInterface $media = null, $filter)
     {
-        try {
-            $provider = $this->providerFactory->getProvider($media);
+        if ($media !== null) {
+            try {
+                $provider = $this->providerFactory->getProvider($media);
+                return $provider->getPath($media, $filter);
+            }
+            catch (NotFoundProviderException $e){}
         }
-        catch (NotFoundProviderException $e) {
-            return '';
-        }
-        return $provider->getPath($media, $filter);
 
-    }
+        return '';
 
-    public function download(Media $media = null)
-    {
-        return $media && $media->getId() ? $this->router->generate('donjohn_media_download',array('id' => $media->getId())) : null;
 
     }
 

@@ -1,10 +1,9 @@
 <?php
-namespace Donjohn\MediaBundle\Event\Subscriber;
+namespace Donjohn\MediaBundle\EventListener;
 
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
-
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 
 /**
@@ -40,7 +39,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function postLoad(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->postLoad($oMedia);
+        if ($oMedia instanceof MediaInterface )$this->providerFactory->getProvider($oMedia)->postLoad($oMedia);
     }
 
     /**
@@ -49,7 +48,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function prePersist(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->prePersist($oMedia);
+        if ($oMedia instanceof MediaInterface )$this->providerFactory->getProvider($oMedia)->prePersist($oMedia);
     }
     
     /**
@@ -58,7 +57,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function postPersist(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media )$this->providerFactory->getProvider($oMedia)->postPersist($oMedia);
+        if ($oMedia instanceof MediaInterface )$this->providerFactory->getProvider($oMedia)->postPersist($oMedia);
     }
 
     /**
@@ -67,7 +66,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function preUpdate(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->preUpdate($oMedia);
+        if ($oMedia instanceof MediaInterface) $this->providerFactory->getProvider($oMedia)->preUpdate($oMedia);
     }
 
     /**
@@ -76,7 +75,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function postUpdate(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->postUpdate($oMedia);
+        if ($oMedia instanceof MediaInterface) $this->providerFactory->getProvider($oMedia)->postUpdate($oMedia);
     }
 
 
@@ -86,7 +85,7 @@ class MediaSubscriber implements EventSubscriber {
      */
     public function preRemove(LifecycleEventArgs $args) {
         $oMedia = $args->getEntity();
-        if ($oMedia instanceof Media) $this->providerFactory->getProvider($oMedia)->preRemove($oMedia);
+        if ($oMedia instanceof MediaInterface) $this->providerFactory->getProvider($oMedia)->preRemove($oMedia);
     }
 
     

@@ -48,7 +48,7 @@ $(function () {
         return $(document.createElement('img')).attr('src', reader.result).attr('height', $(formGroup).data('thumbnail-height')).addClass('img-rounded visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block');
     };
 
-    var media_file = function(file, reader, formGroup){
+    var media_file = function(file){
         return file.name;
     };
 

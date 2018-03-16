@@ -2,7 +2,7 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Gaufrette\Exception\FileNotFound;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Liip\ImagineBundle\Imagine\Filter\FilterConfiguration;
@@ -68,7 +68,7 @@ class ImageProvider extends FileProvider  {
      */
     public function addEditForm(FormBuilderInterface $builder, array $options)
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
+        $options['constraints'] = array(new File([
                         'maxSize' => $this->fileMaxSize,
                         'mimeTypes' => $this->getAllowedTypes()
                     ]));
@@ -90,7 +90,7 @@ class ImageProvider extends FileProvider  {
     /**
      * @inheritdoc
      */
-    protected function delete(Media $oMedia, $filter=null)
+    protected function delete(MediaInterface $oMedia, $filter=null)
     {
         try {
             return $this->filesystem->delete($this->getPath($oMedia, $filter));
@@ -103,7 +103,7 @@ class ImageProvider extends FileProvider  {
     /**
      * @inheritdoc
      */
-    public function postLoad(Media $oMedia)
+    public function postLoad(MediaInterface $oMedia)
     {
         $paths = array('reference' => $this->router->getContext()->getScheme().'://'.$this->router->getContext()->getHost().$this->getPath($oMedia));
         foreach ($this->filterConfiguration->all() as $filter=> $configuration) $paths[$filter] = $this->getPath($oMedia, $filter);
@@ -113,7 +113,7 @@ class ImageProvider extends FileProvider  {
     /**
      * @inheritdoc
      */
-    public function preRemove(Media $oMedia)
+    public function preRemove(MediaInterface $oMedia)
     {
         $this->delete($oMedia);
         foreach ($this->filterConfiguration->all() as $filter=> $configuration) $this->delete($oMedia, $filter);
@@ -124,7 +124,7 @@ class ImageProvider extends FileProvider  {
     /**
      * @inheritdoc
      */
-    public function getPath(Media $oMedia, $filter= null)
+    public function getPath(MediaInterface $oMedia, $filter= null)
     {
         $path = parent::getPath($oMedia);
         return  ($filter && $filter!=='reference') ? $this->cacheManager->getBrowserPath($path, $filter) : $path;

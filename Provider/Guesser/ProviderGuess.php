@@ -34,19 +34,4 @@ class ProviderGuess extends Guess
         return $this->providerAlias;
     }
 
-    /**
-     * Returns the guess most likely to be correct from a list of guesses.
-     *
-     * If there are multiple guesses with the same, highest confidence, the
-     * returned guess is any of them.
-     *
-     * @param ProviderGuess[] $guesses An array of guesses
-     *
-     * @return Guess|ProviderGuess|null
-     */
-    public static function getBestGuess(array $guesses)
-    {
-        return parent::getBestGuess($guesses);
-    }
-
 }

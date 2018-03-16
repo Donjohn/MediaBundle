@@ -23,32 +23,3 @@
         {{ form_widget(form) }}
     {% endif%}
 {% endblock media_collection_widget %}
-
-{% block media_gallery_widget %}
-    {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-    {{ form_widget(form, {attr: {class: 'hidden'}}) }}
-    <script type="text/javascript">
-        var pickMedia{{ id }} = function(message)
-        {
-            var input = $(document).find('#{{ id }}');
-            input.val(message);
-
-            $.ajax({
-                method: "get",
-                url: '{{ path('donjohn_media_render_form') }}?id=' + message,
-                cache: false,
-                data: message
-            })
-                .done(function(data){
-                    $(input).parent().find('.media-info').remove();
-                    $(input).before(data);
-                });
-        }
-
-    </script>
-    <button onclick="open('{{ path('donjohn_media_gallery', {formId: id, provider: provider}) }}', '{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}', 'scrollbars=1,resizable=0,height=660,width=770'); return false;" class="show-media-gallery" class="btn btn-download">{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}</button>
-{% endblock %}
-
-{% block media_select_widget %}
-    {{ block('media_gallery_widget') }}
-{% endblock %}

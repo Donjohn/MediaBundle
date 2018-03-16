@@ -1,5 +1,5 @@
 parameters:
-    donjohn.media.event.media_subscriber.class: Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber
+    donjohn.media.event.media_subscriber.class: Donjohn\MediaBundle\EventListener\MediaSubscriber
     donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
     donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
@@ -27,26 +27,18 @@ services:
             $filesystem: "@donjohn.media.local.filesystem"
             $uploadFolder: "%donjohn.media.upload_folder%"
             $fileMaxSize: "%donjohn.media.file_max_size%"
+        tags: [media.provider]
 
     donjohn.media.image.provider:
         class: "%donjohn.media.provider.image.class%"
         parent: donjohn.media.file.provider
         calls:
             - [setFilterConfiguration, ["@liip_imagine.filter.configuration"] ]
-
-    Donjohn\MediaBundle\Form\Type\MediaCollectionType:
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
-
-    Donjohn\MediaBundle\Form\Type\MediaGalleryType:
-        arguments:
-            $em: "@doctrine.orm.entity_manager"
-            $classMedia: "%donjohn.media.entity%"
+        tags: [media.provider]
 
     Donjohn\MediaBundle\Form\Type\MediaType:
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
-            $classMedia: "%donjohn.media.entity%"
 
     donjohn.media.local.filesystem:
         class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
@@ -57,5 +49,3 @@ services:
         class: "%donjohn.media.twig.extension.media.class%"
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
-            $twig: "@twig"
-            $router: "@router"

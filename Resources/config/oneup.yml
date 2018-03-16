@@ -5,7 +5,6 @@ parameters:
 services:
     Donjohn\MediaBundle\Form\Type\MediaFineUploaderType:
         arguments:
-            $classMedia: "%donjohn.media.entity%"
             $chunkSize: "%donjohn.media.chunk_size%"
             $filesystemOrphanageStorage: "@oneup_uploader.orphanage.medias"
             $providerFactory: "@donjohn.media.provider.factory"

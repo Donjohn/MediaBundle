@@ -21,20 +21,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class MediaCollectionType extends AbstractType
 {
     /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
-
-    /**
-     * MediaCollectionType constructor.
-     * @param $classMedia
-     */
-    public function __construct( $classMedia )
-    {
-        $this->classMedia = $classMedia;
-    }
-
-    /**
      * @inheritdoc
      */
     public function getParent()
@@ -54,6 +40,7 @@ class MediaCollectionType extends AbstractType
                         foreach ($event->getData() as $media)
                         {
                             if (!isset($media['binaryContent'])) continue;
+
                             if (is_array($media['binaryContent'])) {
                                 $totalBinary = count($media['binaryContent']);
                                 for ($i=0; $i<$totalBinary; $i++) {
@@ -93,11 +80,11 @@ class MediaCollectionType extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
                 'allow_extra_fields' => true,
-                'entry_type' => MediaType::class,
                 'provider' => null,
                 'mediazone' => true,
                 'entry_options' => array()
                 ));
+        $resolver->setRequired(['entry_type']);
 
         $entryOptionsNormalizer = function (Options $options, $value) {
             $value['mediazone'] = false;

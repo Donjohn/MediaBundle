@@ -2,7 +2,7 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\Model\MediaInterface;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Symfony\Component\Form\Guess\Guess;
@@ -24,6 +24,11 @@ abstract class BaseProvider implements ProviderInterface {
      * @var array
      */
     private $allowedTypes;
+
+    /**
+     * @var \Twig_Environment $twig
+     */
+    private $twig;
 
     /**
      * @param $template
@@ -67,11 +72,26 @@ abstract class BaseProvider implements ProviderInterface {
      */
     abstract public function getAlias();
 
+
     /**
-     * @inheritdoc
+     * @param \Twig_Environment $twig
      */
-    public function render(\Twig_Environment $twig, Media $media, $filter = null, $options = array()){
-        return $twig->render($this->getTemplate(),
+    public function setTwig(\Twig_Environment $twig)
+    {
+        $this->twig = $twig;
+    }
+
+    /**
+     * @param MediaInterface $media
+     * @param null $filter
+     * @param array $options
+     * @return string
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function render(MediaInterface $media, $filter = null, array $options = array()){
+        return $this->twig->render($this->getTemplate(),
                             array('media' => $media,
                                 'filter' => $filter,
                                 'options' => $options)
@@ -95,7 +115,7 @@ abstract class BaseProvider implements ProviderInterface {
     final public function guess($file = null){
 
         $guesses = [];
-        if (count($this->allowedTypes) && $file) {
+        if ($file instanceof File && count($this->allowedTypes)) {
             if (preg_match('#'.implode('|',$this->allowedTypes).'#', $file->getMimeType())) {
                 $guesses[] = new ProviderGuess($this->getAlias(), Guess::HIGH_CONFIDENCE);
             } else {

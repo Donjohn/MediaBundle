@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 */
 
 
-class Media
+class Media implements MediaInterface
 {
     protected $id;
     
