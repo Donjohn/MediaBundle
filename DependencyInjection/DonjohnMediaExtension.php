@@ -8,7 +8,6 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 
 /**
  * This is the class that loads and manages your bundle configuration
@@ -57,6 +56,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         );
         $upload_folder = $config['upload_folder'];
 
+        $container->setParameter('media_mediazone_border_color', '#205081');
         if ($container->hasExtension('easy_admin')) {
             $config = $container->getExtensionConfig('easy_admin');
             $config = $this->processConfiguration(
@@ -65,28 +65,23 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             );
 
             $container->setParameter('media_mediazone_border_color', $config['design']['brand_color']);
-        } else {
-            $container->setParameter('media_mediazone_border_color', '#205081');
         }
 
+        $container->setParameter('media_mediazone_thumbnail_height', 90);
+        if ($container->hasExtension('liip_imagine')) {
+            $config = $container->getExtensionConfig('liip_imagine');
+            $config = $this->processConfiguration(
+                $container->getExtension('liip_imagine')->getConfiguration($config, $container),
+                $config
+            );
 
+            if (isset($config['loaders']['default']['filesystem']['data_root']))
+            {
+                $config['loaders']['default']['filesystem']['data_root'] = [$upload_folder];
+            }
 
-        $config = $container->getExtensionConfig('liip_imagine');
-        $config = $this->processConfiguration(
-            $container->getExtension('liip_imagine')->getConfiguration($config, $container),
-            $config
-        );
-
-        if (isset($config['loaders']['default']['filesystem']['data_root']))
-        {
-            $config['loaders']['default']['filesystem']['data_root'] = [$upload_folder];
+            $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
         }
-
-        if (!isset($config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0])) {
-            throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
-        }
-
-        $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
     }
 
 
