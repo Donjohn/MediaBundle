@@ -12,9 +12,7 @@ services:
         class: "%donjohn.media.event.media_subscriber.class%"
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
-        tags:
-            - { name: doctrine.event_subscriber }
-
+        tags: [doctrine.event_subscriber]
 
     donjohn.media.provider.factory:
         class: "%donjohn.media.provider.factory.class%"
@@ -50,3 +48,4 @@ services:
         class: "%donjohn.media.twig.extension.media.class%"
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
+        tags: [twig.extension]
