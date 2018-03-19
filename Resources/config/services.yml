@@ -39,6 +39,7 @@ services:
     Donjohn\MediaBundle\Form\Type\MediaType:
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
+        tags: [form.type]
 
     donjohn.media.local.filesystem:
         class: "%donjohn.media.filesystem.media.locale.filesystem.class%"

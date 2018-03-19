@@ -8,6 +8,7 @@ services:
             $chunkSize: "%donjohn.media.chunk_size%"
             $filesystemOrphanageStorage: "@oneup_uploader.orphanage.medias"
             $providerFactory: "@donjohn.media.provider.factory"
+        tags: [form.type]
 
     donjohn.oneup_uploader.namer.original:
         class: "%donjohn.media.uploader.naming.original_namer.class%"
