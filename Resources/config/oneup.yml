@@ -10,7 +10,8 @@ services:
             $providerFactory: "@donjohn.media.provider.factory"
         tags: [form.type]
 
-    donjohn.oneup_uploader.namer.original:
+    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
         class: "%donjohn.media.uploader.naming.original_namer.class%"
+        public: true
 
 
