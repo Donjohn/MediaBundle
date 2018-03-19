@@ -5,7 +5,7 @@
 <div id="alert-{{ id }}"></div>
 
     <script type="text/javascript">
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('load', function() {
             qq.uiPrivateApi._isEditFilenameEnabled = function(){
                 return this._templating.isEditFilenamePossible() && qq.FilenameClickHandler && qq.FilenameInputFocusHandler && qq.FilenameInputFocusHandler;
             };
