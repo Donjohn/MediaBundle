@@ -41,10 +41,6 @@ class YourMedia extends BaseMedia
      * @ORM\GeneratedValue(strategy="IDENTITY")
     */
     protected $id;
-    
-    public function getId(){
-        return $this->id;
-    }
 }
 ```
 
