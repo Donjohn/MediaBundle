@@ -2,7 +2,8 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Symfony\Component\Form\Guess\Guess;
@@ -28,7 +29,13 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @var \Twig_Environment $twig
      */
-    private $twig;
+    protected $twig;
+
+
+    /**
+     * @var MediaFilesystemInterface $mediaFilesystem
+     */
+    protected $mediaFilesystem;
 
     /**
      * @param $template
@@ -50,6 +57,13 @@ abstract class BaseProvider implements ProviderInterface {
         $this->allowedTypes = $allowedTypes;
         return $this;
     }
+
+    public function setMediaFilesystem(MediaFilesystemInterface $filesystem)
+    {
+        $this->mediaFilesystem = $filesystem;
+        return $this;
+    }
+
 
     /**
      * @return array
@@ -76,21 +90,27 @@ abstract class BaseProvider implements ProviderInterface {
     /**
      * @param \Twig_Environment $twig
      */
-    public function setTwig(\Twig_Environment $twig)
+    final public function setTwig(\Twig_Environment $twig)
     {
         $this->twig = $twig;
     }
 
+
     /**
-     * @param MediaInterface $media
+     * @param \Twig_Environment $twig
+     */
+    final public function setFilesytem(MediaFilesystemInterface $mediaFilesystem)
+    {
+        $this->mediaFilesystem = $mediaFilesystem;
+    }
+
+    /**
+     * @param Media $media
      * @param null $filter
      * @param array $options
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
-    public function render(MediaInterface $media, $filter = null, array $options = array()){
+    public function render(Media $media, $filter = 'reference', array $options = array()){
         return $this->twig->render($this->getTemplate(),
                             array('media' => $media,
                                 'filter' => $filter,
@@ -103,7 +123,7 @@ abstract class BaseProvider implements ProviderInterface {
      */
     final public function validateMimeType($type)
     {
-        if (count($this->allowedTypes) && !preg_match('#'.implode('|',$this->allowedTypes).'#', $type)) throw new InvalidMimeTypeException(sprintf('%s is not supported', $type));
+        if (count($this->getAllowedTypes()) && !preg_match('#'.implode('|',$this->getAllowedTypes()).'#', $type)) throw new InvalidMimeTypeException(sprintf('%s is not supported', $type));
 
         return true;
     }
@@ -115,8 +135,8 @@ abstract class BaseProvider implements ProviderInterface {
     final public function guess($file = null){
 
         $guesses = [];
-        if ($file instanceof File && count($this->allowedTypes)) {
-            if (preg_match('#'.implode('|',$this->allowedTypes).'#', $file->getMimeType())) {
+        if ($file instanceof File && count($this->getAllowedTypes())) {
+            if (preg_match('#'.implode('|',$this->getAllowedTypes()).'#', $file->getMimeType())) {
                 $guesses[] = new ProviderGuess($this->getAlias(), Guess::HIGH_CONFIDENCE);
             } else {
                 $guesses[] = new ProviderGuess($this->getAlias(), Guess::LOW_CONFIDENCE);

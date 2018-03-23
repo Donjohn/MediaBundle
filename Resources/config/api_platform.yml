@@ -1,5 +1,6 @@
 parameters:
     donjohn.media.event.api_listener.class: Donjohn\MediaBundle\EventListener\ApiListener
+
 services:
     donjohn.media.event.api_listener:
         class: "%donjohn.media.event.api_listener.class%"

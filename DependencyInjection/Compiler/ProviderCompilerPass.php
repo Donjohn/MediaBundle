@@ -17,15 +17,12 @@ class ProviderCompilerPass implements CompilerPassInterface
             'media.provider'
         );
 
+        foreach ($taggedServices as $providerId => $tagAttributes) {
+            $container->getDefinition('donjohn.media.provider.factory')
+                        ->addMethodCall('addProvider', array(new Reference($providerId)) );
 
-        foreach ($taggedServices as $id => $tagAttributes) {
-            foreach ($tagAttributes as $attributes) {
-                $container->getDefinition('donjohn.media.provider.factory')
-                            ->addMethodCall('addProvider', array(new Reference($id)) );
-
-                $container->getDefinition($id)
-                            ->addMethodCall('setTwig', [new Reference('twig')]);
-            }
+            $providerDefinition = $container->getDefinition($providerId);
+            $providerDefinition->addMethodCall('setTwig', [new Reference('twig')]);
         }
     }
 }

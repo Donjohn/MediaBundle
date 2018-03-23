@@ -9,7 +9,7 @@ namespace Donjohn\MediaBundle\Form\Type;
 
 
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -67,7 +67,7 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $media = ($builder->getData() instanceof MediaInterface && $builder->getData()->getId()) ? $builder->getData() : null;
+        $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
         $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $this->providerFactory->guessProvider(null)->getProviderAlias());
 
 

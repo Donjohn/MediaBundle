@@ -2,7 +2,7 @@
 
 namespace Donjohn\MediaBundle\Provider\Factory;
 
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
@@ -22,6 +22,8 @@ class ProviderFactory {
     protected $providers = array();
     /** @var array $allowedTypes */
     protected $allowedTypes = array();
+    /** @var array $filesystem */
+    protected $filesystem = array();
     /** @var array $enables */
     protected $enables = array();
     /**
@@ -55,19 +57,19 @@ class ProviderFactory {
 
     /**
      * get Media
-     * @param string|MediaInterface $mixed or Media
+     * @param string|Media $mixed or Media
      * @return ProviderInterface $provider
      * @throws RuntimeException
      */
     public function getProvider($mixed) {
 
-        $alias = $mixed instanceof MediaInterface ? $mixed->getProviderName() : $mixed;
+        $alias = $mixed instanceof Media ? $mixed->getProviderName() : $mixed;
 
         if (array_key_exists($alias, $this->providers)) {
             return $this->providers[$alias];
         }
 
-        throw new NotFoundProviderException('no provider "' . $alias . '" enabled');
+        throw new NotFoundProviderException('no provider "' . $alias . '" found or enabled');
     }
 
     /**

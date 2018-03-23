@@ -17,10 +17,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 */
 
 
-class Media implements MediaInterface
+abstract class Media
 {
-    protected $id;
-    
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
@@ -90,7 +88,7 @@ class Media implements MediaInterface
      */
     public function hasBinaryContentOnCreation()
     {
-        return $this->id ||(!$this->id && $this->binaryContent);
+        return $this->getId() ||(!$this->getId()&& $this->getBinaryContent());
     }
 
     /**
@@ -113,10 +111,7 @@ class Media implements MediaInterface
      *
      * @return integer
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    abstract public function getId();
 
     /**
      * Set name
@@ -324,14 +319,6 @@ class Media implements MediaInterface
     public function getProviderName()
     {
         return $this->providerName;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPaths()
-    {
-        return $this->paths;
     }
 
     /**

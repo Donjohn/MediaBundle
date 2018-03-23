@@ -1,0 +1,15 @@
+parameters:
+    donjohn.media.provider.image_liip.class: Donjohn\MediaBundle\Provider\ImageLiipProvider
+    donjohn.media.locale_liip.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem
+
+services:
+    donjohn.media.image_liip.provider:
+        class: "%donjohn.media.provider.image_liip.class%"
+        parent: donjohn.media.provider.file
+        calls:
+            - [setFilesytem, ["@donjohn.media.filesystem.local"]]
+        tags: [media.provider]
+
+    donjohn.media.local_liip.filesystem:
+        class: "%donjohn.media.locale_liip.filesystem.class%"
+        parent: donjohn.media.filesystem.local

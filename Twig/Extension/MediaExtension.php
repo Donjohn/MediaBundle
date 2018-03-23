@@ -8,11 +8,10 @@
 namespace Donjohn\MediaBundle\Twig\Extension;
 
 
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
-use Donjohn\MediaBundle\Twig\TokenParser\PathTokenParser;
 
 
 class MediaExtension extends \Twig_Extension
@@ -38,15 +37,7 @@ class MediaExtension extends \Twig_Extension
     public function getTokenParsers()
     {
         return array(
-            new MediaTokenParser(self::class),
-            new PathTokenParser(self::class),
-        );
-    }
-
-    public function getFilters()
-    {
-        return array(
-            new \Twig_SimpleFilter('mediaPath', array($this, 'path')),
+            new MediaTokenParser(self::class)
         );
     }
 
@@ -56,12 +47,12 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param MediaInterface|null $media
+     * @param Media|null $media
      * @param $filter
      * @param $attributes
      * @return string
      */
-    public function media(MediaInterface $media = null, $filter, $attributes)
+    public function media(Media $media = null, $filter, $attributes)
     {
         if ($media !== null) {
             try {
@@ -72,22 +63,6 @@ class MediaExtension extends \Twig_Extension
             catch (\Twig_Error $e){}
         }
         return '';
-
-    }
-
-
-    public function path(MediaInterface $media = null, $filter)
-    {
-        if ($media !== null) {
-            try {
-                $provider = $this->providerFactory->getProvider($media);
-                return $provider->getPath($media, $filter);
-            }
-            catch (NotFoundProviderException $e){}
-        }
-
-        return '';
-
 
     }
 

@@ -2,11 +2,9 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem;
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
-use Gaufrette\Exception\FileNotFound;
-use Gaufrette\FilesystemInterface;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -20,28 +18,23 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class FileProvider extends BaseProvider {
 
     /**
-     * @var MediaLocalFilesystem
+     * @var MediaFilesystemInterface
      */
     protected $filesystem;
 
     /** @var string $fileMaxSize */
     protected $fileMaxSize;
 
-    /** @var string $uploadFolder */
-    protected $uploadFolder;
-
     /**
      * FileProvider constructor.
-     * @param FilesystemInterface $filesystem
+     * @param MediaFilesystemInterface $filesystem
      * @param string $uploadFolder
      * @param string $fileMaxSize
      */
-    public function __construct(FilesystemInterface $filesystem, $uploadFolder, $fileMaxSize)
+    public function __construct(MediaFilesystemInterface $filesystem, $fileMaxSize)
     {
-
         $this->filesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
-        $this->uploadFolder = $uploadFolder;
 
     }
 
@@ -53,116 +46,80 @@ class FileProvider extends BaseProvider {
         return 'file';
     }
 
-     /**
-     * @inheritdoc
-     */
-    public function getPath(MediaInterface $oMedia, $filter= null)
-    {
-        $firstLevel=100000;
-        $secondLevel=1000;
-
-        $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
-        $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
-
-        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder,  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
-    }
 
     /**
      * @inheritdoc
      */
-    public function getFullPath(MediaInterface $oMedia, $filter = null)
-    {
-        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
-    }
-
-    /**
-     * @param MediaInterface $oMedia
-     * @return bool
-     */
-    protected function delete(MediaInterface $oMedia)
-    {
-        try {
-            return $this->filesystem->delete($this->getPath($oMedia));
-        } catch (FileNotFound $e) {
-            //do nothing, file already deleted
-        }
-        return true;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function prePersist(MediaInterface $oMedia)
+    public function prePersist(Media $media)
     {
         $fileName='';
-        if ($oMedia->getBinaryContent() instanceof UploadedFile) {
-            $fileName = $oMedia->getBinaryContent()->getClientOriginalName();
+        if ($media->getBinaryContent() instanceof UploadedFile) {
+            $fileName = $media->getBinaryContent()->getClientOriginalName();
 
-        } elseif ($oMedia->getBinaryContent() instanceof File) {
-            $fileName = $oMedia->getBinaryContent()->getBasename();
+        } elseif ($media->getBinaryContent() instanceof File) {
+            $fileName = $media->getBinaryContent()->getBasename();
         }
 
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
-        if ($oMedia->getBinaryContent() !== null )  {
+        if ($media->getBinaryContent() !== null )  {
 
-            $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION) );
 
             if(stripos(PHP_OS, 'WIN') === 0)
-                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+                $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
             else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
-                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+                $output = shell_exec('md5sum -b ' . escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output,0,strpos($output,' ')+1));
             }
         }
 
-        $mimeType = $oMedia->getBinaryContent()->getMimeType();
+        $mimeType = $media->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
-        $this->extractMetaData($oMedia);
+        $this->extractMetaData($media);
 
-        $oMedia->setMimeType($mimeType);
-        $oMedia->setProviderName($this->getAlias());
-        $oMedia->setName($oMedia->getName() ? : $fileName); //to keep oldname
-        $oMedia->addMetadata('filename', $fileName);
+        $media->setMimeType($mimeType);
+        $media->setProviderName($this->getAlias());
+        $media->setName($media->getName() ? : $fileName); //to keep oldname
+        $media->addMetadata('filename', $fileName);
 
     }
 
     /**
      * @inheritdoc
      */
-    public function postLoad(MediaInterface $oMedia)
+    public function postLoad(Media $media)
     {
-        $oMedia->setPaths(array('reference' => $this->getPath($oMedia)));
+        $media->setPaths(array('reference' => $this->filesystem->getWebPath($media)));
     }
 
     /**
      * @inheritdoc
      */
-    public function postPersist(MediaInterface $oMedia)
+    public function postPersist(Media $media)
     {
-        if ($oMedia->getBinaryContent() instanceof File) {
-            $newPath = $this->getFullPath($oMedia);
-            $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
-            $oMedia->setBinaryContent(null);
+        if ($media->getBinaryContent() instanceof File) {
+            $newPath = $this->filesystem->getFullPath($media);
+            $media->getBinaryContent()->move(dirname($newPath),basename($newPath));
+            $media->setBinaryContent(null);
         }
-        $this->postLoad($oMedia);
+        $this->postLoad($media);
     }
 
     /**
      * @inheritdoc
      */
-    public function preUpdate(MediaInterface $oMedia)
+    public function preUpdate(Media $media)
     {
-        if ($oMedia->getBinaryContent() !== null )  {
+        if ($media->getBinaryContent() !== null )  {
 
-            $oMedia->setFilename( sha1($oMedia->getName() . random_int(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
+            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION) );
 
             if(stripos(PHP_OS, 'WIN') === 0)
-                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
+                $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
             else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
-                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+                $output = shell_exec('md5sum -b ' . escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output,0,strpos($output,' ')+1));
             }
         }
     }
@@ -170,27 +127,27 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function postUpdate(MediaInterface $oMedia)
+    public function postUpdate(Media $media)
     {
-        $this->postPersist($oMedia);
-        $oldMedia = $oMedia->oldMedia();
-        if ($oldMedia instanceof MediaInterface) $this->preRemove($oldMedia);
+        $this->postPersist($media);
+        $oldMedia = $media->oldMedia();
+        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
 
     }
 
     /**
      * @inheritdoc
      */
-    public function preRemove(MediaInterface $oMedia)
+    public function preRemove(Media $media)
     {
-        return $this->delete($oMedia);
+        return $this->filesystem->removeMedia($media);
 
     }
 
     /**
      * @inheritdoc
      */
-    public function extractMetaData(MediaInterface $oMedia)
+    public function extractMetaData(Media $media)
     {
         //Implement extractMetaData() method.
     }
@@ -222,16 +179,16 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function getDownloadResponse(MediaInterface $oMedia, array $headers = array())
+    public function getDownloadResponse(Media $media, array $headers = array())
     {
         // build the default headers
         $headers = array_merge(array(
-            'Content-Type'          => $oMedia->getMimeType(),
-            'Content-Disposition'   => sprintf('attachment; filename="%s"', $oMedia->getName()),
+            'Content-Type'          => $media->getMimeType(),
+            'Content-Disposition'   => sprintf('attachment; filename="%s"', $media->getName()),
         ), $headers);
 
 
-        return new BinaryFileResponse($this->getFullPath($oMedia), 200, $headers);
+        return new BinaryFileResponse($this->filesystem->getFullPath($media), 200, $headers);
     }
 
 

@@ -5,7 +5,6 @@ namespace Donjohn\MediaBundle\DependencyInjection;
 use Donjohn\MediaBundle\Provider\ProviderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
@@ -14,7 +13,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class DonjohnMediaExtension extends Extension implements PrependExtensionInterface
+class DonjohnMediaExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -33,55 +32,18 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
 
         if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
-            $loader->load('oneup.yml');
+            $loader->load('oneup_uploader.yml');
         }
         if (array_key_exists('ApiPlatformBundle', $container->getParameter('kernel.bundles'))) {
-            $loader->load('api.yml');
+            $loader->load('api_platform.yml');
+        }
+        if (array_key_exists('LiipImagineBundle', $container->getParameter('kernel.bundles'))) {
+            $loader->load('liip_imagine.yml');
         }
 
 
         $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
 
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function prepend(ContainerBuilder $container)
-    {
-        $config = $container->getExtensionConfig($this->getAlias());
-        $config = $this->processConfiguration(
-            $container->getExtension($this->getAlias())->getConfiguration($config, $container),
-            $config
-        );
-        $upload_folder = $config['upload_folder'];
-
-        $container->setParameter('media_mediazone_border_color', '#205081');
-        if ($container->hasExtension('easy_admin')) {
-            $config = $container->getExtensionConfig('easy_admin');
-            $config = $this->processConfiguration(
-                $container->getExtension('easy_admin')->getConfiguration($config, $container),
-                $config
-            );
-
-            $container->setParameter('media_mediazone_border_color', $config['design']['brand_color']);
-        }
-
-        $container->setParameter('media_mediazone_thumbnail_height', 90);
-        if ($container->hasExtension('liip_imagine')) {
-            $config = $container->getExtensionConfig('liip_imagine');
-            $config = $this->processConfiguration(
-                $container->getExtension('liip_imagine')->getConfiguration($config, $container),
-                $config
-            );
-
-            if (isset($config['loaders']['default']['filesystem']['data_root']))
-            {
-                $config['loaders']['default']['filesystem']['data_root'] = [$upload_folder];
-            }
-
-            $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
-        }
     }
 
 

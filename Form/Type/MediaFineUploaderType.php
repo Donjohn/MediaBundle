@@ -8,9 +8,8 @@
 namespace Donjohn\MediaBundle\Form\Type;
 
 
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
-use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,12 +18,13 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaFineUploaderType extends AbstractType
 {
-    /** @var FilesystemOrphanageStorage $filesystemOrphanageStorage */
+    /** @var $filesystemOrphanageStorage */
     protected $filesystemOrphanageStorage;
 
     /** @var  ProviderFactory $providerFactory */
@@ -36,11 +36,11 @@ class MediaFineUploaderType extends AbstractType
 
     /**
      * MediaFineUploaderType constructor.
-     * @param FilesystemOrphanageStorage $filesystemOrphanageStorage
+     * @param mixed $filesystemOrphanageStorage
      * @param ProviderFactory $providerFactory
      * @param string $chunkSize
      */
-    public function __construct($chunkSize, FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory)
+    public function __construct($chunkSize, $filesystemOrphanageStorage, ProviderFactory $providerFactory)
     {
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
         $this->providerFactory = $providerFactory;
@@ -107,7 +107,8 @@ class MediaFineUploaderType extends AbstractType
                     $data = $event->getData() ?: [] ;
                     /** @var \SplFileInfo $file */
                     foreach ($uploadedFiles as $uploadedFile)  {
-                        /** @var MediaInterface $media */
+                        /** @var Media $media */
+                        /** @var UploadedFile $uploadedFile */
                         $file = new File($uploadedFile->getPathname());
 
                         $media = new $options['entry_type'];

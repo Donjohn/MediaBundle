@@ -2,7 +2,8 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,8 +27,17 @@ interface ProviderInterface {
      */
     public function getAlias();
 
-
+    /**
+     * @param array $allowedTypes
+     * @return mixed
+     */
     public function setAllowedTypes(array $allowedTypes);
+
+    /**
+     * @param MediaFilesystemInterface $filesystem
+     * @return mixed
+     */
+    public function setMediaFilesystem(MediaFilesystemInterface $filesystem);
     
     /**
      * validate the mimeType of the file
@@ -51,7 +61,7 @@ interface ProviderInterface {
 
 
     /**
-     * @param MediaInterface $media
+     * @param Media $media
      * @param null $filter
      * @param array $options
      * @return mixed     *
@@ -59,52 +69,52 @@ interface ProviderInterface {
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function render(MediaInterface $media, $filter = null, array $options = array());
+    public function render(Media $media, $filter = null, array $options = array());
 
 
     /**
      * extract data from media, size/height/etc..;
-     * @param MediaInterface $oMedia
+     * @param Media $media
      * @return array metadata
      */
-    public function extractMetaData(MediaInterface $oMedia);
+    public function extractMetaData(Media $media);
 
     /**
      * function called on postLoad Doctrine Event on Media entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function postLoad(MediaInterface $oMedia);
+    public function postLoad(Media $media);
 
 
     /**
      * function called on prePersist Doctrine Event on v entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function prePersist(MediaInterface $oMedia);
+    public function prePersist(Media $media);
 
     /**
      * function called on postPersist Doctrine Event on Media entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function postPersist(MediaInterface $oMedia);
+    public function postPersist(Media $media);
 
     /**
      * function called on preUpdate Doctrine Event on Media entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function preUpdate(MediaInterface $oMedia);
+    public function preUpdate(Media $media);
 
     /**
      * function called on postUpdate Doctrine Event on Media entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function postUpdate(MediaInterface $oMedia);
+    public function postUpdate(Media $media);
 
     /**
      * function called on preRemove Doctrine Event on Media entity
-     * @param MediaInterface $oMedia
+     * @param Media $media
      */
-    public function preRemove(MediaInterface $oMedia);
+    public function preRemove(Media $media);
 
     /**
      * add edit fields for the defined provider
@@ -123,28 +133,11 @@ interface ProviderInterface {
     public function addCreateForm(FormBuilderInterface $builder, array $options);
 
 
-
-    /**
-     * return path of the media, depends on the media ^^
-     * @param MediaInterface $oMedia
-     * @param string|null $filter
-     * @return mixed
-     */
-    public function getPath(MediaInterface $oMedia, $filter= null);
-
-    /**
-     * return the full path of the media on the server, depends on the media ^^
-     * @param MediaInterface $oMedia
-     * @param string|null $filter
-     * @return mixed
-     */
-    public function getFullPath(MediaInterface $oMedia, $filter= null);
-
     /**
      * return response for each media according to provider
-     * @param MediaInterface $oMedia
+     * @param Media $media
      * @return Response
      */
-    public function getDownloadResponse(MediaInterface $oMedia);
+    public function getDownloadResponse(Media $media, array $headers = array());
 
 }

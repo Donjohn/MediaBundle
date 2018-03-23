@@ -3,12 +3,12 @@ parameters:
     donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
     donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
     donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
-    donjohn.media.filesystem.media.locale.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
-    donjohn.media.twig.extension.media.class: Donjohn\MediaBundle\Twig\Extension\MediaExtension
+    donjohn.media.filesystem.locale.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
+    donjohn.media.twig.extension.class: Donjohn\MediaBundle\Twig\Extension\MediaExtension
 
 
 services:
-    donjohn.media.subscriber:
+    donjohn.media.event.media_subscriber:
         class: "%donjohn.media.event.media_subscriber.class%"
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
@@ -19,19 +19,18 @@ services:
         arguments:
             $config: "%donjohn.media.providers.config%"
 
-    donjohn.media.file.provider:
+    donjohn.media.provider.file:
         class: "%donjohn.media.provider.file.class%"
         arguments:
-            $filesystem: "@donjohn.media.local.filesystem"
-            $uploadFolder: "%donjohn.media.upload_folder%"
+            $filesystem: "@donjohn.media.filesystem.local"
             $fileMaxSize: "%donjohn.media.file_max_size%"
+        calls:
+            - [setFilesytem, ["@donjohn.media.filesystem.local"]]
         tags: [media.provider]
 
-    donjohn.media.image.provider:
+    donjohn.media.provider.image:
         class: "%donjohn.media.provider.image.class%"
-        parent: donjohn.media.file.provider
-        calls:
-            - [setFilterConfiguration, ["@liip_imagine.filter.configuration"] ]
+        parent: donjohn.media.provider.file
         tags: [media.provider]
 
     Donjohn\MediaBundle\Form\Type\MediaType:
@@ -39,13 +38,15 @@ services:
             $providerFactory: "@donjohn.media.provider.factory"
         tags: [form.type]
 
-    donjohn.media.local.filesystem:
-        class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
+    donjohn.media.filesystem.local:
+        class: "%donjohn.media.filesystem.locale.class%"
         arguments:
-            $webFolder: "%kernel.project_dir%/public"
+            $requestStack: "@request_stack"
+            $rootFolder: "%kernel.project_dir%/web"
+            $uploadFolder: "%donjohn.media.upload_folder%"
 
     donjohn.media.twig.extension:
-        class: "%donjohn.media.twig.extension.media.class%"
+        class: "%donjohn.media.twig.extension.class%"
         arguments:
             $providerFactory: "@donjohn.media.provider.factory"
         tags: [twig.extension]

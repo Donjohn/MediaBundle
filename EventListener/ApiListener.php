@@ -9,7 +9,7 @@ namespace Donjohn\MediaBundle\EventListener;
 
 
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
-use Donjohn\MediaBundle\Model\MediaInterface;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
@@ -33,7 +33,7 @@ class ApiListener
         $media = $event->getControllerResult();
 
 
-        if (!$media instanceof MediaInterface || (Request::METHOD_POST !== $request->getMethod() && Request::METHOD_PUT !== $request->getMethod())) {
+        if (!$media instanceof Media || (Request::METHOD_POST !== $request->getMethod() && Request::METHOD_PUT !== $request->getMethod())) {
 
             return;
         }
