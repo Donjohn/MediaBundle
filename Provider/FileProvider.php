@@ -99,8 +99,7 @@ class FileProvider extends BaseProvider {
     public function postPersist(Media $media)
     {
         if ($media->getBinaryContent() instanceof File) {
-            $newPath = $this->filesystem->getFullPath($media);
-            $media->getBinaryContent()->move(dirname($newPath),basename($newPath));
+            $this->filesystem->createMedia($media, $media->getBinaryContent());
             $media->setBinaryContent(null);
         }
         $this->postLoad($media);

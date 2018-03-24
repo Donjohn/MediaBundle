@@ -11,6 +11,7 @@ namespace Donjohn\MediaBundle\Filesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Gaufrette\Adapter;
 use Gaufrette\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -70,6 +71,7 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
 
     public function getPath(Media $media)
     {
+        if ($media->getId() === null ) throw new \RuntimeException('media must be psersisted before calling getPath');
         $firstLevel=100000;
         $secondLevel=1000;
 
@@ -87,6 +89,11 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
     public function removeMedia(Media $media)
     {
         return $this->hasMedia($media) ? $this->delete($this->getPath($media)) : true;
+    }
+
+    public function createMedia(Media $media, File $file)
+    {
+        return $this->write($this->getPath($media), file_get_contents($file->getRealPath()));
     }
 
 

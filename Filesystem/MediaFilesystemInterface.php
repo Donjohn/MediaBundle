@@ -9,6 +9,7 @@ namespace Donjohn\MediaBundle\Filesystem;
 
 
 use Donjohn\MediaBundle\Model\Media;
+use Symfony\Component\HttpFoundation\File\File;
 
 interface MediaFilesystemInterface
 {
@@ -47,5 +48,13 @@ interface MediaFilesystemInterface
      * @return bool
      */
     public function removeMedia(Media $media);
+
+    /**
+     * write file for the media
+     * @param Media $media
+     * @param File $file
+     * @return bool
+     */
+    public function createMedia(Media $media, File $file);
 
 }

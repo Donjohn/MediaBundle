@@ -179,7 +179,7 @@ oneup_uploader:
         maxage: 86400
     mappings:
         medias:
-            namer:  Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
+            namer:  donjohn.media.uploader.naming.original_namer
             use_orphanage: true
             frontend: fineuploader            
             enable_cancelation: true

@@ -9,9 +9,10 @@ services:
             $providerFactory: "@donjohn.media.provider.factory"
         tags: [form.type]
 
-    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+    donjohn.media.uploader.naming.original_namer:
         class: "%donjohn.media.uploader.naming.original_namer.class%"
-        alias: donjohn.media.uploader.naming.original_namer
         public: true
+
+
 
 

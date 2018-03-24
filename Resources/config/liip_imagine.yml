@@ -7,7 +7,7 @@ services:
         class: "%donjohn.media.provider.image_liip.class%"
         parent: donjohn.media.provider.file
         calls:
-            - [setFilesytem, ["@donjohn.media.filesystem.local"]]
+            - [setFilesytem, ["@donjohn.media.local_liip.filesystem"]]
         tags: [media.provider]
 
     donjohn.media.local_liip.filesystem:
