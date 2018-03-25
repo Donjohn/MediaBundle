@@ -25,7 +25,7 @@ services:
             $filesystem: "@donjohn.media.filesystem.local"
             $fileMaxSize: "%donjohn.media.file_max_size%"
         calls:
-            - [setFilesytem, ["@donjohn.media.filesystem.local"]]
+            - [setMediaFilesystem, ["@donjohn.media.filesystem.local"]]
         tags: [media.provider]
 
     donjohn.media.provider.image:

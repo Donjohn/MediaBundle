@@ -27,7 +27,7 @@ class MediaTokenParser extends \Twig_TokenParser
     public function parse(\Twig_Token $token)
     {
         $media = $this->parser->getExpressionParser()->parseExpression();
-        $filter = new \Twig_Node_Expression_Constant('reference',$token->getLine());
+        $filter = new \Twig_Node_Expression_Constant(null ,$token->getLine());
         $attributes = new \Twig_Node_Expression_Array(array(), $token->getLine());
 
         if ($this->parser->getStream()->nextIf(\Twig_Token::PUNCTUATION_TYPE)) {

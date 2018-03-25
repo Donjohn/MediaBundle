@@ -21,26 +21,29 @@ class MediaLiipLocalFilesystem extends MediaLocalFilesystem
      */
     public function getWebPath(Media $media, $filter = null)
     {
-        return sprintf('%s%s',
-            $this->request->getSchemeAndHttpHost(),
-            $this->getPath($media, $filter)
-            );
+        return $filter ?
+                $this->cacheManager->getBrowserPath(parent::getPath($media), $filter) :
+                parent::getWebPath($media);
     }
+
 
     public function getFullPath(Media $media, $filter = null)
     {
-        return sprintf('%s%s',
-            $this->rootFolder,
-            $this->getPath($media, $filter)
-            );
+
+        return $filter ?
+                sprintf('%s%s',
+                    $this->rootFolder,
+                    str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost(), '', $this->cacheManager->resolve(parent::getPath($media), $filter) )
+                ) :
+                parent::getFullPath($media);
     }
 
-    public function getPath(Media $media, $filter=null)
+    public function getPath(Media $media, $filter = null)
     {
         $path = parent::getPath($media);
 
         return $filter ?
-                str_replace($this->request->getSchemeAndHttpHost(), '', $this->cacheManager->getBrowserPath($path, $filter)) :
+                str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost(), '', $this->cacheManager->getBrowserPath($path, $filter) ):
                 $path ;
     }
 
@@ -54,7 +57,8 @@ class MediaLiipLocalFilesystem extends MediaLocalFilesystem
     public function removeMedia(Media $media)
     {
         if (parent::hasMedia($media)) {
-            return $this->cacheManager->remove($this->getPath($media)) && parent::removeMedia($media);
+            $this->cacheManager->remove($this->getPath($media));
+            return parent::removeMedia($media);
         }
 
         return true;

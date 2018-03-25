@@ -12,7 +12,6 @@ use Donjohn\MediaBundle\Model\Media;
 use Gaufrette\Adapter;
 use Gaufrette\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterface
@@ -30,9 +29,9 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
     protected $rootFolder;
 
     /**
-     * @var Request $request
+     * @var RequestStack $requestStack
      */
-    protected $request;
+    protected $requestStack;
 
     /**
      * MediaLocalFilesystem constructor.
@@ -41,8 +40,9 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
      */
     public function __construct(RequestStack $requestStack, $rootFolder, $uploadFolder)
     {
+
         parent::__construct(new Adapter\Local($rootFolder, false, '0775'));
-        $this->request = $requestStack->getMasterRequest();
+        $this->requestStack = $requestStack;
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
     }
@@ -53,9 +53,9 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
     public function getWebPath(Media $media)
     {
         return sprintf('%s%s',
-            $this->request->getSchemeAndHttpHost(),
-            $this->getPath($media)
-            );
+                        $this->requestStack->getCurrentRequest()->getBaseUrl(),
+                        $this->getPath($media)
+                    );
     }
 
 

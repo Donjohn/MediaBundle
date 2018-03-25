@@ -14,14 +14,27 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class ImageLiipProvider extends ImageProvider {
     
     /**
-     * @var MediaLiipLocalFilesystem $filesystem
+     * @var MediaLiipLocalFilesystem $mediaFilesystem
      */
-    protected $filesystem;
+    protected $mediaFilesystem;
+
+    /**
+     * @param Media $media
+     * @param null $filter
+     * @param array $options
+     * @return string
+     */
+    public function render(Media $media, $filter = 'reference', array $options = array()){
+        return $this->twig->render($this->getTemplate(),
+            array('mediaWebPath' => $this->mediaFilesystem->getWebPath($media, $filter),
+                'options' => $options)
+        );
+    }
 
     /**
      * @inheritdoc
      */
-    public function getDownloadResponse(Media $media, array $headers = array(), $filter = null)
+    public function getDownloadResponse(Media $media, $headers = array(), $filter = null)
     {
         // build the default headers
         $headers = array_merge(array(
@@ -30,7 +43,7 @@ class ImageLiipProvider extends ImageProvider {
         ), $headers);
 
 
-        return new BinaryFileResponse($this->filesystem->getFullPath($media, $filter), 200, $headers);
+        return new BinaryFileResponse($this->mediaFilesystem->getFullPath($media, $filter), 200, $headers);
     }
 
     

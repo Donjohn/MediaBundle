@@ -20,7 +20,7 @@ class FileProvider extends BaseProvider {
     /**
      * @var MediaFilesystemInterface
      */
-    protected $filesystem;
+    protected $mediaFilesystem;
 
     /** @var string $fileMaxSize */
     protected $fileMaxSize;
@@ -33,7 +33,7 @@ class FileProvider extends BaseProvider {
      */
     public function __construct(MediaFilesystemInterface $filesystem, $fileMaxSize)
     {
-        $this->filesystem = $filesystem;
+        $this->mediaFilesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
 
     }
@@ -63,8 +63,7 @@ class FileProvider extends BaseProvider {
         if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
 
         if ($media->getBinaryContent() !== null )  {
-
-            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION) );
+            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
 
             if(stripos(PHP_OS, 'WIN') === 0)
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
@@ -81,6 +80,7 @@ class FileProvider extends BaseProvider {
         $media->setMimeType($mimeType);
         $media->setProviderName($this->getAlias());
         $media->setName($media->getName() ? : $fileName); //to keep oldname
+        $media->setOriginalFilename($media->getOriginalFilename() ? : $fileName); //to keep originel fielname
         $media->addMetadata('filename', $fileName);
 
     }
@@ -90,7 +90,7 @@ class FileProvider extends BaseProvider {
      */
     public function postLoad(Media $media)
     {
-        $media->setPaths(array('reference' => $this->filesystem->getWebPath($media)));
+        $media->setPaths(array('reference' => $this->mediaFilesystem->getWebPath($media)));
     }
 
     /**
@@ -99,7 +99,7 @@ class FileProvider extends BaseProvider {
     public function postPersist(Media $media)
     {
         if ($media->getBinaryContent() instanceof File) {
-            $this->filesystem->createMedia($media, $media->getBinaryContent());
+            $this->mediaFilesystem->createMedia($media, $media->getBinaryContent());
             $media->setBinaryContent(null);
         }
         $this->postLoad($media);
@@ -139,7 +139,7 @@ class FileProvider extends BaseProvider {
      */
     public function preRemove(Media $media)
     {
-        return $this->filesystem->removeMedia($media);
+        return $this->mediaFilesystem->removeMedia($media);
 
     }
 
@@ -178,7 +178,7 @@ class FileProvider extends BaseProvider {
     /**
      * @inheritdoc
      */
-    public function getDownloadResponse(Media $media, array $headers = array())
+    public function getDownloadResponse(Media $media, $headers = array())
     {
         // build the default headers
         $headers = array_merge(array(
@@ -187,7 +187,7 @@ class FileProvider extends BaseProvider {
         ), $headers);
 
 
-        return new BinaryFileResponse($this->filesystem->getFullPath($media), 200, $headers);
+        return new BinaryFileResponse($this->mediaFilesystem->getFullPath($media), 200, $headers);
     }
 
 

@@ -7,9 +7,11 @@ services:
         class: "%donjohn.media.provider.image_liip.class%"
         parent: donjohn.media.provider.file
         calls:
-            - [setFilesytem, ["@donjohn.media.local_liip.filesystem"]]
+            - [setMediaFilesystem, ["@donjohn.media.local_liip.filesystem"]]
         tags: [media.provider]
 
     donjohn.media.local_liip.filesystem:
         class: "%donjohn.media.locale_liip.filesystem.class%"
         parent: donjohn.media.filesystem.local
+        calls:
+            - [setCacheManager, ["@liip_imagine.cache.manager"]]

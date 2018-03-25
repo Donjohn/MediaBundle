@@ -138,6 +138,6 @@ interface ProviderInterface {
      * @param Media $media
      * @return Response
      */
-    public function getDownloadResponse(Media $media, array $headers = array());
+    public function getDownloadResponse(Media $media, $headers = array());
 
 }

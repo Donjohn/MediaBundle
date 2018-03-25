@@ -52,9 +52,10 @@ class MediaExtension extends \Twig_Extension
      * @param $attributes
      * @return string
      */
-    public function media(Media $media = null, $filter, $attributes)
+    public function media(Media $media = null, $filter = null, array $attributes = array())
     {
         if ($media !== null) {
+
             try {
                 $provider = $this->providerFactory->getProvider($media);
                 return $provider->render($media, $filter, $attributes);

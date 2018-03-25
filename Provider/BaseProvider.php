@@ -95,15 +95,6 @@ abstract class BaseProvider implements ProviderInterface {
         $this->twig = $twig;
     }
 
-
-    /**
-     * @param \Twig_Environment $twig
-     */
-    final public function setFilesytem(MediaFilesystemInterface $mediaFilesystem)
-    {
-        $this->mediaFilesystem = $mediaFilesystem;
-    }
-
     /**
      * @param Media $media
      * @param null $filter
@@ -112,8 +103,7 @@ abstract class BaseProvider implements ProviderInterface {
      */
     public function render(Media $media, $filter = 'reference', array $options = array()){
         return $this->twig->render($this->getTemplate(),
-                            array('media' => $media,
-                                'filter' => $filter,
+                            array('mediaWebPath' => $this->mediaFilesystem->getWebPath($media),
                                 'options' => $options)
                             );
     }
