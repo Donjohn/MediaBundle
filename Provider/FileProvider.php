@@ -52,7 +52,7 @@ class FileProvider extends BaseProvider {
      */
     public function prePersist(Media $media)
     {
-        $fileName='';
+        $fileName=null;
         if ($media->getBinaryContent() instanceof UploadedFile) {
             $fileName = $media->getBinaryContent()->getClientOriginalName();
 
@@ -60,7 +60,7 @@ class FileProvider extends BaseProvider {
             $fileName = $media->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
+        if ($fileName === null) throw new InvalidMimeTypeException('invalid media');
 
         if ($media->getBinaryContent() !== null )  {
             $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
@@ -90,7 +90,7 @@ class FileProvider extends BaseProvider {
      */
     public function postLoad(Media $media)
     {
-        $media->setPaths(array('reference' => $this->mediaFilesystem->getWebPath($media)));
+        //nada
     }
 
     /**
