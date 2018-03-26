@@ -10,6 +10,7 @@ namespace Donjohn\MediaBundle\Form\Type;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Oneup\UploaderBundle\Uploader\Storage\FilesystemOrphanageStorage;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -24,7 +25,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaFineUploaderType extends AbstractType
 {
-    /** @var $filesystemOrphanageStorage */
+    /** @var FilesystemOrphanageStorage $filesystemOrphanageStorage */
     protected $filesystemOrphanageStorage;
 
     /** @var  ProviderFactory $providerFactory */
@@ -40,7 +41,7 @@ class MediaFineUploaderType extends AbstractType
      * @param ProviderFactory $providerFactory
      * @param string $chunkSize
      */
-    public function __construct($chunkSize, $filesystemOrphanageStorage, ProviderFactory $providerFactory)
+    public function __construct($chunkSize, FilesystemOrphanageStorage $filesystemOrphanageStorage, ProviderFactory $providerFactory)
     {
         $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
         $this->providerFactory = $providerFactory;
