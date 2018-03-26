@@ -63,7 +63,7 @@ class FileProvider extends BaseProvider {
         if ($fileName === null) throw new InvalidMimeTypeException('invalid media');
 
         if ($media->getBinaryContent() !== null )  {
-            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getBinaryContent()->getRealPath(), PATHINFO_EXTENSION) );
+            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($fileName, PATHINFO_EXTENSION) );
 
             if(stripos(PHP_OS, 'WIN') === 0)
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
