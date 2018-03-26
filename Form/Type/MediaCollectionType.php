@@ -80,7 +80,7 @@ class MediaCollectionType extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
                 'allow_extra_fields' => true,
-                'provider' => 'null',
+                'provider' => null,
                 'mediazone' => true,
                 'entry_options' => array()
                 ));

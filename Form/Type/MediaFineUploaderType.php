@@ -73,6 +73,7 @@ class MediaFineUploaderType extends AbstractType
                 'required' => true,
                 'multiple' => true,
                 'oneup_mapping' => 'medias',
+                'provider' => null,
                 ));
 
 
@@ -114,7 +115,7 @@ class MediaFineUploaderType extends AbstractType
 
                         $media = new $options['entry_type'];
                         $media->setBinaryContent( $file )
-                            ->setProviderName( $this->providerFactory->guessProvider($file)->getProviderAlias())
+                            ->setProviderName( $options['provider'] ?: $this->providerFactory->guessProvider($file)->getProviderAlias())
                             ->setOriginalFilename( $file->getBasename());
                         $data[]=$media;
                     }
