@@ -30,6 +30,8 @@ class DonjohnMediaExtension extends Extension
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
         $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
+        $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/web');
+        if (Kernel::VERSION_ID > 40000) $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/public');
 
         if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('oneup_uploader.yml');

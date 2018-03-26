@@ -42,7 +42,7 @@ services:
         class: "%donjohn.media.filesystem.locale.class%"
         arguments:
             $requestStack: "@request_stack"
-            $rootFolder: "%kernel.project_dir%/web"
+            $rootFolder: "%donjohn.media.root_folder%"
             $uploadFolder: "%donjohn.media.upload_folder%"
 
     donjohn.media.twig.extension:
