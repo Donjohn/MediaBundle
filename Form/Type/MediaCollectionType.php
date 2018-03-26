@@ -80,7 +80,7 @@ class MediaCollectionType extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
                 'allow_extra_fields' => true,
-                'provider' => 'file',
+                'provider' => 'null',
                 'mediazone' => true,
                 'entry_options' => array()
                 ));
@@ -93,6 +93,7 @@ class MediaCollectionType extends AbstractType
             $value['multiple'] = true;
             $value['delete_empty'] = false;
             $value['error_bubbling'] = true;
+            $value['provider'] = $options['provider'];
             return $value;
         };
 

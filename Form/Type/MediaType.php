@@ -46,7 +46,7 @@ class MediaType extends AbstractType
 
         $resolver->setDefaults(array(
                 'translation_domain' => 'DonjohnMediaBundle',
-                'provider' => 'file',
+                'provider' => null,
                 'mediazone' => true,
                 'label' => 'media',
                 'invalid_message' => 'media.error.transform',

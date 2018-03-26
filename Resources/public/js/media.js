@@ -71,8 +71,9 @@ $(function () {
 
             if (reader.result) {
                 $(formGroup).find('input[id$="originalFilename"]').val(file.name);
+                var providerName = $(formGroup).data('provider').length > 0 ? $(formGroup).data('provider').length : 'file';
                 $(formGroup).find('span.media-info').html(
-                    eval('media_'+$(formGroup).data('provider')+'(file, reader, formGroup)')
+                    eval('media_'+providerName+'(file, reader, formGroup)')
                 );
                 var inputText = $(formGroup).find('input[type="text"]');
                 if ($(inputText).length) {
