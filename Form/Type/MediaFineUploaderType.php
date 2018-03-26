@@ -37,7 +37,7 @@ class MediaFineUploaderType extends AbstractType
 
     /**
      * MediaFineUploaderType constructor.
-     * @param mixed $filesystemOrphanageStorage
+     * @param FilesystemOrphanageStorage $filesystemOrphanageStorage
      * @param ProviderFactory $providerFactory
      * @param string $chunkSize
      */
@@ -73,6 +73,7 @@ class MediaFineUploaderType extends AbstractType
                 'prototype' => false,
                 'required' => true,
                 'multiple' => true,
+                'oneup_mapping' => 'medias',
                 ));
 
 
@@ -154,6 +155,7 @@ class MediaFineUploaderType extends AbstractType
     {
         $view->vars['chunkSize'] = $this->getChunkMaxSizeBytes();
         $view->vars['multiple'] = $options['multiple'];
+        $view->vars['oneup_mapping'] = $options['oneup_mapping'];
     }
 
 }

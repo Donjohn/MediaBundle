@@ -2,15 +2,14 @@
 namespace Donjohn\MediaBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-
-
 /**
- * description 
+ * description
  * @author Donjohn
  * Class Article
  * @ORM\MappedSuperclass()
@@ -30,7 +29,7 @@ abstract class Media
      * @ORM\Column(type="string", nullable=false)
      */
     protected $providerName;
-    
+
     /**
      * @ORM\Column(type="string", nullable=true)
      */
@@ -344,5 +343,10 @@ abstract class Media
     public function setMd5($md5)
     {
         $this->md5 = $md5;
+    }
+
+    public function getCamelizeName()
+    {
+        return Container::underscore((new \ReflectionClass($this))->getShortName());
     }
 }

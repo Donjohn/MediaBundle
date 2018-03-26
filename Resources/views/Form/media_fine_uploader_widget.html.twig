@@ -12,7 +12,7 @@
             var uploader{{ id }} = new qq.FineUploader({
                 element: document.getElementById('fine-uploader-{{ id }}'),
                 request: {
-                    endpoint: "{{ oneup_uploader_endpoint('medias') }}"
+                    endpoint: "{{ oneup_uploader_endpoint(oneup_mapping) }}"
                 },
                 session: {
                     endpoint: "{{ path('donjohn_media_init_fine_uploader') }}"

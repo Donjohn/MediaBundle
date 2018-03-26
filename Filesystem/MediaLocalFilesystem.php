@@ -93,7 +93,8 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
 
     public function createMedia(Media $media, File $file)
     {
-        return $this->write($this->getPath($media), file_get_contents($file->getRealPath()));
+        return $this->write($this->getPath($media), file_get_contents($file->getRealPath())) && unlink($file->getRealPath());
+
     }
 
 
