@@ -68,7 +68,6 @@ class MediaFineUploaderType extends AbstractType
                 'allow_delete' => true,
                 'allow_add' => true,
                 'allow_extra_fields' => true,
-                'provider' => 'file',
                 'entry_options' => array(),
                 'prototype' => false,
                 'required' => true,
