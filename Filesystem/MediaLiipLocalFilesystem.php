@@ -1,6 +1,6 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 21/03/2017
  * @description For ...
  */
@@ -11,7 +11,7 @@ namespace Donjohn\MediaBundle\Filesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Liip\ImagineBundle\Imagine\Cache\CacheManagerAwareTrait;
 
-class MediaLiipLocalFilesystem extends MediaLocalFilesystem
+class MediaLiipLocalFilesystem extends MediaGuzzleLocalFilesystem
 {
 
     use CacheManagerAwareTrait;

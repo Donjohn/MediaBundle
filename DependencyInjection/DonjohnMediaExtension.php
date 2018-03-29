@@ -42,6 +42,8 @@ class DonjohnMediaExtension extends Extension
         }
         if (array_key_exists('LiipImagineBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('liip_imagine.yml');
+        } elseif (class_exists('Gaufrette\Filesystem')) {
+            $container->setParameter('donjohn.media.filesystem.locale.class', 'Donjohn\MediaBundle\Filesystem\MediaGuzzleLocalFilesystem');
         }
 
 

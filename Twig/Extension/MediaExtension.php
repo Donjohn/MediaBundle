@@ -1,6 +1,6 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 07/03/2016
  * @description For ...
  */

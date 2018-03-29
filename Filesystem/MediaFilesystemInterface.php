@@ -1,6 +1,6 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 22/03/2018
  * @description For ...
  */
@@ -56,5 +56,11 @@ interface MediaFilesystemInterface
      * @return bool
      */
     public function createMedia(Media $media, File $file);
+
+    /*
+     * @return filesystem
+     */
+    public function createOrGetFilesystem();
+
 
 }
