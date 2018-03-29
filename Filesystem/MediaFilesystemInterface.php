@@ -57,4 +57,10 @@ interface MediaFilesystemInterface
      */
     public function createMedia(Media $media, File $file);
 
+    /*
+     * @return filesystem
+     */
+    public function createOrGetFilesystem();
+
+
 }

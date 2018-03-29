@@ -45,7 +45,6 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
      */
     public function __construct(RequestStack $requestStack, $rootFolder, $uploadFolder)
     {
-        $this->filesystem = $this->createFilesystem();
         $this->requestStack = $requestStack;
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
@@ -54,9 +53,10 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     /**
      * @return Filesystem
      */
-    protected function createFilesystem()
+    public function createOrGetFilesystem()
     {
-        return new Filesystem();
+        $this->filesystem = $this->filesystem ?: new Filesystem();
+        return $this->filesystem;
     }
 
     /**
@@ -95,13 +95,13 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
 
     public function hasMedia(Media $media)
     {
-        return $this->filesystem->exists($this->getFullPath($media));
+        return $this->createOrGetFilesystem()->exists($this->getFullPath($media));
     }
 
     public function removeMedia(Media $media)
     {
         try {
-            if ($this->hasMedia($media)) $this->filesystem->remove($this->getFullPath($media));
+            if ($this->hasMedia($media)) $this->createOrGetFilesystem()->remove($this->getFullPath($media));
         } catch (IOException $e ){
             return false;
         }
@@ -111,8 +111,8 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     public function createMedia(Media $media, File $file)
     {
         try {
-            $this->filesystem->copy($file->getRealPath(), $this->getFullPath($media));
-            $this->filesystem->remove($file->getRealPath());
+            $this->createOrGetFilesystem()->copy($file->getRealPath(), $this->getFullPath($media));
+            $this->createOrGetFilesystem()->remove($file->getRealPath());
         } catch (IOException $e ){
             return false;
         }
