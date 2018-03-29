@@ -9,12 +9,12 @@ namespace Donjohn\MediaBundle\Filesystem;
 
 
 use Donjohn\MediaBundle\Model\Media;
-use Gaufrette\Adapter;
-use Gaufrette\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOException;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RequestStack;
 
-class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterface
+class MediaLocalFilesystem implements MediaFilesystemInterface
 {
 
     /**
@@ -34,17 +34,29 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
     protected $requestStack;
 
     /**
+     * @var Filesystem $filesystem
+     */
+    protected $filesystem;
+
+    /**
      * MediaLocalFilesystem constructor.
      * @param string $webFolder
      * @param string $uploadFolder
      */
     public function __construct(RequestStack $requestStack, $rootFolder, $uploadFolder)
     {
-
-        parent::__construct(new Adapter\Local($rootFolder, false, '0775'));
+        $this->filesystem = $this->createFilesystem();
         $this->requestStack = $requestStack;
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
+    }
+
+    /**
+     * @return Filesystem
+     */
+    protected function createFilesystem()
+    {
+        return new Filesystem();
     }
 
     /**
@@ -83,17 +95,28 @@ class MediaLocalFilesystem extends Filesystem implements MediaFilesystemInterfac
 
     public function hasMedia(Media $media)
     {
-        return $this->has($this->getPath($media));
+        return $this->filesystem->exists($this->getFullPath($media));
     }
 
     public function removeMedia(Media $media)
     {
-        return $this->hasMedia($media) ? $this->delete($this->getPath($media)) : true;
+        try {
+            if ($this->hasMedia($media)) $this->filesystem->remove($this->getFullPath($media));
+        } catch (IOException $e ){
+            return false;
+        }
+        return true;
     }
 
     public function createMedia(Media $media, File $file)
     {
-        return $this->write($this->getPath($media), file_get_contents($file->getRealPath())) && unlink($file->getRealPath());
+        try {
+            $this->filesystem->copy($file->getRealPath(), $this->getFullPath($media));
+            $this->filesystem->remove($file->getRealPath());
+        } catch (IOException $e ){
+            return false;
+        }
+        return true;
 
     }
 
