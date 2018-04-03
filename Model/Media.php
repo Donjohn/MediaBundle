@@ -68,7 +68,7 @@ abstract class Media
 
     /**
      * @var array
-     * @ORM\Column(type="json_array", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
     protected $metadata=array();
 
