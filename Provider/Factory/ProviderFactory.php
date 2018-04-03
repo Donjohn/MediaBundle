@@ -84,7 +84,7 @@ class ProviderFactory {
      * @return ProviderGuess|Guess
      * @throws NotFoundProviderException
      */
-    public function guessProvider($file = null)
+    public function guessProvider(File $file = null)
     {
         $guesses = array();
 

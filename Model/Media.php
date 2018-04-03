@@ -48,11 +48,6 @@ abstract class Media
     protected $originalFilename;
 
     /**
-     * @var array collection of paths
-     */
-    private $paths=array();
-
-    /**
      * @var string
      * @ORM\Column(type="string", nullable=false)
      */
@@ -318,14 +313,6 @@ abstract class Media
     public function getProviderName()
     {
         return $this->providerName;
-    }
-
-    /**
-     * @param mixed $paths
-     */
-    public function setPaths($paths)
-    {
-        $this->paths = $paths;
     }
 
 
