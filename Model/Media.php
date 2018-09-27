@@ -65,7 +65,7 @@ abstract class Media
      * @var array
      * @ORM\Column(type="json", nullable=true)
      */
-    protected $metadata=array();
+    protected $metadatas=array();
 
     /**
      * @var string|File|UploadedFile
@@ -164,9 +164,9 @@ abstract class Media
      * @param array $metadata
      * @return Media
      */
-    public function setMetadata($metadata)
+    public function setMetadatas($metadatas)
     {
-        $this->metadata = $metadata;
+        $this->metadatas = $metadatas;
 
         return $this;
     }
@@ -180,7 +180,7 @@ abstract class Media
      */
     public function addMetadata($key, $value)
     {
-        $this->metadata[$key] = $value;
+        $this->metadatas[$key] = $value;
 
         return $this;
     }
@@ -190,9 +190,19 @@ abstract class Media
      *
      * @return array
      */
-    public function getMetadata()
+    public function getMetadatas()
     {
-        return $this->metadata;
+        return $this->metadatas;
+    }
+
+    /**
+     * Get metadata
+     *
+     * @return array
+     */
+    public function getMetadata($key)
+    {
+        return isset($this->metadatas[$key]) ? $this->metadatas[$key] : null;
     }
 
     /**
