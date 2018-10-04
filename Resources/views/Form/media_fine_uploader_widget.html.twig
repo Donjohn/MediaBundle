@@ -14,9 +14,11 @@
                 request: {
                     endpoint: "{{ oneup_uploader_endpoint(oneup_mapping) }}"
                 },
+                {% if form.vars.multiple|default(false) %}
                 session: {
                     endpoint: "{{ path('donjohn_media_init_fine_uploader') }}"
                 },
+                {% endif %}
                 template: 'donjohn-media',
                 chunking: {
                     enabled: true,

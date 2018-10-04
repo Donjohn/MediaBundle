@@ -74,10 +74,9 @@ class MediaFineUploaderType extends AbstractType
                 'multiple' => true,
                 'oneup_mapping' => 'medias',
                 'provider' => null,
+                'by_reference' => false,
+                'entry_type' => MediaType::class
                 ));
-
-
-        $resolver->setRequired(['entry_type']);
 
         $entryOptionsNormalizer = function (Options $options, $value) {
             $value['mediazone'] = false;
@@ -113,7 +112,7 @@ class MediaFineUploaderType extends AbstractType
                         /** @var UploadedFile $uploadedFile */
                         $file = new File($uploadedFile->getPathname());
 
-                        $media = new $options['entry_type'];
+                        $media = new $options['entry_options']['data_class'];
                         $media->setBinaryContent( $file )
                             ->setProviderName( $options['provider'] ?: $this->providerFactory->guessProvider($file)->getProviderAlias())
                             ->setOriginalFilename( $file->getBasename());
@@ -136,13 +135,13 @@ class MediaFineUploaderType extends AbstractType
             case 'K':
                 return $number*1024;
             case 'M':
-                return $number*pow(1024,2);
+                return $number* (1024 ** 2);
             case 'G':
-                return $number*pow(1024,3);
+                return $number* (1024 ** 3);
             case 'T':
-                return $number*pow(1024,4);
+                return $number* (1024 ** 4);
             case 'P':
-                return $number*pow(1024,5);
+                return $number* (1024 ** 5);
             default:
                 return $this->chunkSize;
         }
