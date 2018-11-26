@@ -100,23 +100,13 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
 
     public function removeMedia(Media $media)
     {
-        try {
-            if ($this->hasMedia($media)) $this->createOrGetFilesystem()->remove($this->getFullPath($media));
-        } catch (IOException $e ){
-            return false;
-        }
-        return true;
+        if ($this->hasMedia($media)) $this->createOrGetFilesystem()->remove($this->getFullPath($media));
     }
 
     public function createMedia(Media $media, File $file)
     {
-        try {
-            $this->createOrGetFilesystem()->copy($file->getRealPath(), $this->getFullPath($media));
-            $this->createOrGetFilesystem()->remove($file->getRealPath());
-        } catch (IOException $e ){
-            return false;
-        }
-        return true;
+        $this->createOrGetFilesystem()->copy($file->getRealPath(), $this->getFullPath($media));
+        $this->createOrGetFilesystem()->remove($file->getRealPath());
 
     }
 
