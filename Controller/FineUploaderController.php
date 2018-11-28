@@ -55,12 +55,13 @@ class FineUploaderController extends Controller
     /**
      * @return JsonResponse
      */
-    public function initFineUploaderAction()
+    public function initFineUploaderAction(Request $request)
     {
         $data=[];
         $response = new JsonResponse([]);
         $response->headers->set('Vary', 'Accept');
-
+        
+        $request->getSession()->start();
 
         $uploadedFiles = $this->get('oneup_uploader.orphanage.medias')->getFiles();
 
