@@ -98,6 +98,14 @@ class MediaFineUploaderType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
+        $builder->addEventListener(
+            FormEvents::PRE_SET_DATA ,
+            function(FormEvent $event) use ($options) {
+                if (!$options['multiple'] &&
+                    !$event->getData() instanceof \Traversable
+                )
+                    $event->setData(new ArrayCollection($event->getData()));
+            });
 
         $builder->addEventListener(
                 FormEvents::SUBMIT ,
@@ -128,10 +136,10 @@ class MediaFineUploaderType extends AbstractType
     /**
      * @return bool|string
      */
-    protected function getChunkMaxSizeBytes()
+    static function getChunkMaxSizeBytes($chunkSize)
     {
-        $number=substr($this->chunkSize,0,-1);
-        switch(strtoupper(substr($this->chunkSize,-1))){
+        $number=substr($chunkSize,0,-1);
+        switch(strtoupper(substr($chunkSize,-1))){
             case 'K':
                 return $number*1024;
             case 'M':
@@ -143,7 +151,7 @@ class MediaFineUploaderType extends AbstractType
             case 'P':
                 return $number* (1024 ** 5);
             default:
-                return $this->chunkSize;
+                return $chunkSize;
         }
     }
 
@@ -152,7 +160,7 @@ class MediaFineUploaderType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['chunkSize'] = $this->getChunkMaxSizeBytes();
+        $view->vars['chunkSize'] = min([$this->getChunkMaxSizeBytes($this->chunkSize), $this->getChunkMaxSizeBytes(ini_get('upload_max_filesize')), $this->getChunkMaxSizeBytes(ini_get('post_max_size'))]);
         $view->vars['multiple'] = $options['multiple'];
         $view->vars['oneup_mapping'] = $options['oneup_mapping'];
     }
