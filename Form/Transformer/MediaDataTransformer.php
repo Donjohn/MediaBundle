@@ -6,6 +6,7 @@ use Doctrine\Common\Util\ClassUtils;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
@@ -100,6 +101,10 @@ class MediaDataTransformer implements DataTransformerInterface
             throw new TransformationFailedException('invalid media, no filename');
         }
 
+        if ($newMedia->getBinaryContent()->getError()){
+            throw new TransformationFailedException($newMedia->getBinaryContent()->getErrorMessage());
+        }
+
         $newMedia->setOriginalFilename($fileName);
         $newMedia->setProviderName($this->providerAlias ?: $this->providerFactory->guessProvider($newMedia->getBinaryContent())->getProviderAlias());
 
@@ -116,4 +121,3 @@ class MediaDataTransformer implements DataTransformerInterface
         return $newMedia;
     }
 }
-
