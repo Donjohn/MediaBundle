@@ -1,25 +1,7 @@
 {% block media_widget %}
-
-    {% if form.vars.mediazone %}
-        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height|default(120) }}" class="panel">
-            {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color|default('#205081') }}; ">{{ 'mediazone.message.single'|trans({},'DonjohnMediaBundle') }}</span>
-            {{ form_widget(form) }}
-        </div>
-    {% else %}
+    {% if not form.vars.multiple|default(false) %}
         {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-        {{ form_widget(form) }}
-    {% endif%}
+    {% endif %}
+    {{ form_widget(form) }}
+
 {% endblock media_widget %}
-
-
-{% block media_collection_widget %}
-    {% if form.vars.mediazone %}
-        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height|default(120) }}" class="panel">
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color|default('#205081') }}; ">{{ 'mediazone.message.multiple'|trans({},'DonjohnMediaBundle') }}</span>
-            {{ form_widget(form) }}
-        </div>
-    {% else %}
-        {{ form_widget(form) }}
-    {% endif%}
-{% endblock media_collection_widget %}

@@ -160,7 +160,7 @@ class MediaFineUploaderType extends AbstractType
      */
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['chunkSize'] = min([$this->getChunkMaxSizeBytes($this->chunkSize), $this->getChunkMaxSizeBytes(ini_get('upload_max_filesize')), $this->getChunkMaxSizeBytes(ini_get('post_max_size'))]);
+        $view->vars['chunkSize'] = $this->chunkSize;
         $view->vars['multiple'] = $options['multiple'];
         $view->vars['oneup_mapping'] = $options['oneup_mapping'];
     }

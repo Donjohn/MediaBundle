@@ -27,6 +27,7 @@ class DonjohnMediaExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
         //on init les params
+
         $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
         $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );

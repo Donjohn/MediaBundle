@@ -6,70 +6,75 @@ use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-class FileProvider extends BaseProvider {
-
-    /**
-     * @var MediaFilesystemInterface
-     */
-    protected $mediaFilesystem;
-
+class FileProvider extends BaseProvider
+{
     /** @var string $fileMaxSize */
     protected $fileMaxSize;
 
     /**
      * FileProvider constructor.
+     *
      * @param MediaFilesystemInterface $filesystem
-     * @param string $uploadFolder
-     * @param string $fileMaxSize
+     * @param string                   $uploadFolder
+     * @param string                   $fileMaxSize
      */
-    public function __construct(MediaFilesystemInterface $filesystem, $fileMaxSize)
+    public function __construct(MediaFilesystemInterface $filesystem, string $fileMaxSize)
     {
         $this->mediaFilesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'file';
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function postLoad(Media $media): void
+    {
+        //nada
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function prePersist(Media $media)
+    public function prePersist(Media $media): void
     {
-        $fileName=null;
+        $fileName = null;
         if ($media->getBinaryContent() instanceof UploadedFile) {
             $fileName = $media->getBinaryContent()->getClientOriginalName();
-
         } elseif ($media->getBinaryContent() instanceof File) {
             $fileName = $media->getBinaryContent()->getBasename();
         }
 
-        if ($fileName === null) throw new InvalidMimeTypeException('invalid media');
+        if (null === $fileName) {
+            throw new InvalidMimeTypeException('invalid media');
+        }
+        if (null !== $media->getBinaryContent()) {
+            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($fileName, PATHINFO_EXTENSION));
 
-        if ($media->getBinaryContent() !== null )  {
-            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($fileName, PATHINFO_EXTENSION) );
-
-            if(stripos(PHP_OS, 'WIN') === 0)
+            if (0 === stripos(PHP_OS, 'WIN')) {
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
-            else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($media->getBinaryContent()->getRealPath()));
-                $media->setMd5(substr($output,0,strpos($output,' ')+1));
+            } else {
+                $output = shell_exec('md5sum -b '.escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output, 0, strpos($output, ' ') + 1));
             }
         }
 
@@ -79,24 +84,15 @@ class FileProvider extends BaseProvider {
 
         $media->setMimeType($mimeType);
         $media->setProviderName($this->getAlias());
-        $media->setName($media->getName() ? : $fileName); //to keep oldname
-        $media->setOriginalFilename($media->getOriginalFilename() ? : $fileName); //to keep originel fielname
+        $media->setName($media->getName() ?: $fileName); //to keep oldname
+        $media->setOriginalFilename($media->getOriginalFilename() ?: $fileName); //to keep originel fielname
         $media->addMetadata('filename', $fileName);
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function postLoad(Media $media)
-    {
-        //nada
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function postPersist(Media $media)
+    public function postPersist(Media $media): void
     {
         if ($media->getBinaryContent() instanceof File) {
             $this->mediaFilesystem->createMedia($media, $media->getBinaryContent());
@@ -106,89 +102,87 @@ class FileProvider extends BaseProvider {
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function preUpdate(Media $media)
+    public function preUpdate(Media $media): void
     {
-        if ($media->getBinaryContent() !== null )  {
+        if (null !== $media->getBinaryContent()) {
+            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION));
 
-            $media->setFilename( sha1($media->getName() . random_int(11111, 99999)) . '.' . pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION) );
-
-            if(stripos(PHP_OS, 'WIN') === 0)
+            if (0 === stripos(PHP_OS, 'WIN')) {
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
-            else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($media->getBinaryContent()->getRealPath()));
-                $media->setMd5(substr($output,0,strpos($output,' ')+1));
+            } else {
+                $output = shell_exec('md5sum -b '.escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output, 0, strpos($output, ' ') + 1));
             }
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function postUpdate(Media $media)
+    public function postUpdate(Media $media): void
     {
         $this->postPersist($media);
         $oldMedia = $media->oldMedia();
-        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
-
+        if ($oldMedia instanceof Media) {
+            $this->preRemove($oldMedia);
+        }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function preRemove(Media $media)
+    public function preRemove(Media $media): void
     {
-        return $this->mediaFilesystem->removeMedia($media);
-
+        $this->mediaFilesystem->removeMedia($media);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function extractMetaData(Media $media)
+    public function extractMetaData(Media $media): void
     {
-        //Implement extractMetaData() method.
+        //nada
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addEditForm(FormBuilderInterface $builder, array $options)
+    public function addProviderOptions(array $options): array
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
-                        'maxSize' => $this->fileMaxSize
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
+        $options['constraints'] = array_merge(
+            $options['constraints'] ?? [],
+            [new Constraints\File(['maxSize' => $this->fileMaxSize])]
+        );
+
+        return $options;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function addCreateForm(FormBuilderInterface $builder, array $options)
+    public function addEditForm(FormInterface $form, array $options): void
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
-                        'maxSize' => $this->fileMaxSize
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
+        $form->add('binaryContent', FileType::class, $this->addProviderOptions($options));
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
+    public function addCreateForm(FormInterface $form, array $options): void
+    {
+        $form->add('binaryContent', FileType::class, $this->addProviderOptions($options));
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getDownloadResponse(Media $media, $headers = array())
+    public function getDownloadResponse(Media $media, array $headers = array()): Response
     {
         // build the default headers
         $headers = array_merge(array(
-            'Content-Type'          => $media->getMimeType(),
-            'Content-Disposition'   => sprintf('attachment; filename="%s"', $media->getName()),
+            'Content-Type' => $media->getMimeType(),
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $media->getName()),
         ), $headers);
-
 
         return new BinaryFileResponse($this->mediaFilesystem->getFullPath($media), 200, $headers);
     }
-
-
 }

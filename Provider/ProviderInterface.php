@@ -6,138 +6,158 @@ use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-interface ProviderInterface {
-
+interface ProviderInterface
+{
     /**
      * @param string $template template name
      */
-    public function setTemplate($template);
+    public function setTemplate(string $template): ProviderInterface;
 
     /**
      * @return string alias
      */
-    public function getAlias();
+    public function getAlias(): string;
 
     /**
      * @param array $allowedTypes
+     *
      * @return mixed
      */
-    public function setAllowedTypes(array $allowedTypes);
+    public function setAllowedTypes(array $allowedTypes): ProviderInterface;
 
     /**
      * @param MediaFilesystemInterface $filesystem
+     *
      * @return mixed
      */
-    public function setMediaFilesystem(MediaFilesystemInterface $filesystem);
-    
+    public function setMediaFilesystem(MediaFilesystemInterface $filesystem): ProviderInterface;
+
     /**
-     * validate the mimeType of the file
+     * validate the mimeType of the file.
+     *
      * @param string $type
+     *
      * @throws InvalidMimeTypeException
      */
-    public function validateMimeType($type);
+    public function validateMimeType(string $type): bool;
 
     /**
      * @param null|File $file
+     *
      * @return ProviderGuess|null|Guess
      */
-    public function guess($file = null);
+    public function guess(File $file = null): Guess;
 
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    public function addProviderOptions(array $options): array;
 
     /**
      * @param \Twig_Environment $twig
+     *
      * @return mixed
      */
-    public function setTwig(\Twig_Environment $twig);
-
+    public function setTwig(\Twig_Environment $twig): ProviderInterface;
 
     /**
-     * @param Media $media
-     * @param null $filter
-     * @param array $options
-     * @return mixed     *
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @param Media       $media
+     * @param string|null $filter
+     * @param array       $options
+     *
+     * @return string
      */
-    public function render(Media $media, $filter = null, array $options = array());
-
-
-    /**
-     * extract data from media, size/height/etc..;
-     * @param Media $media
-     * @return array metadata
-     */
-    public function extractMetaData(Media $media);
+    public function render(Media $media, string $filter = null, array $options = array()): string;
 
     /**
-     * function called on postLoad Doctrine Event on Media entity
+     * extract data from media, size/height/etc..;.
+     *
      * @param Media $media
      */
-    public function postLoad(Media $media);
-
+    public function extractMetaData(Media $media): void;
 
     /**
-     * function called on prePersist Doctrine Event on v entity
+     * function called on postLoad Doctrine Event on Media entity.
+     *
      * @param Media $media
      */
-    public function prePersist(Media $media);
+    public function postLoad(Media $media): void;
 
     /**
-     * function called on postPersist Doctrine Event on Media entity
+     * function called on prePersist Doctrine Event on v entity.
+     *
      * @param Media $media
      */
-    public function postPersist(Media $media);
+    public function prePersist(Media $media): void;
 
     /**
-     * function called on preUpdate Doctrine Event on Media entity
+     * function called on postPersist Doctrine Event on Media entity.
+     *
      * @param Media $media
      */
-    public function preUpdate(Media $media);
+    public function postPersist(Media $media): void;
 
     /**
-     * function called on postUpdate Doctrine Event on Media entity
+     * function called on preUpdate Doctrine Event on Media entity.
+     *
      * @param Media $media
      */
-    public function postUpdate(Media $media);
+    public function preUpdate(Media $media): void;
 
     /**
-     * function called on preRemove Doctrine Event on Media entity
+     * function called on postUpdate Doctrine Event on Media entity.
+     *
      * @param Media $media
      */
-    public function preRemove(Media $media);
+    public function postUpdate(Media $media): void;
 
     /**
-     * add edit fields for the defined provider
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * function called on preRemove Doctrine Event on Media entity.
+     *
+     * @param Media $media
+     */
+    public function preRemove(Media $media): void;
+
+    /**
+     * add edit fields for the defined provider.
+     *
+     * @param FormInterface $form
+     * @param array         $options
+     *
      * @return mixed
      */
-    public function addEditForm(FormBuilderInterface $builder, array $options);
+    public function addEditForm(FormInterface $form, array $options): void;
 
     /**
-     * add create fields for the defined provider
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * add create fields for the defined provider.
+     *
+     * @param FormInterface $form
+     * @param array         $options
+     *
      * @return mixed
      */
-    public function addCreateForm(FormBuilderInterface $builder, array $options);
+    public function addCreateForm(FormInterface $form, array $options): void;
 
 
     /**
-     * return response for each media according to provider
-     * @param Media $media
+     * return response for each media according to provider.
+     *
+     * @param Media      $media
+     * @param array|null $headers
+     *
      * @return Response
      */
-    public function getDownloadResponse(Media $media, $headers = array());
-
+    public function getDownloadResponse(Media $media, array $headers = array()): Response;
 }

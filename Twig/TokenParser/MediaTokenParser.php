@@ -16,7 +16,7 @@ class MediaTokenParser extends \Twig_TokenParser
     /**
      * @param string $extensionName
      */
-    public function __construct($extensionName)
+    public function __construct(string $extensionName)
     {
         $this->extensionName = $extensionName;
     }
@@ -24,7 +24,7 @@ class MediaTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function parse(\Twig_Token $token)
+    public function parse(\Twig_Token $token): MediaNode
     {
         $media = $this->parser->getExpressionParser()->parseExpression();
         $filter = new \Twig_Node_Expression_Constant(null ,$token->getLine());
@@ -46,7 +46,7 @@ class MediaTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function getTag()
+    public function getTag(): string
     {
         return 'media';
     }

@@ -2,47 +2,30 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-class ImageProvider extends FileProvider  {
-    
+class ImageProvider extends FileProvider
+{
     /**
      * @return string alias
      */
-    public function getAlias()
+    public function getAlias(): string
     {
         return 'image';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function addEditForm(FormBuilderInterface $builder, array $options)
+    public function addProviderOptions(array $options): array
     {
-        $options['constraints'] = array(new File([
-                        'maxSize' => $this->fileMaxSize,
-                        'mimeTypes' => $this->getAllowedTypes()
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
-    }
+        $options['constraints'] = array_merge(
+            $options['constraints'] ?? [],
+            [new Constraints\File(['maxSize' => $this->fileMaxSize, 'mimeTypes' => $this->getAllowedTypes()])]
+        );
 
-    /**
-     * @inheritdoc
-     */
-    public function addCreateForm(FormBuilderInterface $builder, array $options)
-    {
-        $options['constraints'] = array(new File([
-                        'maxSize' => $this->fileMaxSize,
-                        'mimeTypes' => $this->getAllowedTypes()
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
+        return $options;
     }
-
-    
 }

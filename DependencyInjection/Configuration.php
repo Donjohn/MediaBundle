@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->scalarNode('file_max_size')->defaultValue(ini_get('upload_max_filesize'))->cannotBeEmpty()->end()
-                ->scalarNode('chunk_size')->defaultValue('50M')->cannotBeEmpty()->end()
+                ->scalarNode('chunk_size')->defaultValue(ini_get('upload_max_filesize'))->cannotBeEmpty()->end()
                 ->arrayNode('providers')->addDefaultsIfNotSet()
                     ->children()
                         ->arrayNode('file')->addDefaultsIfNotSet()

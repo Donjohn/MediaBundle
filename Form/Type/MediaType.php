@@ -7,131 +7,108 @@
 
 namespace Donjohn\MediaBundle\Form\Type;
 
-
+use Donjohn\MediaBundle\EventListener\MediaCollectionTypeSubscriber;
+use Donjohn\MediaBundle\EventListener\MediaTypeSubscriber;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
-use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
+use Symfony\Bridge\Doctrine\Form\EventListener\MergeDoctrineCollectionListener;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class MediaType extends AbstractType
 {
     /**
-     * @var ProviderFactory $providerFactory
+     * @var ProviderFactory
      */
     protected $providerFactory;
 
     /**
      * MediaType constructor.
+     *
      * @param ProviderFactory $providerFactory
      */
-    public function __construct( ProviderFactory $providerFactory)
+    public function __construct(ProviderFactory $providerFactory)
     {
         $this->providerFactory = $providerFactory;
     }
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
+//        $emptyData = function (Options $options) {
+//            if ($options['multiple']) {
+//                return array();
+//            }
+//
+//            return null;
+//        };
+
+        $mediaClass = function (Options $options) {
+            return $options['multiple'] ? null : $options['media_class'];
+        };
+
+        $byReference = function(Options $options)
+        {
+            return $options['multiple'] ? false : true;
+        };
 
         $resolver->setDefaults(array(
-                'translation_domain' => 'DonjohnMediaBundle',
-                'provider' => null,
-                'mediazone' => true,
-                'label' => 'media',
-                'invalid_message' => 'media.error.transform',
-                'allow_delete' => true,
-                'multiple' => false,
-                'required' => false,
-                'delete_empty' => true,
-                'gallery' => false,
-                'oneup' => false,
-                'create_on_update' => false
-                ));
-        $resolver->setRequired(['data_class']);
+            'translation_domain' => 'DonjohnMediaBundle',
+            'provider' => null,
+            'label' => 'media',
+            'invalid_message' => 'media.error.transform',
+            'allow_delete' => true,
+            'multiple' => false,
+            'required' => false,
+            'delete_empty' => true,
+            'create_on_update' => true,
+            'data_class' => $mediaClass,
+            'add_provider_form' => true,
+            'by_reference' => $byReference
+        ));
+        $resolver->setRequired(['media_class']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if (false === $options['multiple']) {
 
-        $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
-        $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $this->providerFactory->guessProvider(null)->getProviderAlias());
+            $builder->addEventSubscriber( new MediaTypeSubscriber($this->providerFactory, $options) );
 
+            $builder->addModelTransformer( new MediaDataTransformer($this->providerFactory, $options['create_on_update'], $options['provider']) );
 
-        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-                            'label' => $options['mediazone'] ? false : $options['label'],
-                            'error_bubbling' => true,
-                            'multiple' => $options['multiple'] ? 'multiple' : false,
-                            'required' => $options['required'],
-                            'attr' => array('class' => $options['oneup']||$options['mediazone'] ? 'hidden' : ''),
-                        );
-        if ($media) $provider->addEditForm($builder, $formOptions);
-        else $provider->addCreateForm($builder, $formOptions);
+        } else {
 
-        $builder->add('originalFilename', HiddenType::class);
-
-
-        if ($options['allow_delete']){
-            $formEventUnlink = function(FormEvent $event) use ($options) {
-                if ($options['multiple'] || $event->getData()) {
-                    $event->getForm()->add('unlink', CheckboxType::class, array(
-                        'mapped'   => false,
-                        'data'     => false,
-                        'required' => false,
-                        'label' => !$options['multiple'] ? 'media.unlink.label' : false,
-                        'translation_domain' => 'DonjohnMediaBundle'
-                    ));
-                }
-            };
-
-            $builder->addEventListener(
-                FormEvents::PRE_SET_DATA,
-                $formEventUnlink
-            );
-
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                $formEventUnlink
-            );
-
-            $builder->addEventListener(
-                FormEvents::SUBMIT,
-                function (FormEvent $event) {
-                    if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
-                        $event->setData(null);
-                    }
-                }
-            );
+            $builder->addEventSubscriber(new MediaCollectionTypeSubscriber($this->providerFactory, array(
+                'media_class' => $options['media_class'],
+                'required' => $options['required'],
+                'provider' => $options['provider'],
+                'allow_delete' => $options['allow_delete'],
+                'block_name' => 'entry',
+                'translation_domain' => $options['translation_domain']
+            )));
+            $builder
+                ->addEventSubscriber(new MergeDoctrineCollectionListener())
+                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+            ;
         }
-
-        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $options['create_on_update']));
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function buildView(
-        FormView $view,
-        FormInterface $form,
-        array $options
-    ) {
-        $view->vars['mediazone'] = $options['mediazone'];
-        $view->vars['provider'] = $options['provider'];
-
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['multiple'] = $options['multiple'];
     }
-
 }
