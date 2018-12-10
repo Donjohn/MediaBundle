@@ -67,7 +67,6 @@ class MediaType extends AbstractType
             'allow_delete' => true,
             'multiple' => false,
             'required' => false,
-            'delete_empty' => true,
             'create_on_update' => true,
             'data_class' => $mediaClass,
             'add_provider_form' => true,
