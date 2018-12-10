@@ -71,7 +71,8 @@ class MediaType extends AbstractType
             'create_on_update' => true,
             'data_class' => $mediaClass,
             'add_provider_form' => true,
-            'by_reference' => $byReference
+            'by_reference' => $byReference,
+            'media_label' => null
         ));
         $resolver->setRequired(['media_class']);
     }
@@ -89,14 +90,19 @@ class MediaType extends AbstractType
 
         } else {
 
-            $builder->addEventSubscriber(new MediaCollectionTypeSubscriber($this->providerFactory, array(
+            $mediaOptions = [
                 'media_class' => $options['media_class'],
                 'required' => $options['required'],
                 'provider' => $options['provider'],
                 'allow_delete' => $options['allow_delete'],
-                'block_name' => 'entry',
-                'translation_domain' => $options['translation_domain']
-            )));
+                'block_name' => 'media',
+                'translation_domain' => $options['translation_domain'],
+                'by_reference' => true,
+            ];
+
+            if (null !== $options['media_label']) $mediaOptions['label'] = $options['media_label'];
+
+            $builder->addEventSubscriber(new MediaCollectionTypeSubscriber($this->providerFactory, $mediaOptions));
             $builder
                 ->addEventSubscriber(new MergeDoctrineCollectionListener())
                 ->addViewTransformer(new CollectionToArrayTransformer(), true)

@@ -54,21 +54,14 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
         }
 
-        // First remove all rows
         foreach ($form as $name => $child) {
             $form->remove($name);
         }
 
-//        die(VarDumper::dump($data));
-
-//        $data[] = (new $this->options['media_class'])->setBinaryContent(new File(__DIR__.DIRECTORY_SEPARATOR."header-bitmap.png"));
-
-        // Then add all rows again in the correct order
         foreach ($data as $name => $value) {
             $form->add($name, MediaType::class, array_replace(array(
                 'property_path' => '['.$name.']',
                 'add_provider_form' => false,
-                'by_reference' => true,
             ), $this->options));
         }
 
@@ -116,7 +109,6 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             if (!$form->has($name)) {
                 $form->add($name, MediaType::class, array_replace(array(
                     'property_path' => '['.$name.']',
-                    'by_reference' => true,
                 ), $this->options));
             }
         }
