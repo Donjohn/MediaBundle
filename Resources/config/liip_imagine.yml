@@ -1,17 +1,15 @@
-parameters:
-    donjohn.media.provider.image_liip.class: Donjohn\MediaBundle\Provider\ImageLiipProvider
-    donjohn.media.locale_liip.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem
-
 services:
-    donjohn.media.image_liip.provider:
-        class: "%donjohn.media.provider.image_liip.class%"
-        parent: donjohn.media.provider.file
-        calls:
-            - [setMediaFilesystem, ["@donjohn.media.local_liip.filesystem"]]
-        tags: [media.provider]
+    Donjohn\MediaBundle\Provider\ImageLiipProvider:
+        decorates: Donjohn\MediaBundle\Provider\ImageProvider
+        arguments:
+            $imageProvider: '@Donjohn\MediaBundle\Provider\ImageLiipProvider.inner'
 
-    donjohn.media.local_liip.filesystem:
-        class: "%donjohn.media.locale_liip.filesystem.class%"
-        parent: donjohn.media.filesystem.local
-        calls:
-            - [setCacheManager, ["@liip_imagine.cache.manager"]]
+    Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem:
+        decorates: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
+        arguments:
+            $mediaLocalFilesystem: '@Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem.inner'
+            $cacheManager: '@liip_imagine.cache.manager'
+            $requestStack: "@request_stack"
+            $rootFolder: "%donjohn.media.root_folder%"
+
+

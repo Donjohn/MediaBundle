@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
@@ -18,16 +20,6 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class BaseProvider implements ProviderInterface
 {
     /**
-     * @var string|null
-     */
-    private $template;
-
-    /**
-     * @var array|null
-     */
-    private $allowedTypes;
-
-    /**
      * @var \Twig_Environment|null
      */
     protected $twig;
@@ -40,29 +32,6 @@ abstract class BaseProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    final public function setTemplate(string $template): ProviderInterface
-    {
-        if (empty($template)) {
-            throw new \InvalidArgumentException('please configure a template name for '.$this->getAlias().' provider');
-        }
-        $this->template = $template;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    final public function setAllowedTypes(array $allowedTypes): ProviderInterface
-    {
-        $this->allowedTypes = $allowedTypes;
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     final public function setMediaFilesystem(MediaFilesystemInterface $filesystem): ProviderInterface
     {
         $this->mediaFilesystem = $filesystem;
@@ -71,20 +40,22 @@ abstract class BaseProvider implements ProviderInterface
     }
 
     /**
+     * @return MediaFilesystemInterface
+     */
+    final public function getMediaFilesystem(): MediaFilesystemInterface
+    {
+        return $this->mediaFilesystem;
+    }
+
+    /**
      * @return array
      */
-    final protected function getAllowedTypes(): array
-    {
-        return $this->allowedTypes;
-    }
+    abstract public function getAllowedTypes(): array;
 
     /**
      * @return string
      */
-    final protected function getTemplate(): string
-    {
-        return $this->template;
-    }
+    abstract public function getTemplate(): string;
 
     /**
      * @return string
@@ -92,10 +63,9 @@ abstract class BaseProvider implements ProviderInterface
     abstract public function getAlias(): string;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     abstract public function getDownloadResponse(Media $media, array $headers = array()): Response;
-
 
     /**
      * @param \Twig_Environment $twig
@@ -110,11 +80,19 @@ abstract class BaseProvider implements ProviderInterface
     }
 
     /**
+     * @return \Twig_Environment
+     */
+    final public function getTwig(): \Twig_Environment
+    {
+        return $this->twig;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function render(Media $media, string $filter = null, array $options = array()): string
     {
-        return $this->twig->render($this->getTemplate(),
+        return $this->getTwig()->render($this->getTemplate(),
                             array('mediaWebPath' => $this->mediaFilesystem->getWebPath($media),
                                 'name' => $media->getName(),
                                 'options' => $options, )
@@ -153,6 +131,4 @@ abstract class BaseProvider implements ProviderInterface
 
         return ProviderGuess::getBestGuess($guesses);
     }
-
-
 }

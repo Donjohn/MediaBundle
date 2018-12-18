@@ -8,10 +8,12 @@
 namespace Donjohn\MediaBundle\Twig\Extension;
 
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Exception\NotFoundProviderException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 
+/**
+ * Class MediaExtension.
+ */
 class MediaExtension extends \Twig_Extension
 {
     /**
@@ -57,13 +59,9 @@ class MediaExtension extends \Twig_Extension
     public function media(Media $media = null, string $filter = null, array $attributes = array()): string
     {
         if (null !== $media) {
-            try {
-                $provider = $this->providerFactory->getProvider($media);
+            $provider = $this->providerFactory->getProvider($media);
 
-                return $provider->render($media, $filter, $attributes);
-            } catch (NotFoundProviderException $e) {
-            } catch (\Twig_Error $e) {
-            }
+            return $provider->render($media, $filter, $attributes);
         }
 
         return '';

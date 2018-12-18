@@ -11,15 +11,18 @@ use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class MediaDataTransformer.
+ */
 class MediaDataTransformer implements DataTransformerInterface
 {
     /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /** @var boolean $createOnUpdate */
+    /** @var bool $createOnUpdate */
     protected $createOnUpdate;
 
-    /** @var string $providerName*/
+    /** @var string $providerName */
     protected $providerName;
 
     /**
@@ -27,6 +30,7 @@ class MediaDataTransformer implements DataTransformerInterface
      *
      * @param ProviderFactory $providerFactory
      * @param bool            $createOnUpdate
+     * @param string          $providerName
      */
     public function __construct(ProviderFactory $providerFactory, bool $createOnUpdate, string  $providerName)
     {

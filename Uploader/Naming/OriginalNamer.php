@@ -11,11 +11,19 @@ use Oneup\UploaderBundle\Uploader\File\FileInterface;
 use Oneup\UploaderBundle\Uploader\Naming\NamerInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class OriginalNamer.
+ */
 class OriginalNamer implements NamerInterface
 {
-    public function name(FileInterface $file)
+    /**
+     * @param FileInterface $file
+     *
+     * @return string|null
+     */
+    public function name(FileInterface $file): ?string
     {
-        /** @var UploadedFile $file */
+        /* @var UploadedFile $file */
         return $file->getClientOriginalName();
     }
 }

@@ -11,80 +11,61 @@ use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-class ProviderFactory {
-
+class ProviderFactory
+{
     /**
-     * @var array $providers
+     * @var array
      */
     protected $providers = array();
-    /** @var array $allowedTypes */
-    protected $allowedTypes = array();
-    /** @var array $filesystem */
-    protected $filesystem = array();
-    /** @var array $enables */
-    protected $enables = array();
-    /**
-     * @var  array $templates
-     */
-    protected $templates=array();
 
     /**
-     * ProviderFactory constructor.
-     * @param array $config
-     */
-    public function __construct(array $config)
-    {
-        $this->templates = array_map(function($item) {return $item['template'];}, $config);
-        $this->allowedTypes = array_map(function($item) {return $item['allowed_types'];}, $config);
-        $this->enables = array_map(function($item) {return $item['enabled'];}, $config);
-    }
-
-    /**
-     * 
      * @param ProviderInterface $provider
      */
-    public function addProvider(ProviderInterface $provider) {
-        if ($this->enables[$provider->getAlias()]) {
-            $this->providers[$provider->getAlias()] = $provider;
-
-            $provider->setTemplate($this->getTemplateProvider($provider->getAlias()));
-            $provider->setAllowedTypes($this->getAllowedTypesProvider($provider->getAlias()));
-        }
+    public function addProvider(ProviderInterface $provider): void
+    {
+        $this->providers[$provider->getAlias()] = $provider;
     }
 
     /**
-     * get Media
+     * get Media.
+     *
      * @param string|Media $mixed or Media
+     *
      * @return ProviderInterface $provider
+     *
      * @throws RuntimeException
      */
-    public function getProvider($mixed) {
-
+    public function getProvider($mixed): ProviderInterface
+    {
         $alias = $mixed instanceof Media ? $mixed->getProviderName() : $mixed;
 
         if (array_key_exists($alias, $this->providers)) {
             return $this->providers[$alias];
         }
 
-        throw new NotFoundProviderException('no provider "' . $alias . '" found or enabled');
+        throw new NotFoundProviderException('no provider "'.$alias.'" found or enabled');
     }
 
     /**
      * @return array providers
      */
-    public function getProviders() {
+    public function getProviders(): array
+    {
         return $this->providers;
     }
 
     /**
      * @param File $file
+     *
      * @return ProviderGuess|Guess
+     *
      * @throws NotFoundProviderException
      */
-    public function guessProvider(File $file = null)
+    public function guessProvider(File $file = null): Guess
     {
         $guesses = array();
 
@@ -93,28 +74,10 @@ class ProviderFactory {
             $guesses[] = $provider->guess($file);
         }
         $result = ProviderGuess::getBestGuess($guesses);
-        if ($result === null) throw new NotFoundProviderException('could not guess a provider for file '.$file->getFilename());
+        if (null === $result) {
+            throw new NotFoundProviderException('could not guess a provider for file '.$file->getFilename());
+        }
+
         return $result;
     }
-
-    /**
-     * @param string $providerAlias
-     * @return bool|string
-     */
-    private function getTemplateProvider($providerAlias){
-
-        return isset($this->templates[$providerAlias]) ? $this->templates[$providerAlias] : false;
-
-    }
-
-    /**
-     * @param $providerAlias
-     * @return bool|array
-     */
-    private function getAllowedTypesProvider($providerAlias){
-
-        return isset($this->allowedTypes[$providerAlias]) ? $this->allowedTypes[$providerAlias] : false;
-
-    }
-
 }

@@ -11,12 +11,17 @@ namespace Donjohn\MediaBundle\EventListener;
 
 use Donjohn\MediaBundle\Form\Type\MediaType;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
-use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class MediaCollectionTypeSubscriber.
+ */
 class MediaCollectionTypeSubscriber implements EventSubscriberInterface
 {
     /** @var array $options */
@@ -25,12 +30,26 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
     /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    public function __construct(ProviderFactory $providerFactory, array $options)
+    /** @var null|StorageInterface */
+    protected $filesystemOrphanageStorage;
+
+    /**
+     * MediaCollectionTypeSubscriber constructor.
+     *
+     * @param ProviderFactory       $providerFactory
+     * @param array                 $options
+     * @param null|StorageInterface $filesystemOrphanageStorage
+     */
+    public function __construct(ProviderFactory $providerFactory, array $options, StorageInterface $filesystemOrphanageStorage = null)
     {
         $this->options = $options;
         $this->providerFactory = $providerFactory;
+        $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents(): array
     {
         return array(
@@ -41,6 +60,9 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSetData(FormEvent $event): void
     {
         $form = $event->getForm();
@@ -59,27 +81,31 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
         }
 
         foreach ($data as $name => $value) {
-            $form->add($name, MediaType::class, array_replace(array(
+            $form->add($name, MediaType::class, array_replace($this->options, array(
                 'property_path' => '['.$name.']',
                 'add_provider_form' => false,
-            ), $this->options));
+                'fine_uploader' => false,
+            )));
         }
 
+        if (false === $this->options['fine_uploader']) {
+            $providerOptions = array('translation_domain' => $this->options['translation_domain'],
+                'label' => false,
+                'required' => 0 === count($data) && $this->options['required'],
+                'multiple' => true,
+                'mapped' => false,
+                'attr' => ['multiple' => 'multiple'],
+            );
 
-        $providerOptions = array('translation_domain' => $this->options['translation_domain'],
-            'label' => false,
-            'error_bubbling' => true,
-            'required' => 0 === count($data) && $this->options['required'],
-            'multiple' => true,
-            'mapped' => false,
-            'attr' => ['multiple' => 'multiple'],
-        );
-
-        $providerAlias = $options['provider'] ?? $this->providerFactory->guessProvider(null)->getProviderAlias();
-        $provider = $this->providerFactory->getProvider($providerAlias);
-        $provider->addCreateForm($form, $providerOptions);
+            $providerAlias = $options['provider'] ?? $this->providerFactory->guessProvider(null)->getProviderAlias();
+            $provider = $this->providerFactory->getProvider($providerAlias);
+            $provider->addCreateForm($form, $providerOptions);
+        }
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSubmit(FormEvent $event): void
     {
         $form = $event->getForm();
@@ -89,41 +115,35 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             $data = array();
         }
 
-        $newMedias = $data['binaryContent'];
-        $data['binaryContent'] = null;
-
-        foreach ($form as $name => $child) {
-            if (!isset($data[$name])) {
-                $form->remove($name);
-            }
+        if (false === $this->options['fine_uploader']) {
+            $newMedias = $data['binaryContent'];
+            $form->remove('binaryContent');
+            unset($data['binaryContent']);
+        } else {
+            $newMedias = $this->filesystemOrphanageStorage->getFiles($event->getForm()->getName());
         }
 
-        $nbForms = (int) count($data) - 1;
-        foreach ($newMedias as $newMedia){
-            $data[$nbForms++] = ['binaryContent' => $newMedia];
-        }
-
-
-        // Add all additional rows
-        foreach ($data as $name => $value) {
-            if (!$form->has($name)) {
-                $form->add($name, MediaType::class, array_replace(array(
-                    'property_path' => '['.$name.']',
-                ), $this->options));
-            }
+        foreach ($newMedias as $uploadedFile) {
+            /** @var UploadedFile $uploadedFile */
+            $name = count($form->all());
+            $data[$name] = ['binaryContent' => $uploadedFile instanceof UploadedFile ? $uploadedFile : new File($uploadedFile->getPathname())];
+            $form->add((string) $name, MediaType::class, array_replace($this->options, array(
+                'property_path' => '['.$name.']',
+                'add_provider_form' => true,
+                'fine_uploader' => false,
+                'multiple' => false,
+            )));
         }
 
         $event->setData($data);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onSubmit(FormEvent $event): void
     {
-        $form = $event->getForm();
         $data = $event->getData();
-
-        // At this point, $data is an array or an array-like object that already contains the
-        // new entries, which were added by the data mapper. The data mapper ignores existing
-        // entries, so we need to manually unset removed entries in the collection.
 
         if (null === $data) {
             $data = array();
@@ -131,34 +151,6 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
 
         if (!\is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
-        }
-
-        $previousData = $form->getData();
-        /** @var FormInterface $child */
-        foreach ($form as $name => $child) {
-            $isNew = !isset($previousData[$name]);
-            $isEmpty = $child->isEmpty();
-
-            // $isNew can only be true if allowAdd is true, so we don't
-            // need to check allowAdd again
-            if ($isEmpty && $isNew) {
-                unset($data[$name]);
-                $form->remove($name);
-            }
-        }
-
-        // The data mapper only adds, but does not remove items, so do this
-        // here
-        $toDelete = array();
-
-        foreach ($data as $name => $child) {
-            if (!$form->has($name)) {
-                $toDelete[] = $name;
-            }
-        }
-
-        foreach ($toDelete as $name) {
-            unset($data[$name]);
         }
 
         $event->setData($data);

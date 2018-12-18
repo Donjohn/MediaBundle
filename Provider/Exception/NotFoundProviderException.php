@@ -7,8 +7,9 @@
 
 namespace Donjohn\MediaBundle\Provider\Exception;
 
-
+/**
+ * Class NotFoundProviderException.
+ */
 class NotFoundProviderException extends \InvalidArgumentException
 {
-
 }

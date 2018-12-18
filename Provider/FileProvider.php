@@ -21,13 +21,12 @@ use Symfony\Component\HttpFoundation\Response;
 class FileProvider extends BaseProvider
 {
     /** @var string $fileMaxSize */
-    protected $fileMaxSize;
+    private $fileMaxSize;
 
     /**
      * FileProvider constructor.
      *
      * @param MediaFilesystemInterface $filesystem
-     * @param string                   $uploadFolder
      * @param string                   $fileMaxSize
      */
     public function __construct(MediaFilesystemInterface $filesystem, string $fileMaxSize)
@@ -37,11 +36,49 @@ class FileProvider extends BaseProvider
     }
 
     /**
+     * @return float|int|string
+     */
+    public function getFileMaxSize()
+    {
+        $number = substr($this->fileMaxSize, 0, -1);
+        switch (strtoupper(substr($this->fileMaxSize, -1))) {
+            case 'K':
+                return $this->fileMaxSize = $number * 1024;
+            case 'M':
+                return $this->fileMaxSize = $number * (1024 ** 2);
+            case 'G':
+                return $this->fileMaxSize = $number * (1024 ** 3);
+            case 'T':
+                return $this->fileMaxSize = $number * (1024 ** 4);
+            case 'P':
+                return $this->fileMaxSize = $number * (1024 ** 5);
+            default:
+                return $this->fileMaxSize;
+        }
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getAlias(): string
     {
         return 'file';
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedTypes(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTemplate(): string
+    {
+        return '@DonjohnMedia/Provider/media.'.$this->getAlias().'.html.twig';
     }
 
     /**
@@ -146,11 +183,16 @@ class FileProvider extends BaseProvider
         //nada
     }
 
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
     public function addProviderOptions(array $options): array
     {
         $options['constraints'] = array_merge(
             $options['constraints'] ?? [],
-            [new Constraints\File(['maxSize' => $this->fileMaxSize])]
+            [new Constraints\File(['maxSize' => $this->getFileMaxSize()])]
         );
 
         return $options;

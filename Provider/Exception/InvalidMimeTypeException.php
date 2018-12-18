@@ -7,9 +7,9 @@
 
 namespace Donjohn\MediaBundle\Provider\Exception;
 
-
-
+/**
+ * Class InvalidMimeTypeException.
+ */
 class InvalidMimeTypeException extends \InvalidArgumentException
 {
-
 }

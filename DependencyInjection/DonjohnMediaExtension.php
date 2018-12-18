@@ -10,7 +10,7 @@ use Symfony\Component\DependencyInjection\Loader;
 use Symfony\Component\HttpKernel\Kernel;
 
 /**
- * This is the class that loads and manages your bundle configuration
+ * This is the class that loads and manages your bundle configuration.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
@@ -19,7 +19,7 @@ class DonjohnMediaExtension extends Extension
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
         $container->setParameter('donjohn.media.upload_folder', $config['upload_folder']);
@@ -30,10 +30,12 @@ class DonjohnMediaExtension extends Extension
 
         $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
-        $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );
-        $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
+        $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template']);
+        $container->setParameter('donjohn.media.one_up.mapping_name', $config['mapping_name']);
         $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/web');
-        if (Kernel::VERSION_ID > 40000) $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/public');
+        if (Kernel::VERSION_ID > 40000) {
+            $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/public');
+        }
 
         if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('oneup_uploader.yml');
@@ -45,10 +47,6 @@ class DonjohnMediaExtension extends Extension
             $loader->load('liip_imagine.yml');
         }
 
-
         $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
-
     }
-
-
 }

@@ -4,7 +4,6 @@ namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Guess\Guess;
@@ -19,21 +18,9 @@ use Symfony\Component\HttpFoundation\Response;
 interface ProviderInterface
 {
     /**
-     * @param string $template template name
-     */
-    public function setTemplate(string $template): ProviderInterface;
-
-    /**
      * @return string alias
      */
     public function getAlias(): string;
-
-    /**
-     * @param array $allowedTypes
-     *
-     * @return mixed
-     */
-    public function setAllowedTypes(array $allowedTypes): ProviderInterface;
 
     /**
      * @param MediaFilesystemInterface $filesystem
@@ -43,11 +30,14 @@ interface ProviderInterface
     public function setMediaFilesystem(MediaFilesystemInterface $filesystem): ProviderInterface;
 
     /**
-     * validate the mimeType of the file.
-     *
+     * @return MediaFilesystemInterface
+     */
+    public function getMediaFilesystem(): MediaFilesystemInterface;
+
+    /**
      * @param string $type
      *
-     * @throws InvalidMimeTypeException
+     * @return bool
      */
     public function validateMimeType(string $type): bool;
 
@@ -71,6 +61,11 @@ interface ProviderInterface
      * @return mixed
      */
     public function setTwig(\Twig_Environment $twig): ProviderInterface;
+
+    /**
+     * @return \Twig_Environment
+     */
+    public function getTwig(): \Twig_Environment;
 
     /**
      * @param Media       $media
@@ -150,6 +145,15 @@ interface ProviderInterface
      */
     public function addCreateForm(FormInterface $form, array $options): void;
 
+    /**
+     * @return array
+     */
+    public function getAllowedTypes(): array;
+
+    /**
+     * @return string
+     */
+    public function getTemplate(): string;
 
     /**
      * return response for each media according to provider.

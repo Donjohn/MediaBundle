@@ -8,18 +8,21 @@ use Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappi
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Class DonjohnMediaBundle.
+ */
 class DonjohnMediaBundle extends Bundle
 {
     /**
      * @param ContainerBuilder $container
      */
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
-        if (class_exists('Doctrine\Bundle\DoctrineBundle\DependencyInjection\Compiler\DoctrineOrmMappingsPass'))
-            $container->addCompilerPass( DoctrineOrmMappingsPass::createAnnotationMappingDriver( array('Donjohn\MediaBundle\Model') , array(realpath(__DIR__.DIRECTORY_SEPARATOR.'Model')) ));
+        if (class_exists(DoctrineOrmMappingsPass::class)) {
+            $container->addCompilerPass(DoctrineOrmMappingsPass::createAnnotationMappingDriver(array('Donjohn\MediaBundle\Model'), array(realpath(__DIR__.DIRECTORY_SEPARATOR.'Model'))));
+        }
 
         $container->addCompilerPass(new ProviderCompilerPass());
-        $container->addCompilerPass(new FormCompilerPass(array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles') )));
-
+        $container->addCompilerPass(new FormCompilerPass());
     }
 }

@@ -7,20 +7,25 @@
 
 namespace Donjohn\MediaBundle\Twig\Node;
 
-
+/**
+ * Class MediaNode.
+ */
 class MediaNode extends \Twig_Node
 {
+    /**
+     * @var string
+     */
     protected $extensionName;
 
     /**
-     * @param string                 $extensionName
+     * @param string                $extensionName
      * @param \Twig_Node_Expression $media
      * @param \Twig_Node_Expression $filter
      * @param \Twig_Node_Expression $attributes
      * @param int                   $lineno
      * @param string                $tag
      */
-    public function __construct($extensionName, \Twig_Node_Expression $media, \Twig_Node_Expression $filter, \Twig_Node_Expression $attributes, $lineno, $tag = null)
+    public function __construct(string $extensionName, \Twig_Node_Expression $media, \Twig_Node_Expression $filter, \Twig_Node_Expression $attributes, int $lineno, string $tag = null)
     {
         $this->extensionName = $extensionName;
 
@@ -30,7 +35,7 @@ class MediaNode extends \Twig_Node
     /**
      * {@inheritdoc}
      */
-    public function compile(\Twig_Compiler $compiler)
+    public function compile(\Twig_Compiler $compiler): void
     {
         $compiler
             ->addDebugInfo($this)

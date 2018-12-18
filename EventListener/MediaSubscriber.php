@@ -14,8 +14,16 @@ use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
  */
 class MediaSubscriber implements EventSubscriber
 {
+    /**
+     * @var ProviderFactory
+     */
     private $providerFactory;
 
+    /**
+     * MediaSubscriber constructor.
+     *
+     * @param ProviderFactory $providerFactory
+     */
     public function __construct(ProviderFactory $providerFactory)
     {
         $this->providerFactory = $providerFactory;
@@ -41,7 +49,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function postLoad(LifecycleEventArgs $args)
+    public function postLoad(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {
@@ -54,7 +62,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function prePersist(LifecycleEventArgs $args)
+    public function prePersist(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {
@@ -67,7 +75,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {
@@ -80,7 +88,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function preUpdate(LifecycleEventArgs $args)
+    public function preUpdate(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {
@@ -93,7 +101,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {
@@ -106,7 +114,7 @@ class MediaSubscriber implements EventSubscriber
      *
      * @param \Doctrine\ORM\Event\LifecycleEventArgs $args
      */
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args): void
     {
         $media = $args->getEntity();
         if ($media instanceof Media) {

@@ -9,8 +9,14 @@ namespace Donjohn\MediaBundle\Twig\TokenParser;
 
 use Donjohn\MediaBundle\Twig\Node\MediaNode;
 
+/**
+ * Class MediaTokenParser.
+ */
 class MediaTokenParser extends \Twig_TokenParser
 {
+    /**
+     * @var string
+     */
     protected $extensionName;
 
     /**
@@ -27,7 +33,7 @@ class MediaTokenParser extends \Twig_TokenParser
     public function parse(\Twig_Token $token): MediaNode
     {
         $media = $this->parser->getExpressionParser()->parseExpression();
-        $filter = new \Twig_Node_Expression_Constant(null ,$token->getLine());
+        $filter = new \Twig_Node_Expression_Constant(null, $token->getLine());
         $attributes = new \Twig_Node_Expression_Array(array(), $token->getLine());
 
         if ($this->parser->getStream()->nextIf(\Twig_Token::PUNCTUATION_TYPE)) {

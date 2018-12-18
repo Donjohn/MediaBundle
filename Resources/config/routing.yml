@@ -1,12 +1,12 @@
 donjohn_media_cancel_fine_uploader:
     path: /media/fine-uploader/cancel/{id}
-    defaults: { _controller: DonjohnMediaBundle:FineUploader:cancelFineUploader, id: null }
+    defaults: { _controller: oneup_uploader.controller.donjohn_medias::cancelFineUploader, id: null }
     methods:
         - 'DELETE'
 
 donjohn_media_init_fine_uploader:
     path: /media/fine-uploader/init
-    defaults: { _controller: DonjohnMediaBundle:FineUploader:initFineUploader }
+    defaults: { _controller: oneup_uploader.controller.donjohn_medias::initFineUploader }
     methods:
         - 'GET'
 

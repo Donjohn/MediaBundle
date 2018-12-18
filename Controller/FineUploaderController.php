@@ -7,44 +7,150 @@
 
 namespace Donjohn\MediaBundle\Controller;
 
-
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Oneup\UploaderBundle\Uploader\File\FileInterface;
+use Oneup\UploaderBundle\Uploader\File\FilesystemFile;
+use Oneup\UploaderBundle\Uploader\Response\FineUploaderResponse;
+use Oneup\UploaderBundle\Uploader\Response\ResponseInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\Exception\UploadException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Oneup\UploaderBundle\Controller\FineUploaderController as BaseFineUploaderController;
 
-class FineUploaderController extends Controller
+/**
+ * Class FineUploaderController.
+ */
+class FineUploaderController extends BaseFineUploaderController
 {
-
     /**
-     * use to provider template to fineuploader
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return JsonResponse
      */
-    public function renderFineUploaderTemplateAction()
+    public function upload(): JsonResponse
     {
-        return $this->render($this->getParameter('donjohn.media.fine_uploader.template'));
+        $request = $this->getRequest();
+
+        $response = new FineUploaderResponse();
+        $totalParts = $request->get('qqtotalparts', 1);
+        $files = $this->getFiles($request->files);
+        $chunked = $totalParts > 1;
+
+        foreach ($files as $file) {
+            try {
+                $chunked ?
+                    $this->handleChunkedUpload($file, $response, $request) :
+                    $this->handleUpload($file, $response, $request)
+                ;
+            } catch (UploadException $e) {
+                $response->setSuccess(false);
+                $response->setError($this->container->get('translator')->trans($e->getMessage(), [], 'OneupUploaderBundle'));
+
+                $this->errorHandler->addException($response, $e);
+
+                // an error happended, return this error message.
+                return $this->createSupportedJsonResponse($response->assemble());
+            }
+        }
+
+        return $this->createSupportedJsonResponse($response->assemble());
     }
 
+    /**
+     * @param UploadedFile      $file
+     * @param ResponseInterface $response
+     * @param Request           $request
+     */
+    protected function handleChunkedUpload(UploadedFile $file, ResponseInterface $response, Request $request): void
+    {
+        // get basic container stuff
+        $chunkManager = $this->container->get('oneup_uploader.chunk_manager');
+
+        // get information about this chunked request
+        [$last, $uuid, $index, $orig] = $this->parseChunkedRequest($request);
+
+        $chunk = $chunkManager->addChunk($uuid, $index, $file, $orig);
+
+        if (null !== $chunk) {
+            $this->dispatchChunkEvents($chunk, $response, $request, $last);
+        }
+
+        if ($chunkManager->getLoadDistribution()) {
+            $chunks = $chunkManager->getChunks($uuid);
+            $assembled = $chunkManager->assembleChunks($chunks, true, $last);
+
+            if (null === $chunk) {
+                $this->dispatchChunkEvents($assembled, $response, $request, $last);
+            }
+        }
+
+        // if all chunks collected and stored, proceed
+        // with reassembling the parts
+        if ($last) {
+            if (!$chunkManager->getLoadDistribution()) {
+                $chunks = $chunkManager->getChunks($uuid);
+                $assembled = $chunkManager->assembleChunks($chunks, true, true);
+            }
+
+            $path = $assembled->getPath();
+
+            $this->handleUpload($assembled, $response, $request);
+
+            $chunkManager->cleanup($path);
+        }
+    }
+
+    /**
+     * @param mixed             $file
+     * @param ResponseInterface $response
+     * @param Request           $request
+     */
+    protected function handleUpload($file, ResponseInterface $response, Request $request): void
+    {
+        // wrap the file if it is not done yet which can only happen
+        // if it wasn't a chunked upload, in which case it is definitely
+        // on the local filesystem.
+        if (!($file instanceof FileInterface)) {
+            $file = new FilesystemFile($file);
+        }
+        $this->validate($file, $request, $response);
+
+        $this->dispatchPreUploadEvent($file, $response, $request);
+
+        // no error happend, proceed
+        $namer = $this->container->get($this->config['namer']);
+        $name = $namer->name($file);
+
+        if (!$request->get('multiple', true)) {
+            foreach ($this->storage->getFiles($request->get('form_name', null)) as $oldfile) {
+                /* @var \SplFileInfo $file */
+                @unlink($oldfile->getRealPath());
+            }
+        }
+
+        // perform the real upload
+        $uploaded = $this->storage->upload($file, $name, $request->get('form_name', null));
+
+        $this->dispatchPostEvents($uploaded, $response, $request);
+    }
 
     /**
      * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function cancelFineUploaderAction(Request $request)
+    public function cancelFineUploader(Request $request): JsonResponse
     {
-        $response = new JsonResponse([]);
+        $response = new JsonResponse(['success' => true]);
         $response->headers->set('Vary', 'Accept');
-        $response->setData(['success' => true]);
 
         /** @var \SplFileInfo $file */
-        foreach ($this->get('oneup_uploader.orphanage.medias')->getFiles() as $file)
-        {
+        foreach ($this->storage->getFiles($request->get('form_name', null)) as $file) {
             $fs = new Filesystem();
             try {
                 $fs->remove([$file->getRealPath()]);
             } catch (IOException $e) {
-                $response->setData(['error' => $this->get('translator')->trans('media.oneup.error.delete', ['%filename%' => $request->query->get('filename')]. ' - '. $e->getMessage(), 'DonjohnMediaBundle')]);
+                $response->setData(['error' => $this->container->get('translator')->trans('media.oneup.error.delete', ['%filename%' => $request->query->get('filename')], 'DonjohnMediaBundle').' - '.$e->getMessage()]);
                 $response->setStatusCode(500);
             }
         }
@@ -53,25 +159,24 @@ class FineUploaderController extends Controller
     }
 
     /**
+     * @param Request $request
+     *
      * @return JsonResponse
      */
-    public function initFineUploaderAction(Request $request)
+    public function initFineUploader(Request $request): JsonResponse
     {
-        $data=[];
-        $response = new JsonResponse([]);
-        $response->headers->set('Vary', 'Accept');
-        
         $request->getSession()->start();
 
-        $uploadedFiles = $this->get('oneup_uploader.orphanage.medias')->getFiles();
-
+        $uploadedFiles = $this->storage->getFiles($request->get('form_name', null));
 
         /** @var \SplFileInfo $file */
-        foreach ($uploadedFiles as $file)  {
-            $data[]=['name' => $file->getBasename(), 'uuid' => uniqid('', false), 'size' => $file->getSize()];
+        $data = [];
+        foreach ($uploadedFiles as $file) {
+            $data[] = ['name' => $file->getBasename(), 'uuid' => uniqid('', false), 'size' => $file->getSize()];
         }
-        $response->setData($data);
+        $response = new JsonResponse($data);
+        $response->headers->set('Vary', 'Accept');
+
         return $response;
     }
-
 }

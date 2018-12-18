@@ -11,13 +11,17 @@ namespace Donjohn\MediaBundle\EventListener;
 
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class MediaTypeSubscriber.
+ */
 class MediaTypeSubscriber implements EventSubscriberInterface
 {
     /** @var array $options */
@@ -26,10 +30,21 @@ class MediaTypeSubscriber implements EventSubscriberInterface
     /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    public function __construct(ProviderFactory $providerFactory, array $options)
+    /** @var null|StorageInterface */
+    protected $filesystemOrphanageStorage;
+
+    /**
+     * MediaTypeSubscriber constructor.
+     *
+     * @param ProviderFactory       $providerFactory
+     * @param array                 $options
+     * @param StorageInterface|null $filesystemOrphanageStorage
+     */
+    public function __construct(ProviderFactory $providerFactory, array $options, StorageInterface $filesystemOrphanageStorage = null)
     {
         $this->options = $options;
         $this->providerFactory = $providerFactory;
+        $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
     }
 
     /**
@@ -43,6 +58,9 @@ class MediaTypeSubscriber implements EventSubscriberInterface
         );
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function preSetData(FormEvent $event): void
     {
         /** @var Media $media */
@@ -53,7 +71,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
         $providerOptions = array('translation_domain' => $this->options['translation_domain'],
             'label' => $this->options['label'],
             'error_bubbling' => true,
-            'required' => (null === $media && $this->options['required']),
+            'required' => null === $media && $this->options['required'] && !$this->options['fine_uploader'],
         );
 
         if ($media instanceof Media && $this->options['allow_delete']) {
@@ -66,8 +84,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
             ));
         }
 
-        if ($this->options['add_provider_form'])
-        {
+        if (false === $this->options['fine_uploader'] && $this->options['add_provider_form']) {
             if ($media instanceof Media) {
                 $this->providerFactory->getProvider($media->getProviderName() ?? $this->options['provider'])->addEditForm($form, $providerOptions);
             } else {
@@ -75,14 +92,28 @@ class MediaTypeSubscriber implements EventSubscriberInterface
                 $provider = $this->providerFactory->getProvider($providerAlias);
                 $provider->addCreateForm($form, $providerOptions);
             }
+            //que pour l'api... à revoir
+//            $form->add('originalFilename', HiddenType::class);
         }
-        $form->add('originalFilename', HiddenType::class);
     }
 
+    /**
+     * @param FormEvent $event
+     */
     public function onSubmit(FormEvent $event): void
     {
         if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
             $event->setData(null);
+
+            return;
+        }
+
+        if ($this->options['fine_uploader'] && false === $this->options['multiple']) {
+            /** @var $uploadedFile UploadedFile */
+            //on prend de fait le dernier uploadé
+            foreach ($this->filesystemOrphanageStorage->getFiles($event->getForm()->getName()) as $uploadedFile) {
+                $event->setData($event->getData()->setBinaryContent(new UploadedFile($uploadedFile->getPathname(), $uploadedFile->getBasename())));
+            }
         }
     }
 }
