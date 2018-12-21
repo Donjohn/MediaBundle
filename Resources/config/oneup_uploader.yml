@@ -1,0 +1,11 @@
+parameters:
+    oneup_uploader.controller.fineuploader.class: Donjohn\MediaBundle\Controller\FineUploaderController
+    oneup_uploader.orphanage.class: Donjohn\MediaBundle\Uploader\Storage\FilesystemOrphanageStorage
+
+services:
+    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
+        public: true
+
+
+
+

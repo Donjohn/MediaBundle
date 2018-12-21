@@ -3,15 +3,18 @@
 namespace Donjohn\MediaBundle\DependencyInjection;
 
 use Donjohn\MediaBundle\Provider\ProviderInterface;
+use Donjohn\MediaBundle\Routing\Loader\DonjohnMediaLoader;
+use Donjohn\MediaBundle\Uploader\Naming\OriginalNamer;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
-use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
+use Symfony\Component\HttpKernel\Kernel;
 
 /**
- * This is the class that loads and manages your bundle configuration
+ * This is the class that loads and manages your bundle configuration.
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
@@ -20,77 +23,71 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
     /**
      * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
-        $container->setParameter('donjohn.media.upload_folder', $config['upload_folder']);
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
         //on init les params
-        $container->setParameter('donjohn.media.entity', $config['entity']);
+
+        $container->setParameter('donjohn.media.upload_folder', $config['upload_folder']);
         $container->setParameter('donjohn.media.file_max_size', $config['file_max_size']);
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
-        $container->setParameter('donjohn.media.providers.config', array_merge($config['providers'], $config['providers_ext']) );
-        $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template'] );
-
-        // get all bundles
-        $bundles = $container->getParameter('kernel.bundles');
-        if (isset($bundles['ApiPlatformBundle'])) {
-            $loader->load('api.yml');
+        $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template']);
+        $container->setParameter('donjohn.media.one_up.mapping_name', $config['mapping_name']);
+        $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/web');
+        if (Kernel::VERSION_ID > 40000) {
+            $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/public');
         }
-        if (isset($bundles['OneupUploaderBundle'])) {
-            $loader->load('oneup.yml');
+
+        if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
+            $loader->load('oneup_uploader.yml');
+
+            $definition = new Definition(DonjohnMediaLoader::class);
+            $definition->setArgument('$mapping_name', $config['mapping_name']);
+            $definition->addTag('routing.loader');
+            $container->setDefinition(DonjohnMediaLoader::class, $definition);
+        }
+        if (array_key_exists('ApiPlatformBundle', $container->getParameter('kernel.bundles'))) {
+            $loader->load('api_platform.yml');
+        }
+        if (array_key_exists('LiipImagineBundle', $container->getParameter('kernel.bundles'))) {
+            $loader->load('liip_imagine.yml');
         }
 
         $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function prepend(ContainerBuilder $container)
+    public function prepend(ContainerBuilder $container): void
     {
-        $config = $container->getExtensionConfig($this->getAlias());
-        $config = $this->processConfiguration(
-            $container->getExtension($this->getAlias())->getConfiguration($config, $container),
-            $config
-        );
-        $upload_folder = $config['upload_folder'];
+        if (!$container->hasExtension('oneup_uploader')) {
+            return;
+        }
+        //on recupere le mapping name
+        $configs = $container->getExtensionConfig($this->getAlias());
+        $configMediaBundle = $this->processConfiguration(new Configuration(), $configs);
+        $mappingName = $configMediaBundle['mapping_name'];
 
-        if ($container->hasExtension('easy_admin')) {
-            $config = $container->getExtensionConfig('easy_admin');
-            $config = $this->processConfiguration(
-                $container->getExtension('easy_admin')->getConfiguration($config, $container),
-                $config
-            );
-
-            $container->setParameter('media_mediazone_border_color', $config['design']['brand_color']);
-        } else {
-            $container->setParameter('media_mediazone_border_color', '#205081');
+        $configs = $container->getExtensionConfig('oneup_uploader');
+        foreach ($configs as $config) {
+            if (!isset($config['mappings'])) {
+                continue;
+            }
+            foreach ($config['mappings'] as $key => $param) {
+                $mappings[$key] = $param;
+            }
         }
 
+        $chunks['storage'] = ['directory' => '%kernel.cache_dir%/uploader/chunks'];
+        $mappings[$mappingName] = ['namer' => OriginalNamer::class, 'use_orphanage' => true, 'frontend' => 'fineuploader'];
 
-
-        $config = $container->getExtensionConfig('liip_imagine');
-        $config = $this->processConfiguration(
-            $container->getExtension('liip_imagine')->getConfiguration($config, $container),
-            $config
-        );
-
-        if (isset($config['loaders']['default']['filesystem']['data_root']))
-        {
-            $config['loaders']['default']['filesystem']['data_root'] = [$upload_folder];
-        }
-
-        if (!isset($config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0])) {
-            throw new MissingMandatoryParametersException('you shall define the thumbnail in liip_imagine config part (check DonjohnMediaBundle documentation)');
-        } else {
-
-            $container->setParameter('media_mediazone_thumbnail_height', $config['filter_sets']['thumbnail']['filters']['thumbnail']['size'][0]);
-        }
+        $container->prependExtensionConfig('oneup_uploader', [
+            'chunks' => ['storage' => ['directory' => '%kernel.cache_dir%/uploader/chunks']],
+            'mappings' => $mappings,
+        ]);
     }
-
-
 }

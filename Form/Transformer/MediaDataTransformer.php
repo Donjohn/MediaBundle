@@ -2,46 +2,41 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
+use Doctrine\Common\Util\ClassUtils;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Symfony\Component\Form\DataTransformerInterface;
-use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-
+/**
+ * Class MediaDataTransformer.
+ */
 class MediaDataTransformer implements DataTransformerInterface
 {
-    /**
-     * @var string $providerAlias
-     */
-    protected $providerAlias;
-
-    /** @var  ProviderFactory $providerFactory */
+    /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
-
-    /** @var bool $createOnUpdate  */
+    /** @var bool $createOnUpdate */
     protected $createOnUpdate;
+
+    /** @var string $providerName */
+    protected $providerName;
 
     /**
      * MediaDataTransformer constructor.
+     *
      * @param ProviderFactory $providerFactory
-     * @param null $providerAlias
-     * @param string $classMedia
-     * @param boolean $createOnUpdate
+     * @param bool            $createOnUpdate
+     * @param string          $providerName
      */
-    public function __construct(ProviderFactory $providerFactory, $providerAlias=null, $classMedia, $createOnUpdate)
+    public function __construct(ProviderFactory $providerFactory, bool $createOnUpdate, string  $providerName)
     {
-        $this->providerAlias = $providerAlias;
         $this->providerFactory = $providerFactory;
-        $this->classMedia = $classMedia;
         $this->createOnUpdate = $createOnUpdate;
+        $this->providerName = $providerName;
     }
 
     /**
@@ -52,73 +47,76 @@ class MediaDataTransformer implements DataTransformerInterface
         return $value;
     }
 
-
     /**
-     * @param mixed $oMedia
+     * @param mixed $media
+     *
      * @return Media|mixed|null
      */
-    public function reverseTransform($oMedia)
+    public function reverseTransform($media)
     {
-        if (!$oMedia instanceof Media) return $oMedia;
+        if (!$media instanceof Media) {
+            return $media;
+        }
 
         // no binary content and no media id return null
-        if (empty($oMedia->getBinaryContent()) && $oMedia->getId() === null) return null;
-
-        if (!($oMedia instanceof Media) || (!$oMedia->getBinaryContent())) return $oMedia;
-
-
-        /** @var $oNewMedia Media */
-        if ($this->createOnUpdate && $oMedia->getId()) {
-            $oNewMedia = new $this->classMedia();
-            $oNewMedia->setBinaryContent($oMedia->getBinaryContent());
-            $oMedia->setBinaryContent(null);
-        }
-        else {
-            $oNewMedia = $oMedia;
+        if (null === $media->getBinaryContent() && null === $media->getId()) {
+            return null;
         }
 
-        $matches=array();
-        $fileName='';
+        if (!($media instanceof Media) || (!$media->getBinaryContent())) {
+            return $media;
+        }
+
+        /* @var $newMedia Media */
+        if ($this->createOnUpdate && $media->getId()) {
+            $classMedia = ClassUtils::getRealClass($media);
+            $newMedia = new $classMedia();
+            $newMedia->setBinaryContent($media->getBinaryContent());
+            $media->setBinaryContent(null);
+        } else {
+            $newMedia = $media;
+        }
+
+        $matches = array();
+        $fileName = '';
 
         //si c'est un stream file http://php.net/manual/en/wrappers.data.php
-        if (preg_match('#data:(.*);base64,.*#', $oNewMedia->getBinaryContent(),$matches)) {
+        if (preg_match('#data:(.*);base64,.*#', $newMedia->getBinaryContent(), $matches)) {
+            if (null === $newMedia->getOriginalFilename()) {
+                throw new TransformationFailedException('invalid media, no filename');
+            }
 
-            $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$oNewMedia->getOriginalFilename();
-            $source = fopen($oNewMedia->getBinaryContent(), 'r');
-            $destination = fopen($tmpFile, 'w');
+            $tmpFile = sys_get_temp_dir().DIRECTORY_SEPARATOR.$newMedia->getOriginalFilename();
+            $source = fopen($newMedia->getBinaryContent(), 'rb');
+            $destination = fopen($tmpFile, 'wb');
             stream_copy_to_stream($source, $destination);
             fclose($source);
             fclose($destination);
-            $fileName = $oNewMedia->getOriginalFilename();
+            $fileName = $newMedia->getOriginalFilename();
             $newFile = new File($tmpFile);
-            $oNewMedia->setBinaryContent($newFile);
-
-
-        } elseif ($oNewMedia->getBinaryContent() instanceof UploadedFile) {
-            $fileName = $oNewMedia->getBinaryContent()->getClientOriginalName();
-
-        } elseif ($oNewMedia->getBinaryContent() instanceof File) {
-            $fileName = $oNewMedia->getBinaryContent()->getBasename();
+            $newMedia->setBinaryContent($newFile);
+        } elseif ($newMedia->getBinaryContent() instanceof UploadedFile) {
+            $fileName = $newMedia->getBinaryContent()->getClientOriginalName();
+        } elseif ($newMedia->getBinaryContent() instanceof File) {
+            $fileName = $newMedia->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) {
+        if (null === $fileName) {
             throw new TransformationFailedException('invalid media, no filename');
         }
 
-        $oNewMedia->setOriginalFilename($fileName);
-        $oNewMedia->setProviderName($this->providerAlias ?: $this->providerFactory->guessProvider($oNewMedia->getBinaryContent())->getProviderAlias());
+        $newMedia->setOriginalFilename($fileName);
 
-        try {
-            $this->providerFactory->getProvider($oNewMedia->getProviderName())->validateMimeType($oNewMedia->getBinaryContent()->getMimeType());
-        } catch (InvalidMimeTypeException $e)
-        {
-            throw new TransformationFailedException($e->getMessage());
+        if (null === $newMedia->getProviderName()) {
+            $newMedia->setProviderName($this->providerName ?? $this->providerFactory->guessProvider($newMedia->getBinaryContent())->getProviderAlias());
         }
 
+        try {
+            $this->providerFactory->getProvider($newMedia->getProviderName())->validateMimeType($newMedia->getBinaryContent()->getMimeType());
+        } catch (InvalidMimeTypeException $e) {
+            throw new TransformationFailedException('invalid media, no filename');
+        }
 
-
-
-        return $oNewMedia;
+        return $newMedia;
     }
 }
-

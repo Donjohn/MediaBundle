@@ -1,26 +1,22 @@
 <?php
+
 namespace Donjohn\MediaBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
-
-
-
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  * Class Article
- * @ORM\MappedSuperclass()
-*/
-
-
-class Media
+ * @ORM\MappedSuperclass
+ */
+abstract class Media
 {
-    protected $id;
-    
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
@@ -32,28 +28,23 @@ class Media
      * @ORM\Column(type="string", nullable=false)
      */
     protected $providerName;
-    
+
     /**
      * @ORM\Column(type="string", nullable=true)
      */
     protected $filename;
 
     /**
-     * @var string old filename to delete old file after update
+     * @var string|null
      */
     private $oldFilename;
 
     /**
      * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     * @Assert\NotNull()
+     * @Assert\NotBlank
+     * @Assert\NotNull
      */
     protected $originalFilename;
-
-    /**
-     * @var array collection of paths
-     */
-    private $paths=array();
 
     /**
      * @var string
@@ -61,6 +52,9 @@ class Media
      */
     protected $mimeType;
 
+    /**
+     * @var
+     */
     protected $oldMimeType;
 
     /**
@@ -71,9 +65,9 @@ class Media
 
     /**
      * @var array
-     * @ORM\Column(type="json_array", nullable=true)
+     * @ORM\Column(type="json", nullable=true)
      */
-    protected $metadata=array();
+    protected $metadatas = array();
 
     /**
      * @var string|File|UploadedFile
@@ -88,43 +82,43 @@ class Media
     /**
      * @Assert\IsTrue(message="media.error.binary_content.empty")
      */
-    public function hasBinaryContentOnCreation()
+    public function hasBinaryContentOnCreation(): bool
     {
-        return $this->id ||(!$this->id && $this->binaryContent);
+        return $this->getId() || (!$this->getId() && $this->getBinaryContent());
     }
 
     /**
-     * return old Media
+     * return old Media.
+     *
      * @return Media
      */
-    public function oldMedia()
+    public function oldMedia(): Media
     {
         if ($this->oldFilename) {
             $oldMedia = clone $this;
             $oldMedia->setFilename($this->oldFilename);
+
             return $oldMedia;
         }
+
         return null;
     }
 
-
-        /**
-     * Get mediaId
+    /**
+     * Get mediaId.
      *
-     * @return integer
+     * @return int
      */
-    public function getId()
-    {
-        return $this->id;
-    }
+    abstract public function getId(): ?int;
 
     /**
-     * Set name
+     * Set name.
      *
      * @param string $name
+     *
      * @return Media
      */
-    public function setName($name)
+    public function setName(string $name): Media
     {
         $this->name = $name;
 
@@ -132,27 +126,31 @@ class Media
     }
 
     /**
-     * Get name
+     * Get name.
      *
      * @return string
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function __toString()
+    /**
+     * @return string
+     */
+    public function __toString(): string
     {
         return $this->name ?: '';
     }
 
     /**
-     * Set description
+     * Set description.
      *
      * @param string $description
+     *
      * @return Media
      */
-    public function setDescription($description)
+    public function setDescription(string $description): Media
     {
         $this->description = $description;
 
@@ -160,67 +158,80 @@ class Media
     }
 
     /**
-     * Get description
+     * Get description.
      *
      * @return string
      */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
-     * Set metadata
+     * @param array $metadatas
      *
-     * @param array $metadata
      * @return Media
      */
-    public function setMetadata($metadata)
+    public function setMetadatas(array $metadatas): Media
     {
-        $this->metadata = $metadata;
+        $this->metadatas = $metadatas;
 
         return $this;
     }
 
     /**
-     * add metadata
+     * add metadata.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
+     *
      * @return Media
      */
-    public function addMetadata($key, $value)
+    public function addMetadata(string $key, $value): Media
     {
-        $this->metadata[$key] = $value;
+        $this->metadatas[$key] = $value;
 
         return $this;
     }
 
     /**
-     * Get metadata
+     * Get metadata.
      *
      * @return array
      */
-    public function getMetadata()
+    public function getMetadatas(): array
     {
-        return $this->metadata;
+        return $this->metadatas;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getMetadata(string $key)
+    {
+        return $this->metadatas[$key] ?? null;
     }
 
     /**
      * init l'old media et fous le contenu d'un binaire dans la variable.
+     *
      * @param $binaryContent
+     *
      * @return $this
      */
-    public function setBinaryContent($binaryContent=null)
+    public function setBinaryContent($binaryContent = null): Media
     {
         if (!empty($binaryContent)) {
             $this->oldFilename = $this->filename;
             $this->filename = null;
-        } elseif (!empty($this->oldFilename)) {
+        } elseif (null !== $this->oldFilename) {
             $this->filename = $this->oldFilename;
-            $this->oldFilename= null;
+            $this->oldFilename = null;
         }
         $this->binaryContent = $binaryContent;
+
         return $this;
     }
 
@@ -233,12 +244,13 @@ class Media
     }
 
     /**
-     * Set mimeType
+     * Set mimeType.
      *
      * @param string $mimeType
+     *
      * @return Media
      */
-    public function setMimeType($mimeType)
+    public function setMimeType(string $mimeType): Media
     {
         $this->mimeType = $mimeType;
 
@@ -246,70 +258,73 @@ class Media
     }
 
     /**
-     * Get mimeType     *
+     * Get mimeType     *.
      *
      * @var string
+     *
      * @return string
      */
-    public function getMimeType()
+    public function getMimeType(): ?string
     {
         return $this->mimeType;
     }
 
-
     /**
-     * Set filename
+     * Set filename.
      *
      * @param string $filename
+     *
      * @return Media
      */
-    public function setFilename($filename)
+    public function setFilename(string $filename): Media
     {
         $this->filename = $filename;
+
         return $this;
     }
 
     /**
-     * Get filename
+     * Get filename.
      *
      * @return string
      */
-    public function getFilename()
+    public function getFilename(): ?string
     {
         return $this->filename;
     }
 
-
     /**
-     * Set originalFilename
+     * Set originalFilename.
      *
      * @param string $originalFilename
+     *
      * @return Media
      */
-    public function setOriginalFilename($originalFilename)
+    public function setOriginalFilename(string $originalFilename): Media
     {
         $this->originalFilename = $originalFilename;
+
         return $this;
     }
 
     /**
-     * Get originalFilename
+     * Get originalFilename.
      *
      * @return string
      */
-    public function getOriginalFilename()
+    public function getOriginalFilename(): ?string
     {
         return $this->originalFilename;
     }
 
     /**
-     * Set providerName
+     * Set providerName.
      *
      * @param string $providerName
      *
      * @return Media
      */
-    public function setProviderName($providerName)
+    public function setProviderName(string $providerName): Media
     {
         $this->providerName = $providerName;
 
@@ -317,45 +332,42 @@ class Media
     }
 
     /**
-     * Get providerName
+     * Get providerName.
      *
      * @return string
      */
-    public function getProviderName()
+    public function getProviderName(): ?string
     {
         return $this->providerName;
     }
 
     /**
-     * @return mixed
-     */
-    public function getPaths()
-    {
-        return $this->paths;
-    }
-
-    /**
-     * @param mixed $paths
-     */
-    public function setPaths($paths)
-    {
-        $this->paths = $paths;
-    }
-
-
-    /**
      * @return string
      */
-    public function getMd5()
+    public function getMd5(): ?string
     {
         return $this->md5;
     }
 
     /**
      * @param string $md5
+     *
+     * @return Media
      */
-    public function setMd5($md5)
+    public function setMd5(string $md5): Media
     {
         $this->md5 = $md5;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     *
+     * @throws \ReflectionException
+     */
+    public function getCamelizeName(): string
+    {
+        return Container::underscore((new \ReflectionClass($this))->getShortName());
     }
 }

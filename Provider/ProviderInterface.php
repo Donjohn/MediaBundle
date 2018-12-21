@@ -2,139 +2,175 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
+use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
 use Donjohn\MediaBundle\Model\Media;
-use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Guesser\ProviderGuess;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Guess\Guess;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-interface ProviderInterface {
-
-    /**
-     * @param string $template template name
-     */
-    public function setTemplate($template);
-
+interface ProviderInterface
+{
     /**
      * @return string alias
      */
-    public function getAlias();
+    public function getAlias(): string;
 
-
-    public function setAllowedTypes(array $allowedTypes);
-    
     /**
-     * validate the mimeType of the file
-     * @param string $type
-     * @throws InvalidMimeTypeException
+     * @param MediaFilesystemInterface $filesystem
+     *
+     * @return mixed
      */
-    public function validateMimeType($type);
+    public function setMediaFilesystem(MediaFilesystemInterface $filesystem): ProviderInterface;
+
+    /**
+     * @return MediaFilesystemInterface
+     */
+    public function getMediaFilesystem(): MediaFilesystemInterface;
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function validateMimeType(string $type): bool;
 
     /**
      * @param null|File $file
+     *
      * @return ProviderGuess|null|Guess
      */
-    public function guess($file = null);
+    public function guess(File $file = null): Guess;
 
     /**
-     * @param \Twig_Environment $twig_Environment
-     * @param Media $media
-     * @param null $filter
      * @param array $options
+     *
+     * @return array
+     */
+    public function addProviderOptions(array $options): array;
+
+    /**
+     * @param \Twig_Environment $twig
+     *
+     * @return mixed
+     */
+    public function setTwig(\Twig_Environment $twig): ProviderInterface;
+
+    /**
+     * @return \Twig_Environment
+     */
+    public function getTwig(): \Twig_Environment;
+
+    /**
+     * @param Media       $media
+     * @param string|null $filter
+     * @param array       $options
+     *
      * @return string
      */
-    public function render(\Twig_Environment $twig_Environment, Media $media, $filter = null, $options = array());
-
+    public function render(Media $media, string $filter = null, array $options = array()): string;
 
     /**
-     * extract data from media, size/height/etc..;
-     * @param Media $oMedia
-     * @return array metadata
+     * extract data from media, size/height/etc..;.
+     *
+     * @param Media $media
      */
-    public function extractMetaData(Media $oMedia);
+    public function extractMetaData(Media $media): void;
 
     /**
-     * function called on postLoad Doctrine Event on Media entity
-     * @param Media $oMedia
+     * function called on postLoad Doctrine Event on Media entity.
+     *
+     * @param Media $media
      */
-    public function postLoad(Media $oMedia);
-
+    public function postLoad(Media $media): void;
 
     /**
-     * function called on prePersist Doctrine Event on v entity
-     * @param Media $oMedia
+     * function called on prePersist Doctrine Event on v entity.
+     *
+     * @param Media $media
      */
-    public function prePersist(Media $oMedia);
+    public function prePersist(Media $media): void;
 
     /**
-     * function called on postPersist Doctrine Event on Media entity
-     * @param Media $oMedia
+     * function called on postPersist Doctrine Event on Media entity.
+     *
+     * @param Media $media
      */
-    public function postPersist(Media $oMedia);
+    public function postPersist(Media $media): void;
 
     /**
-     * function called on preUpdate Doctrine Event on Media entity
-     * @param Media $oMedia
+     * function called on preUpdate Doctrine Event on Media entity.
+     *
+     * @param Media $media
      */
-    public function preUpdate(Media $oMedia);
+    public function preUpdate(Media $media): void;
 
     /**
-     * function called on postUpdate Doctrine Event on Media entity
-     * @param Media $oMedia
+     * function called on postUpdate Doctrine Event on Media entity.
+     *
+     * @param Media $media
      */
-    public function postUpdate(Media $oMedia);
+    public function postUpdate(Media $media): void;
 
     /**
-     * function called on preRemove Doctrine Event on Media entity
-     * @param Media $oMedia
+     * function called on preRemove Doctrine Event on Media entity.
+     *
+     * @param Media $media
      */
-    public function preRemove(Media $oMedia);
+    public function preRemove(Media $media): void;
 
     /**
-     * add edit fields for the defined provider
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * add edit fields for the defined provider.
+     *
+     * @param FormInterface $form
+     * @param array         $options
+     *
      * @return mixed
      */
-    public function addEditForm(FormBuilderInterface $builder, array $options);
+    public function addEditForm(FormInterface $form, array $options): void;
 
     /**
-     * add create fields for the defined provider
-     * @param FormBuilderInterface $builder
-     * @param array $options
+     * add create fields for the defined provider.
+     *
+     * @param FormInterface $form
+     * @param array         $options
+     *
      * @return mixed
      */
-    public function addCreateForm(FormBuilderInterface $builder, array $options);
-
-
+    public function addCreateForm(FormInterface $form, array $options): void;
 
     /**
-     * return path of the media, depends on the media ^^
-     * @param \Donjohn\MediaBundle\Model\Media $oMedia
-     * @param string|null $filter
-     * @return mixed
+     * @return array
      */
-    public function getPath(Media $oMedia, $filter= null);
+    public function getAllowedTypes(): array;
 
     /**
-     * return the full path of the media on the server, depends on the media ^^
-     * @param \Donjohn\MediaBundle\Model\Media $oMedia
-     * @param string|null $filter
-     * @return mixed
+     * @return string
      */
-    public function getFullPath(Media $oMedia, $filter= null);
+    public function getTemplate(): string;
 
     /**
-     * return response for each media according to provider
-     * @param Media $oMedia
+     * return response for each media according to provider.
+     *
+     * @param Media      $media
+     * @param array|null $headers
+     *
      * @return Response
      */
-    public function getDownloadResponse(Media $oMedia);
-    
+    public function getDownloadResponse(Media $media, array $headers = array()): Response;
+
+    /**
+     * @param Media       $media
+     * @param string|null $filter
+     * @param bool        $fullPath
+     *
+     * @return string
+     */
+    public function getPath(Media $media, string $filter = null, bool $fullPath = false): string;
 }

@@ -1,54 +1,23 @@
 {% block media_widget %}
-
-    {% if form.vars.mediazone %}
-        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height }}" class="panel">
-            {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color }}; ">{{ 'mediazone.message.single'|trans({},'DonjohnMediaBundle') }}</span>
-            {{ form_widget(form) }}
-        </div>
-    {% else %}
-        {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-        {{ form_widget(form) }}
-    {% endif%}
+    {% if not form.vars.multiple|default(false) and form.vars.data.id|default(false) %}
+        {% include form.vars.show_template with {media: form.vars.data}%}
+    {% endif %}
+    {{ form_widget(form) }}
+    {% if form.vars.fine_uploader|default(false) %}
+        <div data-fine-uploader="true"
+             data-request_endpoint="{{ oneup_uploader_endpoint(form.vars.oneup_mapping) }}?form_name={{ name }}&multiple={{ form.vars.multiple }}"
+             data-chunking_partsize="{{ form.vars.chunk_size }}"
+             data-deletefile_endpoint="{{ path('_uploader_cancel_'~form.vars.oneup_mapping, {form_name: name }) }}"
+             data-thumbnails_placeholders_notavailablepath='{{ asset('bundles/donjohnmedia/images/file.png') }}'
+             data-thumbnails_placeholders_waitingpath='{{ asset('bundles/donjohnmedia/images/file.png') }}'
+             data-multiple="{{ form.vars.multiple }}"
+             data-session_endpoint="{{ path('_uploader_init_'~form.vars.oneup_mapping, {form_name: name, multiple: form.vars.multiple }) }}"
+             data-validation_accept_files="{{ form.vars.validation_accept_files|default(null) }}"
+             data-validation_allowed_extensions="{{ form.vars.validation_allowed_extensions|default('[]') }}"
+             data-template="donjohn-media-{{ id }}"
+        ></div>
+        <script type="text/template" id="donjohn-media-{{ id }}">
+            {% include form.vars.fine_uploader_template %}
+        </script>
+    {% endif %}
 {% endblock media_widget %}
-
-
-{% block media_collection_widget %}
-    {% if form.vars.mediazone %}
-        <div data-mediazone="on" id="mediazone{{ id }}" data-provider="{{ provider }}" data-thumbnail-height="{{ media_mediazone_thumbnail_height }}" class="panel">
-            <span class="center-block text-center panel-body message" style="border: 2px dashed {{ media_mediazone_border_color }}; ">{{ 'mediazone.message.multiple'|trans({},'DonjohnMediaBundle') }}</span>
-            {{ form_widget(form) }}
-        </div>
-    {% else %}
-        {{ form_widget(form) }}
-    {% endif%}
-{% endblock media_collection_widget %}
-
-{% block media_gallery_widget %}
-    {% include 'DonjohnMediaBundle:Form:media_form_show.html.twig' with {media: form.vars.data}%}
-    {{ form_widget(form, {attr: {class: 'hidden'}}) }}
-    <script type="text/javascript">
-        var pickMedia{{ id }} = function(message)
-        {
-            var input = $(document).find('#{{ id }}');
-            input.val(message);
-
-            $.ajax({
-                method: "get",
-                url: '{{ path('donjohn_media_render_form') }}?id=' + message,
-                cache: false,
-                data: message
-            })
-                .done(function(data){
-                    $(input).parent().find('.media-info').remove();
-                    $(input).before(data);
-                });
-        }
-
-    </script>
-    <button onclick="open('{{ path('donjohn_media_gallery', {formId: id, provider: provider}) }}', '{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}', 'scrollbars=1,resizable=0,height=660,width=770'); return false;" class="show-media-gallery" class="btn btn-download">{{ 'media.gallery.link'|trans({},'DonjohnMediaBundle') }}</button>
-{% endblock %}
-
-{% block media_select_widget %}
-    {{ block('media_gallery_widget') }}
-{% endblock %}

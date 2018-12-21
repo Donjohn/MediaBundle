@@ -1,0 +1,14 @@
+services:
+    Donjohn\MediaBundle\Provider\ImageLiipProvider:
+        decorates: Donjohn\MediaBundle\Provider\ImageProvider
+        arguments:
+            $imageProvider: '@Donjohn\MediaBundle\Provider\ImageLiipProvider.inner'
+
+    Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem:
+        decorates: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
+        arguments:
+            $mediaLocalFilesystem: '@Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem.inner'
+            $cacheManager: '@liip_imagine.cache.manager'
+            $rootFolder: "%donjohn.media.root_folder%"
+
+

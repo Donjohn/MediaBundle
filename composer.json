@@ -9,22 +9,28 @@
         {
             "name": "Donjohn",
             "email": "donjohn.geekzone@gmail.com",
-            "role": "Developer"
+            "role": "Boss"
         }
     ],
 	"prefer-stable": true,
     "require" : {
-        "php": ">=5.5.9",
-        "symfony/symfony": "^3.3",
+        "php": ">=7.1",
+        "ext-gd": "*",
+        "ext-fileinfo": "*",
         "doctrine/doctrine-bundle": "^1.6",
-        "liip/imagine-bundle": "^1.7",
-        "twig/extensions": "^1.4",
-        "knplabs/knp-gaufrette-bundle": "^0.4.0",
-        "white-october/pagerfanta-bundle": "^1.0"
+        "symfony/form": "^3.4 || ^4.1",
+        "symfony/framework-bundle": "^3.4 || ^4.1",
+        "symfony/security-bundle": "^3.4 || ^4.1",
+        "symfony/twig-bundle": "^3.4 || ^4.1",
+        "symfony/filesystem": "^3.4 || ^4.1",
+        "symfony/validator": "^3.4 || ^4.1",
+        "twig/twig": "^1.28 || ^2.0",
+        "symfony/templating": "^3.4 || ^4.1"
 
     },
     "suggest": {
-        "oneup/uploader-bundle": "for the awesome upload big files features",
+        "oneup/uploader-bundle": "for the awesome upload of big files feature",
+        "liip/imagine-bundle": "to get filters feature and more for your images",
         "api-platform/core": "for the awesome api feature"
     },
     "autoload" : {

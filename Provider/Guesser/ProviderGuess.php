@@ -1,26 +1,29 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 25/08/2017
  * @description For ...
  */
 
 namespace Donjohn\MediaBundle\Provider\Guesser;
 
-
 use Symfony\Component\Form\Guess\Guess;
 
+/**
+ * Class ProviderGuess.
+ */
 class ProviderGuess extends Guess
 {
-    /** @var string $providerAlias  */
+    /** @var string $providerAlias */
     protected $providerAlias;
 
     /**
      * ProviderGuess constructor.
+     *
      * @param string $providerAlias
-     * @param $confidence
+     * @param int    $confidence
      */
-    public function __construct($providerAlias, $confidence)
+    public function __construct(string $providerAlias, int $confidence)
     {
         $this->providerAlias = $providerAlias;
         parent::__construct($confidence);
@@ -29,24 +32,8 @@ class ProviderGuess extends Guess
     /**
      * @return string
      */
-    public function getProviderAlias()
+    public function getProviderAlias(): string
     {
         return $this->providerAlias;
     }
-
-    /**
-     * Returns the guess most likely to be correct from a list of guesses.
-     *
-     * If there are multiple guesses with the same, highest confidence, the
-     * returned guess is any of them.
-     *
-     * @param ProviderGuess[] $guesses An array of guesses
-     *
-     * @return Guess|ProviderGuess|null
-     */
-    public static function getBestGuess(array $guesses)
-    {
-        return parent::getBestGuess($guesses);
-    }
-
 }

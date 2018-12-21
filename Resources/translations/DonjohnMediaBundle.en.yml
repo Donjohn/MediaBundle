@@ -6,6 +6,7 @@ media.unlink.label: Unlink Media
 media.provider.file.label: Files
 media.provider.image.label: Images
 media.file.binaryContent: File
+media.download: Download
 media.submit: Upload
 media.gallery.valid: Choose
 media.delete.confirm: Are you sure you want to delete the media ?

@@ -1,81 +1,42 @@
-parameters:
-    donjohn.media.event.media_subscriber.class: Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber
-    donjohn.media.provider.factory.class: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
-    donjohn.media.provider.file.class: Donjohn\MediaBundle\Provider\FileProvider
-    donjohn.media.provider.image.class: Donjohn\MediaBundle\Provider\ImageProvider
-    donjohn.media.form.media.collection.type.class: Donjohn\MediaBundle\Form\Type\MediaCollectionType
-    donjohn.media.form.media.gallery.type.class: Donjohn\MediaBundle\Form\Type\MediaGalleryType
-    donjohn.media.form.media.type.class: Donjohn\MediaBundle\Form\Type\MediaType
-    donjohn.media.filesystem.media.locale.filesystem.class: Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem
-    donjohn.media.twig.extension.media.class: Donjohn\MediaBundle\Twig\Extension\MediaExtension
-    donjohn.media.uploader.naming.original_namer.class: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
-
-
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        public: true
-
-    Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber:
-        class: "%donjohn.media.event.media_subscriber.class%"
-        tags:
-            - { name: doctrine.event_subscriber }
-
+    Donjohn\MediaBundle\EventListener\MediaSubscriber:
+        arguments:
+            $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+        tags: [doctrine.event_subscriber]
 
     Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
-        class: "%donjohn.media.provider.factory.class%"
-        arguments:
-            $config: "%donjohn.media.providers.config%"
+        arguments: ~
+
+    Donjohn\MediaBundle\Routing\Loader\DonjohnMediaLoader:
+        tags: [routing.loader]
 
     Donjohn\MediaBundle\Provider\FileProvider:
-        class: "%donjohn.media.provider.file.class%"
         arguments:
-            $uploadFolder: "%donjohn.media.upload_folder%"
+            $filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
             $fileMaxSize: "%donjohn.media.file_max_size%"
+        calls:
+            - [setMediaFilesystem, ['@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem']]
+        tags: [media.provider]
 
     Donjohn\MediaBundle\Provider\ImageProvider:
-        class: "%donjohn.media.provider.image.class%"
-        arguments:
-            $uploadFolder: "%donjohn.media.upload_folder%"
-            $fileMaxSize: "%donjohn.media.file_max_size%"
-
-    Donjohn\MediaBundle\Form\Type\MediaCollectionType:
-        class: "%donjohn.media.form.media.collection.type.class%"
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
-
-    Donjohn\MediaBundle\Form\Type\MediaGalleryType:
-        class: "%donjohn.media.form.media.gallery.type.class%"
-        arguments:
-            $classMedia: "%donjohn.media.entity%"
+        parent: Donjohn\MediaBundle\Provider\FileProvider
+        tags: [media.provider]
 
     Donjohn\MediaBundle\Form\Type\MediaType:
-        class: "%donjohn.media.form.media.type.class%"
         arguments:
-            $classMedia: "%donjohn.media.entity%"
+            $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+            $fineUploaderTemplate: "%donjohn.media.fine_uploader.template%"
+            $oneupMappingName: "%donjohn.media.one_up.mapping_name%"
+            $filesystemOrphanageStorage: ~
+        tags: [form.type]
 
     Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem:
-        class: "%donjohn.media.filesystem.media.locale.filesystem.class%"
         arguments:
-            $webFolder: "%assetic.write_to%"
-
-    twig.extension.text:
-       class: Twig_Extensions_Extension_Text
-
-    twig.extension.intl:
-        class: Twig_Extensions_Extension_Intl
+            $requestContext: "@router.request_context"
+            $rootFolder: "%donjohn.media.root_folder%"
+            $uploadFolder: "%donjohn.media.upload_folder%"
 
     Donjohn\MediaBundle\Twig\Extension\MediaExtension:
-        class: "%donjohn.media.twig.extension.media.class%"
-
-    Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
-        class: "%donjohn.media.uploader.naming.original_namer.class%"
-
-    donjohn.media.subscriber: '@Donjohn\MediaBundle\Event\Subscriber\MediaSubscriber'
-    donjohn.oneup_uploader.namer.original: '@Donjohn\MediaBundle\Uploader\Naming\OriginalNamer'
-    donjohn.media.local.filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
-    donjohn.media.provider.factory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
-    donjohn.media.file.provider: '@Donjohn\MediaBundle\Provider\FileProvider'
-    donjohn.media.image.provider: '@Donjohn\MediaBundle\Provider\ImageProvider'
-    donjohn.media.twig.extension: '@Donjohn\MediaBundle\Twig\Extension\MediaExtension'
+        arguments:
+            $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+        tags: [twig.extension]

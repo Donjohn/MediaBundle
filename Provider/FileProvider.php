@@ -2,238 +2,239 @@
 
 namespace Donjohn\MediaBundle\Provider;
 
-use Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem;
+use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
-use Gaufrette\Exception\FileNotFound;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * description 
+ * description.
+ *
  * @author Donjohn
  */
-class FileProvider extends BaseProvider {
-
-    /**
-     * @var \Gaufrette\Filesystem
-     */
-    protected $filesystem;
-
+class FileProvider extends BaseProvider
+{
     /** @var string $fileMaxSize */
-    protected $fileMaxSize;
-
-    /** @var string $uploadFolder */
-    protected $uploadFolder;
+    private $fileMaxSize;
 
     /**
      * FileProvider constructor.
-     * @param MediaLocalFilesystem $filesystem
-     * @param string $uploadFolder
-     * @param string $fileMaxSize
+     *
+     * @param MediaFilesystemInterface $filesystem
+     * @param string                   $fileMaxSize
      */
-    public function __construct(MediaLocalFilesystem $filesystem, $uploadFolder, $fileMaxSize)
+    public function __construct(MediaFilesystemInterface $filesystem, string $fileMaxSize)
     {
-
-        $this->filesystem = $filesystem;
+        $this->mediaFilesystem = $filesystem;
         $this->fileMaxSize = $fileMaxSize;
-        $this->uploadFolder = $uploadFolder;
-
     }
 
     /**
-     * @inheritdoc
+     * @return float|int|string
      */
-    public function getAlias()
+    public function getFileMaxSize()
+    {
+        $number = substr($this->fileMaxSize, 0, -1);
+        switch (strtoupper(substr($this->fileMaxSize, -1))) {
+            case 'K':
+                return $this->fileMaxSize = $number * 1024;
+            case 'M':
+                return $this->fileMaxSize = $number * (1024 ** 2);
+            case 'G':
+                return $this->fileMaxSize = $number * (1024 ** 3);
+            case 'T':
+                return $this->fileMaxSize = $number * (1024 ** 4);
+            case 'P':
+                return $this->fileMaxSize = $number * (1024 ** 5);
+            default:
+                return $this->fileMaxSize;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAlias(): string
     {
         return 'file';
     }
 
-     /**
-     * @inheritdoc
+    /**
+     * @return array
      */
-    public function getPath(Media $oMedia, $filter= null)
+    public function getAllowedTypes(): array
     {
-        $firstLevel=100000;
-        $secondLevel=1000;
-
-        $rep_first_level = (int) ($oMedia->getId() / $firstLevel);
-        $rep_second_level = (int) (($oMedia->getId() - ($rep_first_level * $firstLevel)) / $secondLevel);
-
-        return sprintf('%s/%04s/%02s/%s', $this->uploadFolder,  $rep_first_level + 1, $rep_second_level + 1, $oMedia->getFilename() );
+        return [];
     }
 
     /**
-     * @inheritdoc
+     * @return string
      */
-    public function getFullPath(Media $oMedia, $filter = null)
+    public function getTemplate(): string
     {
-        return $this->filesystem->getWebFolder().DIRECTORY_SEPARATOR.$this->getPath($oMedia, $filter);
+        return '@DonjohnMedia/Provider/media.'.$this->getAlias().'.html.twig';
     }
 
     /**
-     * @param Media $oMedia
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function delete(Media $oMedia)
+    public function postLoad(Media $media): void
     {
-        try {
-            return $this->filesystem->delete($this->getPath($oMedia));
-        } catch (FileNotFound $e) {
-            //do nothing, file already deleted
-        }
-        return true;
+        //nada
     }
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function prePersist(Media $oMedia)
+    public function prePersist(Media $media): void
     {
-        $fileName='';
-        if ($oMedia->getBinaryContent() instanceof UploadedFile) {
-            $fileName = $oMedia->getBinaryContent()->getClientOriginalName();
-
-        } elseif ($oMedia->getBinaryContent() instanceof File) {
-            $fileName = $oMedia->getBinaryContent()->getBasename();
+        $fileName = null;
+        if ($media->getBinaryContent() instanceof UploadedFile) {
+            $fileName = $media->getBinaryContent()->getClientOriginalName();
+        } elseif ($media->getBinaryContent() instanceof File) {
+            $fileName = $media->getBinaryContent()->getBasename();
         }
 
-        if (empty($fileName)) throw new InvalidMimeTypeException('invalid media');
+        if (null === $fileName) {
+            throw new InvalidMimeTypeException('invalid media');
+        }
+        if (null !== $media->getBinaryContent()) {
+            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($fileName, PATHINFO_EXTENSION));
 
-        if (!empty($oMedia->getBinaryContent()) )  {
-
-            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
-
-            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
-            else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
-                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+            if (0 === stripos(PHP_OS, 'WIN')) {
+                $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
+            } else {
+                $output = shell_exec('md5sum -b '.escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output, 0, strpos($output, ' ') + 1));
             }
         }
 
-        $mimeType = $oMedia->getBinaryContent()->getMimeType();
+        $mimeType = $media->getBinaryContent()->getMimeType();
         $this->validateMimeType($mimeType);
-        $this->extractMetaData($oMedia);
+        $this->extractMetaData($media);
 
-        $oMedia->setMimeType($mimeType);
-        $oMedia->setProviderName($this->getAlias());
-        $oMedia->setName($oMedia->getName() ? : $fileName); //to keep oldname
-        $oMedia->addMetadata('filename', $fileName);
-
+        $media->setMimeType($mimeType);
+        $media->setProviderName($this->getAlias());
+        $media->setName($media->getName() ?: $fileName); //to keep oldname
+        $media->setOriginalFilename($media->getOriginalFilename() ?: $fileName); //to keep originel fielname
+        $media->addMetadata('filename', $fileName);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function postLoad(Media $oMedia)
+    public function postPersist(Media $media): void
     {
-        $oMedia->setPaths(array('reference' => $this->getPath($oMedia)));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function postPersist(Media $oMedia)
-    {
-        if ($oMedia->getBinaryContent() instanceof UploadedFile || $oMedia->getBinaryContent() instanceof File) {
-            $newPath = $this->getFullPath($oMedia);
-            $oMedia->getBinaryContent()->move(dirname($newPath),basename($newPath));
-            $oMedia->setBinaryContent(null);
+        if ($media->getBinaryContent() instanceof File) {
+            $this->mediaFilesystem->createMedia($media, $media->getBinaryContent());
+            $media->setBinaryContent(null);
         }
-        $this->postLoad($oMedia);
+        $this->postLoad($media);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function preUpdate(Media $oMedia)
+    public function preUpdate(Media $media): void
     {
-        if (!empty($oMedia->getBinaryContent()) )  {
+        if (null !== $media->getBinaryContent()) {
+            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION));
 
-            $oMedia->setFilename( sha1($oMedia->getName() . rand(11111, 99999)) . '.' . pathinfo($oMedia->getOriginalFilename(), PATHINFO_EXTENSION) );
-
-            if(strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-                $oMedia->setMd5(md5_file($oMedia->getBinaryContent()->getRealPath()));
-            else {
-                $output = shell_exec('md5sum -b ' . escapeshellarg($oMedia->getBinaryContent()->getRealPath()));
-                $oMedia->setMd5(substr($output,0,strpos($output,' ')+1));
+            if (0 === stripos(PHP_OS, 'WIN')) {
+                $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
+            } else {
+                $output = shell_exec('md5sum -b '.escapeshellarg($media->getBinaryContent()->getRealPath()));
+                $media->setMd5(substr($output, 0, strpos($output, ' ') + 1));
             }
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function postUpdate(Media $oMedia)
+    public function postUpdate(Media $media): void
     {
-        $this->postPersist($oMedia);
-        $oldMedia = $oMedia->oldMedia();
-        if ($oldMedia instanceof Media) $this->preRemove($oldMedia);
-
+        $this->postPersist($media);
+        $oldMedia = $media->oldMedia();
+        if ($oldMedia instanceof Media) {
+            $this->preRemove($oldMedia);
+        }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function preRemove(Media $oMedia)
+    public function preRemove(Media $media): void
     {
-        return $this->delete($oMedia);
-
+        $this->mediaFilesystem->removeMedia($media);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function extractMetaData(Media $oMedia)
+    public function extractMetaData(Media $media): void
     {
-        //Implement extractMetaData() method.
+        //nada
     }
 
     /**
-     * @inheritdoc
+     * @param array $options
+     *
+     * @return array
      */
-    public function addEditForm(FormBuilderInterface $builder, array $options)
+    public function addProviderOptions(array $options): array
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
-                        'maxSize' => $this->fileMaxSize
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
+        $options['constraints'] = array_merge(
+            $options['constraints'] ?? [],
+            [new Constraints\File(['maxSize' => $this->getFileMaxSize()])]
+        );
+
+        return $options;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function addCreateForm(FormBuilderInterface $builder, array $options)
+    public function addEditForm(FormInterface $form, array $options): void
     {
-        $options['constraints'] = array(new \Symfony\Component\Validator\Constraints\File([
-                        'maxSize' => $this->fileMaxSize
-                    ]));
-        $builder->add('binaryContent', FileType::class, $options );
+        $form->add('binaryContent', FileType::class, $this->addProviderOptions($options));
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
+    public function addCreateForm(FormInterface $form, array $options): void
+    {
+        $form->add('binaryContent', FileType::class, $this->addProviderOptions($options));
+    }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getDownloadResponse(Media $oMedia, array $headers = array())
+    public function getDownloadResponse(Media $media, array $headers = array()): Response
     {
         // build the default headers
         $headers = array_merge(array(
-            'Content-Type'          => $oMedia->getMimeType(),
-            'Content-Disposition'   => sprintf('attachment; filename="%s"', $oMedia->getName()),
+            'Content-Type' => $media->getMimeType(),
+            'Content-Disposition' => sprintf('attachment; filename="%s"', $media->getName()),
         ), $headers);
 
-
-        return new StreamedResponse(function () use ($oMedia) {
-            readfile($this->getFullPath($oMedia));
-        }, 200, $headers);
+        return new BinaryFileResponse($this->mediaFilesystem->getFullPath($media), 200, $headers);
     }
 
-
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(Media $media, string $filter = null, bool $fullPath = false): string
+    {
+        return $fullPath ?
+            $this->mediaFilesystem->getWebPath($media) :
+            $this->mediaFilesystem->getPath($media);
+    }
 }

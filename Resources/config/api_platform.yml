@@ -1,0 +1,6 @@
+services:
+    Donjohn\MediaBundle\EventListener\ApiListener:
+        arguments:
+            $providerFactory: Donjohn\MediaBundle\Provider\Factory\ProviderFactory
+        tags:
+            - { name: kernel.event_listener, event: kernel.view,  priority: 63 }

@@ -1,1 +1,1 @@
-<img src="{{ asset( media|mediaPath(filter)) }}" {% for optionName, value in options %}{{ optionName }}="{{ value }}"{% endfor %}>
+<img src="{{ asset( mediaPath ) }}" {% for optionName, value in options %}{{ optionName }}="{{ value }}"{% endfor %}>

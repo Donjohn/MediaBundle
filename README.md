@@ -12,27 +12,6 @@ Installation
 composer require donjohn/media-bundle
 ```
 
-### Kernel
-
-Add this to your AppKernel.php
-
-```PHP
-    new Liip\ImagineBundle\LiipImagineBundle(),
-    new WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
-    new Donjohn\MediaBundle\DonjohnMediaBundle(),
-```
-
-### Routing
-
-Add this to your routing.yml
-
-```yaml
-#app/config/routing.yml
-donjohn_media:
-    resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
-```
-    
-    
 ### Minimal configuration
 
 Create a new class and extends it with Donjohn\MediaBundle\Media
@@ -55,46 +34,10 @@ class YourMedia extends BaseMedia
     protected $id;
 }
 ```
-BaseMedia does not implement a Timestampable pattern since 2.3. Use you prefered in the extended class  
 
-ex with KNPDoctrineBehaviorsBundle:
-```php
-namespace AppBundle\Entity;
-
-use Doctrine\ORM\Mapping as ORM;
-use Donjohn\MediaBundle\Model\Media as BaseMedia;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-
-
-/**
- * @ORM\Table()
- * @ORM\Entity()
- */
-class Media extends BaseMedia
-{
-    use ORMBehaviors\Timestampable\Timestampable;
-    /**
-     * @var integer
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
-    */
-    protected $id;
-}
-```
-
+### LiipImagineBundle
 Add this to your config.yml
 ```yaml
-doctrine:
-    dbal:
-        types:
-            json: Doctrine\DBAL\Types\JsonArrayType
-            
-            
-donjohn_media:
-    upload_folder: /media
-    entity: YourBundle\Entity\YourMedia
-
 liip_imagine:
     filter_sets:
         full: 
@@ -104,7 +47,6 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
-         #add yours
 ```
 
 See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
@@ -121,16 +63,6 @@ liip_imagine:
         default:
             web_path:
                 cache_prefix: AnotherFolder/cache
-```
-
-You can change the template used to render the media foreach provider as well as the allowed types. Or Disable the provider...
-```yaml
-donjohn_media:
-    providers:
-        image: ##provider alias
-            template: YouBundle:View:Twig.html.twig
-            allowed_types: ['image/jpg']
-            enabled: true #default
 ```
 
 Restrict uploaded file size
@@ -158,62 +90,30 @@ You can also pass class/width/height/alt options to the media rendering:
 ```
 
 
-You can also ask for the path directly
-```twig
-<a href="{% path media, '<filter>' %}">{{ media.name }}</a>
-or 
-<a href="{{ media|mediaPath('<filter>') ">{{ media.name }}</a>
-```
-
-In order to download a media, pls use the following to get the download link 
-```twig
-<a href="{% download media%}">Download</a>
-or
-<a href="{{path('donjohn_media_download', {id: media.id})}}">Download</a>
-```
-
-
 ### FormType
 An Donjohn\MediaBundle\Form\Type\MediaType is available
 ```php
-$builder->add(<fieldName>, MediaType::class ) );
+$builder->add(<fieldName>, MediaType::class, ['media_class'=> YourEntity::class] );
 ```
 
-provider option default value is null. A guesser will try on the fly to detect the best provider fo each file until you force by yourself the option. The default guess is 'file'.
-In case you're editing a persisted media object, the option is overwritten by $media->getProviderName() value in any case
-```php
-$builder->add(<fieldName>, MediaType::class, array('provider'=> 'image' ) ); //to force file to be process with ImageProvider
-```
+provider option default value is null. A guesser will try on the fly to detect the best provider fo each file unless you define the option. The default guess is 'file'.
 
 Set 'allow_delete' option to false if you don't want to allow removing media from an entity. It removes the unlink checkbox in the form.
 
 Set 'create_on_update' option to true if you don't want to update the current media when uploading a file but rather create a new media instead. Old one is not removed.
   
-If you want to upload a collection of Medias use the MediaCollection formType. The provider option is still available.
+If you want to upload a collection of Medias set multiple to true.
 ```php
-$builder->add(<fieldName>, MediaCollectionType::class );
+$builder->add(<fieldName>, MediaType::class, ['media_class' => YourEntity::class, 'multiple' => true ] );
 ```
 
 ### OneupUploader
 For very large files, the bundle includes the Fine Uploader feature thanks to OneUpUploaderBundle.
 ```php
-$builder->add(<fieldName>, MediaFineUploaderType::class );
+$builder->add(<fieldName>, MediaType::class, , ['media_class' => YourEntity::class, 'fine_uploader' => true, 'multiple' => <true|false> ] );
 ```
-Don't forget to install the front part 
-```bash
-bower install fine-uploader --save 
-```
-include the css/js in your layout (fix path if needed). 
-```twig
-<link href="{{ asset('components/fine-uploader/dist/fine-uploader-gallery.css') }}" rel="stylesheet">
-<script type="text/javascript" src="{{ asset('components/fine-uploader/dist/fine-uploader.min.js') }}"></script>
-```
-A bootstrap template is provided (or use the default one, see to the official documentation), add this line to the javascript section of your layout.
-```twig
-<script type="text/template" id="donjohn-media">
-{{ render(controller('DonjohnMediaBundle:FineUploader:renderFineUploaderTemplate'))|raw }}
-</script>
-```
+Don't forget to install fineuploader (bower/npm/...) and include the css/js in your layout (fix path if needed). 
+
 
 Add the OneupUploaderBundle to your AppKernel.php
 ```PHP
@@ -221,20 +121,28 @@ Add the OneupUploaderBundle to your AppKernel.php
 ```
 And to config.yml, add:
 ```yaml
+# Read the documentation: https://github.com/1up-lab/OneupUploaderBundle/blob/master/Resources/doc/index.md
 oneup_uploader:
     chunks:
-        maxage: 86400
         storage:
             directory: "%kernel.cache_dir%/uploader/chunks"
-    orphanage:
-        maxage: 86400
     mappings:
-        medias:
-            namer:  Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
+        donjohn_media:
+            namer: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
             use_orphanage: true
-            frontend: fineuploader            
-            enable_cancelation: true
+            frontend: fineuploader
+
 ```
+
+And to routing.yml, add:
+```yaml
+#app/config/routing.yml
+donjohn_media:
+    resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
+```
+
+
+
 You can change the uploaded chunk size or the template used to render the fineuploader frame
 ```yaml
 donjohn_media:
@@ -244,27 +152,9 @@ donjohn_media:
 
 
 ### Custom MediaProvider
-To implement your own provider, extends the BaseProvider and redefine getAlias and add configuration in the providers_ext path in config.yml
-```yaml
-donjohn_media:
-    providers_ext:
-        custom: ##provider alias
-            template: YouBundle:View:Twig.html.twig
-            allowed_types: ['application/custom']
-```
+To implement your own provider, extends the BaseProvider and redefine abstract function.  
 Autowiring should do the job...
 
-
-### Javascript
-The bundle is jquery dependant, you must add it before the media.js provided
-```twig
-<script src="{{ asset('bundles/donjohnmedia/js/media.js') }}"></script>
-```
-In case you don't want the awesome javascript feature, set the "mediazone" option to false in either MediaType or MediaCollectionType. You will fall back to raw file inputs
-
-
-### Bootstrap
-The bundle is bootstrap dependant, you must add it in your layout
 
 
 ### Api platform

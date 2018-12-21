@@ -1,6 +1,6 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 04/07/2016
  * @description For ...
  */
@@ -9,14 +9,20 @@ namespace Donjohn\MediaBundle\Twig\TokenParser;
 
 use Donjohn\MediaBundle\Twig\Node\MediaNode;
 
+/**
+ * Class MediaTokenParser.
+ */
 class MediaTokenParser extends \Twig_TokenParser
 {
+    /**
+     * @var string
+     */
     protected $extensionName;
 
     /**
      * @param string $extensionName
      */
-    public function __construct($extensionName)
+    public function __construct(string $extensionName)
     {
         $this->extensionName = $extensionName;
     }
@@ -24,10 +30,10 @@ class MediaTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function parse(\Twig_Token $token)
+    public function parse(\Twig_Token $token): MediaNode
     {
         $media = $this->parser->getExpressionParser()->parseExpression();
-        $filter = new \Twig_Node_Expression_Constant('reference',$token->getLine());
+        $filter = new \Twig_Node_Expression_Constant(null, $token->getLine());
         $attributes = new \Twig_Node_Expression_Array(array(), $token->getLine());
 
         if ($this->parser->getStream()->nextIf(\Twig_Token::PUNCTUATION_TYPE)) {
@@ -46,7 +52,7 @@ class MediaTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function getTag()
+    public function getTag(): string
     {
         return 'media';
     }

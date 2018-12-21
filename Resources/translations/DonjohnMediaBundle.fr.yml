@@ -6,6 +6,7 @@ media.unlink.label: Enlever le média
 media.provider.file.label: Fichiers
 media.provider.image.label: Images
 media.file.binaryContent: Fichier
+media.download: Télécharger
 media.submit: Envoyer
 media.delete.confirm: Voulez vous supprimer le média ?
 media.gallery.valid: Valider

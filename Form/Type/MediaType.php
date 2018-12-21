@@ -1,144 +1,145 @@
 <?php
 /**
- * @author jgn
+ * @author Donjohn
  * @date 12/09/2016
  * @description For ...
  */
 
 namespace Donjohn\MediaBundle\Form\Type;
 
-
-use Donjohn\MediaBundle\Model\Media;
+use Donjohn\MediaBundle\EventListener\MediaCollectionTypeSubscriber;
+use Donjohn\MediaBundle\EventListener\MediaTypeSubscriber;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
+use Donjohn\MediaBundle\Provider\FileProvider;
+use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
+use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
+use Symfony\Bridge\Doctrine\Form\EventListener\MergeDoctrineCollectionListener;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class MediaType.
+ */
 class MediaType extends AbstractType
 {
     /**
-     * @var ProviderFactory $providerFactory
+     * @var ProviderFactory
      */
     protected $providerFactory;
 
-    /**
-     * @var string $classMedia
-     */
-    protected $classMedia;
+    /** @var string $fineUploaderTemplate */
+    protected $fineUploaderTemplate;
+
+    /** @var null|StorageInterface */
+    protected $filesystemOrphanageStorage;
+
+    /** @var string $oneupMappingName */
+    protected $oneupMappingName;
 
     /**
      * MediaType constructor.
-     * @param ProviderFactory $providerFactory
-     * @param string $classMedia
+     *
+     * @param ProviderFactory       $providerFactory
+     * @param string                $fineUploaderTemplate
+     * @param string                $oneupMappingName
+     * @param StorageInterface|null $filesystemOrphanageStorage
      */
-    public function __construct( ProviderFactory $providerFactory, $classMedia)
+    public function __construct(ProviderFactory $providerFactory, string $fineUploaderTemplate, string $oneupMappingName, StorageInterface $filesystemOrphanageStorage = null)
     {
         $this->providerFactory = $providerFactory;
-        $this->classMedia = $classMedia;
+        $this->fineUploaderTemplate = $fineUploaderTemplate;
+        $this->oneupMappingName = $oneupMappingName;
+        $this->filesystemOrphanageStorage = $filesystemOrphanageStorage;
     }
 
-
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
+        $mediaClass = function (Options $options) {
+            return $options['multiple'] ? null : $options['media_class'];
+        };
+
+        $allowExtraFields = function (Options $options) {
+            return $options['multiple'];
+        };
 
         $resolver->setDefaults(array(
-                'translation_domain' => 'DonjohnMediaBundle',
-                'provider' => 'file',
-                'mediazone' => true,
-                'label' => 'media',
-                'invalid_message' => 'media.error.transform',
-                'allow_delete' => true,
-                'multiple' => false,
-                'data_class' => $this->classMedia,
-                'required' => false,
-                'delete_empty' => true,
-                'gallery' => false,
-                'oneup' => false,
-                'create_on_update' => false
-                ));
+            'translation_domain' => 'DonjohnMediaBundle',
+            'provider' => null,
+            'label' => 'media',
+            'invalid_message' => 'media.error.transform',
+            'allow_delete' => true,
+            'allow_extra_fields' => $allowExtraFields,
+            'multiple' => false,
+            'required' => false,
+            'delete_empty' => true,
+            'create_on_update' => true,
+            'data_class' => $mediaClass,
+            'add_provider_form' => true,
+            'media_label' => null,
+            'fine_uploader_template' => $this->fineUploaderTemplate,
+            'fine_uploader' => false,
+            'show_template' => 'DonjohnMediaBundle:Form:media_form_show.html.twig',
+        ));
+        $resolver->setRequired(['media_class']);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        if (false === $options['multiple']) {
+            $builder->addEventSubscriber(new MediaTypeSubscriber($this->providerFactory, $options, $this->filesystemOrphanageStorage));
 
-        $media = ($builder->getData() instanceof Media && $builder->getData()->getId()) ? $builder->getData() : null;
-        $provider = $this->providerFactory->getProvider($media ? $media->getProviderName() : $this->providerFactory->guessProvider(null)->getProviderAlias());
+            $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['create_on_update'], $options['provider']));
+        } else {
+            $mediaOptions = [
+                'media_class' => $options['media_class'],
+                'required' => $options['required'],
+                'provider' => $options['provider'],
+                'allow_delete' => $options['allow_delete'],
+                'block_name' => 'media',
+                'translation_domain' => $options['translation_domain'],
+                'by_reference' => true,
+                'fine_uploader' => $options['fine_uploader'],
+            ];
 
+            if (null !== $options['media_label']) {
+                $mediaOptions['label'] = $options['media_label'];
+            }
 
-        $formOptions = array('translation_domain' => 'DonjohnMediaBundle',
-                            'label' => $options['mediazone'] ? false : $options['label'],
-                            'error_bubbling' => true,
-                            'multiple' => $options['multiple'] ? 'multiple' : false,
-                            'required' => $options['required'],
-                            'attr' => array('class' => $options['oneup']||$options['mediazone'] ? 'hidden' : ''),
-                        );
-        if ($media) $provider->addEditForm($builder, $formOptions);
-        else $provider->addCreateForm($builder, $formOptions);
-
-        $builder->add('originalFilename', HiddenType::class);
-
-
-        if ($options['allow_delete']){
-            $formEventUnlink = function(FormEvent $event) use ($options) {
-                if ($event->getData() || $options['multiple']) {
-                    $event->getForm()->add('unlink', CheckboxType::class, array(
-                        'mapped'   => false,
-                        'data'     => false,
-                        'required' => false,
-                        'label' => !$options['multiple'] ? 'media.unlink.label' : false,
-                        'translation_domain' => 'DonjohnMediaBundle'
-                    ));
-                }
-            };
-
-            $builder->addEventListener(
-                FormEvents::PRE_SET_DATA,
-                $formEventUnlink
-            );
-
-            $builder->addEventListener(
-                FormEvents::PRE_SUBMIT,
-                $formEventUnlink
-            );
-
-            $builder->addEventListener(
-                FormEvents::SUBMIT,
-                function (FormEvent $event) {
-                    if ($event->getForm()->has('unlink') && $event->getForm()->get('unlink')->getData()) {
-                        $event->setData(null);
-                    }
-                }
-            );
+            $builder->addEventSubscriber(new MediaCollectionTypeSubscriber($this->providerFactory, $mediaOptions, $this->filesystemOrphanageStorage));
+            $builder
+                ->addEventSubscriber(new MergeDoctrineCollectionListener())
+                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+            ;
         }
-
-        $builder->addModelTransformer(new MediaDataTransformer($this->providerFactory, $options['provider'], $this->classMedia, $options['create_on_update']));
-
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function buildView(
-        FormView $view,
-        FormInterface $form,
-        array $options
-    ) {
-        $view->vars['mediazone'] = $options['mediazone'];
-        $view->vars['provider'] = $options['provider'];
-
+    public function buildView(FormView $view, FormInterface $form, array $options): void
+    {
+        $view->vars['multiple'] = $options['multiple'];
+        $view->vars['show_template'] = $options['show_template'];
+        if ($options['fine_uploader']) {
+            $view->vars['fine_uploader'] = $options['fine_uploader'];
+            $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
+            $view->vars['oneup_mapping'] = $this->oneupMappingName;
+            /** @var FileProvider $fileProvider */
+            $provider = $options['provider'] ? $this->providerFactory->getProvider($options['provider']) : $this->providerFactory->getProvider('file');
+            $view->vars['chunk_size'] = $provider->getFileMaxSize();
+            $view->vars['validation_accept_files'] = implode(',', $provider->getAllowedTypes());
+//            $view->vars['validation_allowed_extensions'] = explode(',',$provider->getAllowedTypes());
+        }
     }
-
 }
