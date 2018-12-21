@@ -164,4 +164,13 @@ interface ProviderInterface
      * @return Response
      */
     public function getDownloadResponse(Media $media, array $headers = array()): Response;
+
+    /**
+     * @param Media       $media
+     * @param string|null $filter
+     * @param bool        $fullPath
+     *
+     * @return string
+     */
+    public function getPath(Media $media, string $filter = null, bool $fullPath = false): string;
 }

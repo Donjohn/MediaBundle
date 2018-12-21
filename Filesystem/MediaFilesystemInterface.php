@@ -17,6 +17,11 @@ use Symfony\Component\Filesystem\Filesystem;
 interface MediaFilesystemInterface
 {
     /**
+     * @return string
+     */
+    public function getBaseUrl(): string;
+
+    /**
      * @param Media $media
      *
      * @return string full folder path

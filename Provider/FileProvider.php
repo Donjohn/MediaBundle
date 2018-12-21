@@ -227,4 +227,14 @@ class FileProvider extends BaseProvider
 
         return new BinaryFileResponse($this->mediaFilesystem->getFullPath($media), 200, $headers);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(Media $media, string $filter = null, bool $fullPath = false): string
+    {
+        return $fullPath ?
+            $this->mediaFilesystem->getWebPath($media) :
+            $this->mediaFilesystem->getPath($media);
+    }
 }

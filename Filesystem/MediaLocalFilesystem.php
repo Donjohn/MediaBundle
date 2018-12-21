@@ -10,7 +10,7 @@ namespace Donjohn\MediaBundle\Filesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\RequestContext;
 
 /**
  * Class MediaLocalFilesystem.
@@ -28,9 +28,9 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     protected $rootFolder;
 
     /**
-     * @var RequestStack
+     * @var RequestContext
      */
-    protected $requestStack;
+    protected $requestContext;
 
     /**
      * @var Filesystem
@@ -40,13 +40,13 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     /**
      * MediaLocalFilesystem constructor.
      *
-     * @param RequestStack $requestStack
-     * @param string       $rootFolder
-     * @param string       $uploadFolder
+     * @param RequestContext $requestContext
+     * @param string         $rootFolder
+     * @param string         $uploadFolder
      */
-    public function __construct(RequestStack $requestStack, string $rootFolder, string $uploadFolder)
+    public function __construct(RequestContext $requestContext, string $rootFolder, string $uploadFolder)
     {
-        $this->requestStack = $requestStack;
+        $this->requestContext = $requestContext;
         $this->rootFolder = $rootFolder;
         $this->uploadFolder = $uploadFolder;
     }
@@ -62,6 +62,34 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     }
 
     /**
+     * @return string
+     */
+    public function getBaseUrl(): string
+    {
+        $port = '';
+        if ('https' === $this->requestContext->getScheme() && 443 !== $this->requestContext->getHttpsPort()) {
+            $port = ":{$this->requestContext->getHttpsPort()}";
+        }
+
+        if ('http' === $this->requestContext->getScheme() && 80 !== $this->requestContext->getHttpPort()) {
+            $port = ":{$this->requestContext->getHttpPort()}";
+        }
+
+        $baseUrl = $this->requestContext->getBaseUrl();
+        if ('.php' === mb_substr($this->requestContext->getBaseUrl(), -4)) {
+            $baseUrl = pathinfo($this->requestContext->getBaseUrl(), PATHINFO_DIRNAME);
+        }
+        $baseUrl = rtrim($baseUrl, '/\\');
+
+        return sprintf('%s://%s%s%s',
+            $this->requestContext->getScheme(),
+            $this->requestContext->getHost(),
+            $port,
+            $baseUrl
+        );
+    }
+
+    /**
      * @param Media $media
      *
      * @return string
@@ -69,7 +97,7 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     public function getWebPath(Media $media): string
     {
         return sprintf('%s%s',
-                        $this->requestStack->getCurrentRequest()->getBaseUrl(),
+                        $this->getBaseUrl(),
                         $this->getPath($media)
                     );
     }

@@ -212,7 +212,7 @@ class ImageLiipProvider implements ProviderInterface
     public function render(Media $media, string $filter = null, array $options = array()): string
     {
         return $this->getTwig()->render($this->getTemplate(),
-            array('mediaWebPath' => $this->getMediaFilesystem()->getWebPath($media, $filter),
+            array('mediaPath' => $this->getMediaFilesystem()->getPath($media, $filter),
                     'name' => $media->getName(),
                 'options' => $options, )
         );
@@ -230,5 +230,15 @@ class ImageLiipProvider implements ProviderInterface
         ), $headers);
 
         return new BinaryFileResponse($this->getMediaFilesystem()->getFullPath($media, $filter), 200, $headers);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPath(Media $media, string $filter = null, bool $fullPath = false): string
+    {
+        return $fullPath ?
+            $this->getMediaFilesystem()->getWebPath($media, $filter) :
+            $this->getMediaFilesystem()->getPath($media, $filter);
     }
 }

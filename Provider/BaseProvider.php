@@ -93,7 +93,7 @@ abstract class BaseProvider implements ProviderInterface
     public function render(Media $media, string $filter = null, array $options = array()): string
     {
         return $this->getTwig()->render($this->getTemplate(),
-                            array('mediaWebPath' => $this->mediaFilesystem->getWebPath($media),
+                            array('mediaPath' => $this->mediaFilesystem->getPath($media),
                                 'name' => $media->getName(),
                                 'options' => $options, )
                             );

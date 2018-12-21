@@ -12,7 +12,6 @@ use Liip\ImagineBundle\Imagine\Cache\CacheManagerAwareTrait;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
  * Class MediaLiipLocalFilesystem.
@@ -30,24 +29,25 @@ class MediaLiipLocalFilesystem implements MediaFilesystemInterface
     protected $rootFolder;
 
     /**
-     * @var RequestStack
-     */
-    protected $requestStack;
-
-    /**
      * MediaLiipLocalFilesystem constructor.
      *
      * @param MediaFilesystemInterface $mediaLocalFilesystem
      * @param CacheManager             $cacheManager
-     * @param RequestStack             $requestStack
      * @param string                   $rootFolder
      */
-    public function __construct(MediaFilesystemInterface $mediaLocalFilesystem, CacheManager $cacheManager, RequestStack $requestStack, string $rootFolder)
+    public function __construct(MediaFilesystemInterface $mediaLocalFilesystem, CacheManager $cacheManager, string $rootFolder)
     {
         $this->mediaLocalFilesystem = $mediaLocalFilesystem;
-        $this->requestStack = $requestStack;
         $this->rootFolder = $rootFolder;
         $this->setCacheManager($cacheManager);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseUrl(): string
+    {
+        return $this->mediaLocalFilesystem->getBaseUrl();
     }
 
     /**
@@ -70,21 +70,21 @@ class MediaLiipLocalFilesystem implements MediaFilesystemInterface
     }
 
     /**
-     * @param Media $media
-     * @param null  $filter
+     * @param Media       $media
+     * @param string|null $filter
      *
      * @return string
      */
     public function getWebPath(Media $media, string $filter = null): string
     {
-        return $filter ?
-                $this->cacheManager->getBrowserPath($this->mediaLocalFilesystem->getWebPath($media), $filter) :
+        return null !== $filter ?
+                $this->cacheManager->getBrowserPath($this->mediaLocalFilesystem->getPath($media), $filter) :
                 $this->mediaLocalFilesystem->getWebPath($media);
     }
 
     /**
-     * @param Media $media
-     * @param null  $filter
+     * @param Media  $media
+     * @param string $filter
      *
      * @return string
      */
@@ -93,23 +93,23 @@ class MediaLiipLocalFilesystem implements MediaFilesystemInterface
         return $filter ?
                 sprintf('%s%s',
                     $this->rootFolder,
-                    str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost(), '', $this->cacheManager->resolve($this->mediaLocalFilesystem->getWebPath($media), $filter))
+                    str_replace($this->getBaseUrl(), '', $this->getWebPath($media, $filter))
                 ) :
-                $this->mediaLocalFilesystem->getWebPath($media);
+                $this->mediaLocalFilesystem->getFullPath($media);
     }
 
     /**
-     * @param Media $media
-     * @param null  $filter
+     * @param Media  $media
+     * @param string $filter
      *
      * @return mixed|string
      */
     public function getPath(Media $media, string $filter = null): string
     {
-        $path = $this->mediaLocalFilesystem->getWebPath($media);
+        $path = $this->mediaLocalFilesystem->getPath($media);
 
         return $filter ?
-                str_replace($this->requestStack->getCurrentRequest()->getSchemeAndHttpHost(), '', $this->cacheManager->getBrowserPath($path, $filter)) :
+                str_replace($this->getBaseUrl(), '', $this->cacheManager->getBrowserPath($path, $filter)) :
                 $path;
     }
 

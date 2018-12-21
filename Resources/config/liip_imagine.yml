@@ -9,7 +9,6 @@ services:
         arguments:
             $mediaLocalFilesystem: '@Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem.inner'
             $cacheManager: '@liip_imagine.cache.manager'
-            $requestStack: "@request_stack"
             $rootFolder: "%donjohn.media.root_folder%"
 
 

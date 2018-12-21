@@ -35,11 +35,9 @@ class YourMedia extends BaseMedia
 }
 ```
 
+### LiipImagineBundle
 Add this to your config.yml
 ```yaml
-donjohn_media:
-    upload_folder: /media
-
 liip_imagine:
     filter_sets:
         full: 
@@ -49,7 +47,6 @@ liip_imagine:
             filters:
                 auto_rotate: ~
                 thumbnail: { size: [120, 120], mode: outbound }
-         #add yours
 ```
 
 See [LiipImagineBundle Configuration](http://symfony.com/doc/current/bundles/LiipImagineBundle/configuration.html) for liip filters configuration
@@ -130,11 +127,10 @@ oneup_uploader:
         storage:
             directory: "%kernel.cache_dir%/uploader/chunks"
     mappings:
-        donjohn_medias:
+        donjohn_media:
             namer: Donjohn\MediaBundle\Uploader\Naming\OriginalNamer
             use_orphanage: true
             frontend: fineuploader
-            enable_cancelation: true
 
 ```
 
@@ -144,6 +140,8 @@ And to routing.yml, add:
 donjohn_media:
     resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
 ```
+
+
 
 You can change the uploaded chunk size or the template used to render the fineuploader frame
 ```yaml
