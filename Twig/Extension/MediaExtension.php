@@ -86,9 +86,10 @@ class MediaExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function media_path(Media $media = null, string $filter = null, bool $fullPath = false): string
+    public function media_path($media = null, string $filter = null, bool $fullPath = false): string
     {
-        if (null !== $media) {
+
+        if (null !== $media && $media instanceof Media) {
             $provider = $this->providerFactory->getProvider($media);
 
             return $provider->getPath($media, $filter, $fullPath);
