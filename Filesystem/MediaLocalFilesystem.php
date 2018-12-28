@@ -123,7 +123,7 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     public function getPath(Media $media): string
     {
         if (null === $media->getId()) {
-            throw new \RuntimeException('media must be psersisted before calling getPath');
+            throw new \RuntimeException('media must be persisted before calling getPath');
         }
         $firstLevel = 100000;
         $secondLevel = 1000;

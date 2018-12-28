@@ -11,6 +11,8 @@ use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaPathTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Class MediaExtension.
@@ -22,14 +24,19 @@ class MediaExtension extends \Twig_Extension
      */
     protected $providerFactory;
 
+    /** @var ObjectNormalizer $serializer */
+    protected $normalizer;
+
     /**
      * MediaExtension constructor.
      *
      * @param ProviderFactory $providerFactory
+     * @param ObjectNormalizer|null $normalizer
      */
-    public function __construct(ProviderFactory $providerFactory)
+    public function __construct(ProviderFactory $providerFactory, ObjectNormalizer $normalizer = null)
     {
         $this->providerFactory = $providerFactory;
+        $this->normalizer = $normalizer;
     }
 
     /**
@@ -62,14 +69,15 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param Media|null $media
+     * @param Media|array|null $media
      * @param $filter
      * @param $attributes
      *
      * @return string
      */
-    public function media(Media $media = null, string $filter = null, array $attributes = array()): string
+    public function media($media = null, string $filter = null, array $attributes = array()): string
     {
+        $media = $this->denormalize($media);
         if (null !== $media) {
             $provider = $this->providerFactory->getProvider($media);
 
@@ -80,21 +88,38 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param Media|null $media
-     * @param string     $filter
-     * @param bool       $fullPath
+     * @param null|Media|array $media
+     * @param string           $filter
+     * @param bool             $fullPath
      *
      * @return string
      */
     public function media_path($media = null, string $filter = null, bool $fullPath = false): string
     {
-
-        if (null !== $media && $media instanceof Media) {
+        $media = $this->denormalize($media);
+        if ($media instanceof Media && null !== $media) {
             $provider = $this->providerFactory->getProvider($media);
 
             return $provider->getPath($media, $filter, $fullPath);
         }
 
         return '';
+    }
+
+    /**
+     * @param null|array $media
+     *
+     * @return mixed
+     */
+    private function denormalize($media)
+    {
+        if (null !== $this->normalizer && is_array($media)) {
+            if (!isset($media['class'])) {
+                throw new \RuntimeException('you somehow overwritten MediaNormalizer, add class index to output array');
+            }
+            $media = $this->normalizer->denormalize($media, $media['class']);
+        }
+
+        return $media;
     }
 }

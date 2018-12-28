@@ -107,6 +107,19 @@ abstract class Media
     /**
      * Get mediaId.
      *
+     * @param null $id
+     * @return Media
+     */
+    public function setId($id = null): Media
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get mediaId.
+     *
      * @return int
      */
     abstract public function getId(): ?int;
@@ -370,4 +383,6 @@ abstract class Media
     {
         return Container::underscore((new \ReflectionClass($this))->getShortName());
     }
+
+
 }

@@ -49,7 +49,7 @@ class MediaPathTokenParser extends \Twig_TokenParser
     /**
      * {@inheritdoc}
      */
-    public function getTag()
+    public function getTag(): string
     {
         return 'media_path';
     }
