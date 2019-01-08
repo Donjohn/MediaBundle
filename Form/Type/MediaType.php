@@ -87,6 +87,9 @@ class MediaType extends AbstractType
             'fine_uploader_template' => $this->fineUploaderTemplate,
             'fine_uploader' => false,
             'show_template' => 'DonjohnMediaBundle:Form:media_form_show.html.twig',
+            'sortable' => false,
+            'sortable_field' => 'position',
+
         ));
         $resolver->setRequired(['media_class']);
     }
@@ -110,6 +113,8 @@ class MediaType extends AbstractType
                 'translation_domain' => $options['translation_domain'],
                 'by_reference' => true,
                 'fine_uploader' => $options['fine_uploader'],
+                'sortable' => $options['sortable'],
+                'sortable_field' => $options['sortable_field'],
             ];
 
             if (null !== $options['media_label']) {

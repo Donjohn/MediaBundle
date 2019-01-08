@@ -14,6 +14,7 @@ use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
@@ -74,14 +75,20 @@ class MediaTypeSubscriber implements EventSubscriberInterface
             'required' => null === $media && $this->options['required'] && !$this->options['fine_uploader'],
         );
 
-        if ($media instanceof Media && $this->options['allow_delete']) {
-            $form->add('unlink', CheckboxType::class, array(
-                'mapped' => false,
-                'data' => false,
-                'required' => false,
-                'label' => 'media.unlink.label',
-                'translation_domain' => $this->options['translation_domain'],
-            ));
+        if ($media instanceof Media) {
+            if ($this->options['allow_delete']) {
+                $form->add('unlink', CheckboxType::class, array(
+                    'mapped' => false,
+                    'data' => false,
+                    'required' => false,
+                    'label' => 'media.unlink.label',
+                    'translation_domain' => $this->options['translation_domain'],
+                ));
+            }
+
+            if ($this->options['sortable']) {
+                $form->add($this->options['sortable_field'], HiddenType::class);
+            }
         }
 
         if (false === $this->options['fine_uploader'] && $this->options['add_provider_form']) {
