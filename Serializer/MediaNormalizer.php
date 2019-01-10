@@ -19,8 +19,6 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 class MediaNormalizer extends ObjectNormalizer
 {
 
-
-
     /**
      * @param mixed $object
      * @param null  $format
@@ -38,7 +36,6 @@ class MediaNormalizer extends ObjectNormalizer
         }
         /** @var Media $object*/
         $data = parent::normalize($object, $format, $context);
-        if (!isset($data['class'])) $data['class'] = ClassUtils::getRealClass(\get_class($object));
         if (!isset($data['id']) || !isset($data['filename']) || !isset($data['providerName']))
         {
             throw new \RuntimeException(sprintf('pls add id, filename and providerName to your serializer mapping for class %s',

@@ -1,0 +1,6 @@
+Donjohn\MediaBundle\Model\Media:
+  attributes:
+    id: ~
+    providerName: ~
+    filename: ~
+

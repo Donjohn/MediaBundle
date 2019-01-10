@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Class Article
  * @ORM\MappedSuperclass
  */
-abstract class Media
+class Media
 {
     /**
      * @var string
@@ -122,7 +122,11 @@ abstract class Media
      *
      * @return int
      */
-    abstract public function getId(): ?int;
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
 
     /**
      * Set name.

@@ -114,10 +114,7 @@ class MediaExtension extends \Twig_Extension
     private function denormalize($media)
     {
         if (null !== $this->normalizer && is_array($media)) {
-            if (!isset($media['class'])) {
-                throw new \RuntimeException('you somehow overwritten MediaNormalizer, add class index to output array');
-            }
-            $media = $this->normalizer->denormalize($media, $media['class']);
+            $media = $this->normalizer->denormalize($media, Media::class);
         }
 
         return $media;
