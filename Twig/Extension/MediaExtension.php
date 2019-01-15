@@ -12,7 +12,6 @@ use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaPathTokenParser;
 use Donjohn\MediaBundle\Twig\TokenParser\MediaTokenParser;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * Class MediaExtension.
@@ -30,10 +29,10 @@ class MediaExtension extends \Twig_Extension
     /**
      * MediaExtension constructor.
      *
-     * @param ProviderFactory $providerFactory
-     * @param ObjectNormalizer|null $normalizer
+     * @param ProviderFactory  $providerFactory
+     * @param ObjectNormalizer $normalizer
      */
-    public function __construct(ProviderFactory $providerFactory, ObjectNormalizer $normalizer = null)
+    public function __construct(ProviderFactory $providerFactory, ObjectNormalizer $normalizer)
     {
         $this->providerFactory = $providerFactory;
         $this->normalizer = $normalizer;
@@ -88,7 +87,7 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param null|Media|array $media
+     * @param Media|array|null $media
      * @param string           $filter
      * @param bool             $fullPath
      *
@@ -97,7 +96,7 @@ class MediaExtension extends \Twig_Extension
     public function media_path($media = null, string $filter = null, bool $fullPath = false): string
     {
         $media = $this->denormalize($media);
-        if ($media instanceof Media && null !== $media) {
+        if ($media instanceof Media) {
             $provider = $this->providerFactory->getProvider($media);
 
             return $provider->getPath($media, $filter, $fullPath);
@@ -107,13 +106,13 @@ class MediaExtension extends \Twig_Extension
     }
 
     /**
-     * @param null|array $media
+     * @param mixed $media
      *
      * @return mixed
      */
-    private function denormalize($media)
+    private function denormalize($media): ?Media
     {
-        if (null !== $this->normalizer && is_array($media)) {
+        if (is_array($media)) {
             $media = $this->normalizer->denormalize($media, Media::class);
         }
 

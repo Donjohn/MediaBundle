@@ -42,9 +42,9 @@ interface ProviderInterface
     public function validateMimeType(string $type): bool;
 
     /**
-     * @param null|File $file
+     * @param File|null $file
      *
-     * @return ProviderGuess|null|Guess
+     * @return ProviderGuess|Guess|null
      */
     public function guess(File $file = null): Guess;
 

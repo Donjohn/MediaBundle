@@ -107,10 +107,10 @@ class Media
     /**
      * Get mediaId.
      *
-     * @param null $id
+     * @param int $id
      * @return Media
      */
-    public function setId($id = null): Media
+    public function setId(int $id = null): Media
     {
         $this->id = $id;
 
@@ -163,11 +163,11 @@ class Media
     /**
      * Set description.
      *
-     * @param string $description
+     * @param string|null $description
      *
      * @return Media
      */
-    public function setDescription(string $description): Media
+    public function setDescription(string $description = null): Media
     {
         $this->description = $description;
 
@@ -179,9 +179,9 @@ class Media
      *
      * @return string
      */
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
-        return $this->description;
+        return (string) $this->description;
     }
 
     /**

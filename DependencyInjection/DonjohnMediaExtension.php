@@ -36,7 +36,7 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         $container->setParameter('donjohn.media.chunk_size', $config['chunk_size']);
         $container->setParameter('donjohn.media.fine_uploader.template', $config['fine_uploader_template']);
         $container->setParameter('donjohn.media.one_up.mapping_name', $config['mapping_name']);
-        $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/web');
+        $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').DIRECTORY_SEPARATOR.'web');
         if (Kernel::VERSION_ID > 40000) {
             $container->setParameter('donjohn.media.root_folder', $container->getParameter('kernel.project_dir').'/public');
         }
@@ -55,6 +55,11 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
         if (array_key_exists('LiipImagineBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('liip_imagine.yml');
         }
+        if (array_key_exists('HautelookAliceBundle', $container->getParameter('kernel.bundles'))) {
+            $container->setParameter('donjohn.media.fixture_folder', $container->getParameter('kernel.project_dir').$config['fixture_folder']);
+            $loader->load('hautelook_alice.yml');
+        }
+
 
         $container->registerForAutoconfiguration(ProviderInterface::class)->addTag('media.provider');
     }

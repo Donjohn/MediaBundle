@@ -35,7 +35,7 @@ class MediaType extends AbstractType
     /** @var string $fineUploaderTemplate */
     protected $fineUploaderTemplate;
 
-    /** @var null|StorageInterface */
+    /** @var StorageInterface|null */
     protected $filesystemOrphanageStorage;
 
     /** @var string $oneupMappingName */
@@ -76,20 +76,19 @@ class MediaType extends AbstractType
             'label' => 'media',
             'invalid_message' => 'media.error.transform',
             'allow_delete' => true,
+            'allow_add' => true,
             'allow_extra_fields' => $allowExtraFields,
             'multiple' => false,
             'required' => false,
             'delete_empty' => true,
             'create_on_update' => true,
             'data_class' => $mediaClass,
-            'add_provider_form' => true,
             'media_label' => null,
             'fine_uploader_template' => $this->fineUploaderTemplate,
             'fine_uploader' => false,
             'show_template' => 'DonjohnMediaBundle:Form:media_form_show.html.twig',
             'sortable' => false,
             'sortable_field' => 'position',
-
         ));
         $resolver->setRequired(['media_class']);
     }
@@ -109,6 +108,7 @@ class MediaType extends AbstractType
                 'required' => $options['required'],
                 'provider' => $options['provider'],
                 'allow_delete' => $options['allow_delete'],
+                'allow_add' => $options['allow_add'],
                 'block_name' => 'media',
                 'translation_domain' => $options['translation_domain'],
                 'by_reference' => true,
@@ -140,7 +140,7 @@ class MediaType extends AbstractType
             $view->vars['fine_uploader'] = $options['fine_uploader'];
             $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
             $view->vars['oneup_mapping'] = $this->oneupMappingName;
-            /** @var FileProvider $fileProvider */
+            /** @var FileProvider $provider */
             $provider = $options['provider'] ? $this->providerFactory->getProvider($options['provider']) : $this->providerFactory->getProvider('file');
             $view->vars['chunk_size'] = $provider->getFileMaxSize();
             $view->vars['validation_accept_files'] = implode(',', $provider->getAllowedTypes());

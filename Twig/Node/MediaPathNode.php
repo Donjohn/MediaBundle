@@ -24,7 +24,7 @@ class MediaPathNode extends \Twig_Node
      * @param \Twig_Node_Expression $media
      * @param \Twig_Node_Expression $filter
      * @param bool                  $fullPath
-     * @param null|string           $lineno
+     * @param string|null           $lineno
      * @param null                  $tag
      */
     public function __construct(string $extensionName, \Twig_Node_Expression $media, \Twig_Node_Expression $filter, bool $fullPath, $lineno, $tag = null)

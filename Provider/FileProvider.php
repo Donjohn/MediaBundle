@@ -133,7 +133,7 @@ class FileProvider extends BaseProvider
     {
         if ($media->getBinaryContent() instanceof File) {
             $this->mediaFilesystem->createMedia($media, $media->getBinaryContent());
-            $media->setBinaryContent(null);
+            $media->setBinaryContent();
         }
         $this->postLoad($media);
     }

@@ -1,6 +1,9 @@
 Donjohn\MediaBundle\Model\Media:
   attributes:
-    id: ~
-    providerName: ~
-    filename: ~
+    id:
+      groups: [Default]
+    providerName:
+      groups: [Default]
+    filename:
+      groups: [Default]
 

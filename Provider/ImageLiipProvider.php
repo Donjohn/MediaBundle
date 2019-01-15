@@ -3,6 +3,7 @@
 namespace Donjohn\MediaBundle\Provider;
 
 use Donjohn\MediaBundle\Filesystem\MediaFilesystemInterface;
+use Donjohn\MediaBundle\Filesystem\MediaLiipLocalFilesystem;
 use Donjohn\MediaBundle\Model\Media;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\Guess\Guess;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ImageLiipProvider implements ProviderInterface
 {
-    /** @var ProviderInterface $imageProvider */
+    /** @var ImageProvider $imageProvider */
     protected $imageProvider;
 
     /**
@@ -187,7 +188,7 @@ class ImageLiipProvider implements ProviderInterface
     }
 
     /**
-     * @return MediaFilesystemInterface
+     * @return MediaLiipLocalFilesystem
      */
     public function getMediaFilesystem(): MediaFilesystemInterface
     {

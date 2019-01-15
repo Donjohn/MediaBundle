@@ -6,6 +6,7 @@ services:
             - { name: kernel.event_listener, event: kernel.view,  priority: 63 }
 
     Donjohn\MediaBundle\Serializer\MediaNormalizer:
-        parent: serializer.normalizer.object
+        arguments:
+            $objectNormalizer: '@serializer.normalizer.object'
         tags:
             - { name: serializer.normalizer }

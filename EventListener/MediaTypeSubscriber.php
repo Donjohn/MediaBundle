@@ -31,7 +31,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
     /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /** @var null|StorageInterface */
+    /** @var StorageInterface|null */
     protected $filesystemOrphanageStorage;
 
     /**
@@ -91,11 +91,11 @@ class MediaTypeSubscriber implements EventSubscriberInterface
             }
         }
 
-        if (false === $this->options['fine_uploader'] && $this->options['add_provider_form']) {
+        if (false === $this->options['fine_uploader'] && $this->options['allow_add']) {
             if ($media instanceof Media) {
                 $this->providerFactory->getProvider($media->getProviderName() ?? $this->options['provider'])->addEditForm($form, $providerOptions);
             } else {
-                $providerAlias = $this->options['provider'] ?? $this->providerFactory->guessProvider(null)->getProviderAlias();
+                $providerAlias = $this->options['provider'] ?? $this->providerFactory->guessProvider()->getProviderAlias();
                 $provider = $this->providerFactory->getProvider($providerAlias);
                 $provider->addCreateForm($form, $providerOptions);
             }

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Donjohn\MediaBundle\Serializer;
 
-use Doctrine\Common\Util\ClassUtils;
 use Donjohn\MediaBundle\Model\Media;
-use function GuzzleHttp\Psr7\parse_request;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 
@@ -16,36 +13,45 @@ use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
  * Date: 12/28/2018
  * Time: 10:17 AM.
  */
-class MediaNormalizer extends ObjectNormalizer
+class MediaNormalizer implements NormalizerInterface
 {
+    /**
+     * @var ObjectNormalizer
+     */
+    private $objectNormalizer;
 
     /**
-     * @param mixed $object
-     * @param null  $format
-     * @param array $context
+     * MediaNormalizer constructor.
+     *
+     * @param ObjectNormalizer $objectNormalizer
+     */
+    public function __construct(ObjectNormalizer $objectNormalizer)
+    {
+        $this->objectNormalizer = $objectNormalizer;
+    }
+
+    /**
+     * @param mixed|Media $object
+     * @param null        $format
+     * @param array       $context
      *
      * @return array
      */
     public function normalize($object, $format = null, array $context = array()): array
     {
+        $data = $this->objectNormalizer->normalize($object, $format, $context);
 
-        //si pas de group, mapping par default.
-        if (!isset($context[parent::GROUPS]) || !is_array($context[parent::GROUPS]))
-        {
-            $context[parent::ATTRIBUTES] = ['id', 'filename', 'providerName'];
+        if (!isset($data['id'])) {
+            $data['id'] = $object->getId();
         }
-        /** @var Media $object*/
-        $data = parent::normalize($object, $format, $context);
-        if (!isset($data['id']) || !isset($data['filename']) || !isset($data['providerName']))
-        {
-            throw new \RuntimeException(sprintf('pls add id, filename and providerName to your serializer mapping for class %s',
-                $data['class']
-                ));
+        if (!isset($data['filename'])) {
+            $data['filename'] = $object->getFilename();
         }
-
+        if (!isset($data['providerName'])) {
+            $data['providerName'] = $object->getProviderName();
+        }
 
         return $data;
-
     }
 
     /**

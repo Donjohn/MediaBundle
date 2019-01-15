@@ -147,7 +147,7 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
     /**
      * @param Media $media
      *
-     * @return bool|void
+     * @return bool
      */
     public function removeMedia(Media $media): bool
     {
@@ -162,7 +162,7 @@ class MediaLocalFilesystem implements MediaFilesystemInterface
      * @param Media $media
      * @param File  $file
      *
-     * @return bool|void
+     * @return bool
      */
     public function createMedia(Media $media, File $file): bool
     {

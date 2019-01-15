@@ -122,14 +122,14 @@ class FineUploaderController extends BaseFineUploaderController
         $name = $namer->name($file);
 
         if (!$request->get('multiple', true)) {
-            foreach ($this->storage->getFiles($request->get('form_name', null)) as $oldfile) {
+            foreach ($this->storage->getFiles($request->get('form_name')) as $oldfile) {
                 /* @var \SplFileInfo $file */
                 @unlink($oldfile->getRealPath());
             }
         }
 
         // perform the real upload
-        $uploaded = $this->storage->upload($file, $name, $request->get('form_name', null));
+        $uploaded = $this->storage->upload($file, $name, $request->get('form_name'));
 
         $this->dispatchPostEvents($uploaded, $response, $request);
     }
@@ -145,7 +145,7 @@ class FineUploaderController extends BaseFineUploaderController
         $response->headers->set('Vary', 'Accept');
 
         /** @var \SplFileInfo $file */
-        foreach ($this->storage->getFiles($request->get('form_name', null)) as $file) {
+        foreach ($this->storage->getFiles($request->get('form_name')) as $file) {
             $fs = new Filesystem();
             try {
                 $fs->remove([$file->getRealPath()]);
@@ -167,7 +167,7 @@ class FineUploaderController extends BaseFineUploaderController
     {
         $request->getSession()->start();
 
-        $uploadedFiles = $this->storage->getFiles($request->get('form_name', null));
+        $uploadedFiles = $this->storage->getFiles($request->get('form_name'));
 
         /** @var \SplFileInfo $file */
         $data = [];

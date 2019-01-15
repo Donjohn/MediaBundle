@@ -1,0 +1,8 @@
+services:
+    Donjohn\MediaBundle\Fixtures\Faker\Provider\MediaBinaryContentProvider:
+        arguments:
+            $sourceDirectory: "%donjohn.media.fixture_folder%"
+        tags:
+            - { name: nelmio_alice.faker.provider }
+
+

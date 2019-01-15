@@ -2,7 +2,7 @@
 
 namespace Donjohn\MediaBundle\Form\Transformer;
 
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\ORM\Proxy\Proxy;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Exception\InvalidMimeTypeException;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
@@ -40,6 +40,20 @@ class MediaDataTransformer implements DataTransformerInterface
     }
 
     /**
+     * @param $class
+     *
+     * @return bool|string
+     */
+    private function getRealClass($class)
+    {
+        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
+            return $class;
+        }
+
+        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function transform($value)
@@ -69,10 +83,10 @@ class MediaDataTransformer implements DataTransformerInterface
 
         /* @var $newMedia Media */
         if ($this->createOnUpdate && $media->getId()) {
-            $classMedia = ClassUtils::getRealClass($media);
+            $classMedia = $this->getRealClass($media);
             $newMedia = new $classMedia();
             $newMedia->setBinaryContent($media->getBinaryContent());
-            $media->setBinaryContent(null);
+            $media->setBinaryContent();
         } else {
             $newMedia = $media;
         }

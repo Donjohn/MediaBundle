@@ -30,7 +30,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
     /** @var ProviderFactory $providerFactory */
     protected $providerFactory;
 
-    /** @var null|StorageInterface */
+    /** @var StorageInterface|null */
     protected $filesystemOrphanageStorage;
 
     /**
@@ -38,7 +38,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
      *
      * @param ProviderFactory       $providerFactory
      * @param array                 $options
-     * @param null|StorageInterface $filesystemOrphanageStorage
+     * @param StorageInterface|null $filesystemOrphanageStorage
      */
     public function __construct(ProviderFactory $providerFactory, array $options, StorageInterface $filesystemOrphanageStorage = null)
     {
@@ -83,7 +83,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
         foreach ($data as $name => $value) {
             $form->add($name, MediaType::class, array_replace($this->options, array(
                 'property_path' => '['.$name.']',
-                'add_provider_form' => false,
+                'allow_add' => false,
                 'fine_uploader' => false,
             )));
         }
@@ -97,7 +97,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
                 'attr' => ['multiple' => 'multiple'],
             );
 
-            $providerAlias = $options['provider'] ?? $this->providerFactory->guessProvider(null)->getProviderAlias();
+            $providerAlias = $options['provider'] ?? $this->providerFactory->guessProvider()->getProviderAlias();
             $provider = $this->providerFactory->getProvider($providerAlias);
             $provider->addCreateForm($form, $providerOptions);
         }
@@ -129,7 +129,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             $data[$name] = ['binaryContent' => $uploadedFile instanceof UploadedFile ? $uploadedFile : new File($uploadedFile->getPathname())];
             $form->add((string) $name, MediaType::class, array_replace($this->options, array(
                 'property_path' => '['.$name.']',
-                'add_provider_form' => true,
+                'allow_add' => true,
                 'fine_uploader' => false,
                 'multiple' => false,
             )));

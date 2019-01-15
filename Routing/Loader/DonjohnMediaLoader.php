@@ -15,7 +15,7 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class DonjohnMediaLoader extends Loader
 {
-    /** @var null|string $mapping_name */
+    /** @var string|null $mapping_name */
     private $mapping_name;
 
     /**

@@ -39,5 +39,5 @@ services:
     Donjohn\MediaBundle\Twig\Extension\MediaExtension:
         arguments:
             $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
-            $normalizer: ~
+            $normalizer: '@serializer.normalizer.object'
         tags: [twig.extension]

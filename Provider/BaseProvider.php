@@ -114,7 +114,7 @@ abstract class BaseProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      *
-     * @param null|File $file
+     * @param File|null $file
      */
     final public function guess(File $file = null): Guess
     {
