@@ -99,8 +99,6 @@ class MediaTypeSubscriber implements EventSubscriberInterface
                 $provider = $this->providerFactory->getProvider($providerAlias);
                 $provider->addCreateForm($form, $providerOptions);
             }
-            //que pour l'api... à revoir
-//            $form->add('originalFilename', HiddenType::class);
         }
     }
 

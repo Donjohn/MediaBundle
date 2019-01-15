@@ -87,7 +87,6 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
             }
         }
 
-        $chunks['storage'] = ['directory' => '%kernel.cache_dir%/uploader/chunks'];
         $mappings[$mappingName] = ['namer' => OriginalNamer::class, 'use_orphanage' => true, 'frontend' => 'fineuploader'];
 
         $container->prependExtensionConfig('oneup_uploader', [

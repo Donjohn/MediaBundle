@@ -41,7 +41,7 @@ class MediaPathNode extends \Twig_Node
     {
         $compiler
             ->addDebugInfo($this)
-            ->write(sprintf("echo \$this->env->getExtension('%s')->media_path(", $this->extensionName))
+            ->write(sprintf("echo \$this->env->getExtension('%s')->mediaPath(", $this->extensionName))
             ->subcompile($this->getNode('media'))
             ->raw(', ')
             ->subcompile($this->getNode('filter'))

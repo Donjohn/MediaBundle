@@ -144,7 +144,6 @@ class MediaType extends AbstractType
             $provider = $options['provider'] ? $this->providerFactory->getProvider($options['provider']) : $this->providerFactory->getProvider('file');
             $view->vars['chunk_size'] = $provider->getFileMaxSize();
             $view->vars['validation_accept_files'] = implode(',', $provider->getAllowedTypes());
-//            $view->vars['validation_allowed_extensions'] = explode(',',$provider->getAllowedTypes());
         }
     }
 }

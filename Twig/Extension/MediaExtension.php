@@ -55,7 +55,7 @@ class MediaExtension extends \Twig_Extension
     public function getFilters(): array
     {
         return [
-            new \Twig_Filter('mediaPath', array($this, 'media_path'), ['is_safe' => ['html']]),
+            new \Twig_Filter('mediaPath', array($this, 'mediaPath'), ['is_safe' => ['html']]),
         ];
     }
 
@@ -93,7 +93,7 @@ class MediaExtension extends \Twig_Extension
      *
      * @return string
      */
-    public function media_path($media = null, string $filter = null, bool $fullPath = false): string
+    public function mediaPath($media = null, string $filter = null, bool $fullPath = false): string
     {
         $media = $this->denormalize($media);
         if ($media instanceof Media) {
