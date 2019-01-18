@@ -109,7 +109,7 @@ class MediaType extends AbstractType
                 'required' => $options['required'],
                 'provider' => $options['provider'],
                 'allow_delete' => $options['allow_delete'],
-                'allow_delete_label' => $options['allow_delete'],
+                'allow_delete_label' => $options['allow_delete_label'],
                 'allow_add' => $options['allow_add'],
                 'block_name' => 'media',
                 'translation_domain' => $options['translation_domain'],

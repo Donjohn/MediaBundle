@@ -81,7 +81,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
                     'mapped' => false,
                     'data' => false,
                     'required' => false,
-                    'label' => 'media.unlink.label',
+                    'label' => $this->options['allow_delete_label'],
                     'translation_domain' => $this->options['translation_domain'],
                 ));
             }
