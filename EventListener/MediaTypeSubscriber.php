@@ -81,7 +81,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
                     'mapped' => false,
                     'data' => false,
                     'required' => false,
-                    'label' => $this->options['allow_delete_label'],
+                    'label' => 'media.unlink.label',
                     'translation_domain' => $this->options['translation_domain'],
                 ));
             }
@@ -117,7 +117,13 @@ class MediaTypeSubscriber implements EventSubscriberInterface
             /** @var $uploadedFile UploadedFile */
             //on prend de fait le dernier uploadé
             foreach ($this->filesystemOrphanageStorage->getFiles($event->getForm()->getName()) as $uploadedFile) {
-                $event->setData($event->getData()->setBinaryContent(new UploadedFile($uploadedFile->getPathname(), $uploadedFile->getBasename())));
+                $media = $event->getData();
+                if (null === $media) {
+                    $dataClass = $event->getForm()->getConfig()->getOption('data_class');
+                    $media = new $dataClass();
+                }
+                $media->setBinaryContent(new UploadedFile($uploadedFile->getPathname(), $uploadedFile->getBasename()));
+                $event->setData($media);
             }
         }
     }
