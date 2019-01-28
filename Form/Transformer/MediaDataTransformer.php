@@ -82,13 +82,12 @@ class MediaDataTransformer implements DataTransformerInterface
         }
 
         /* @var $newMedia Media */
+        $newMedia = $media;
         if ($this->createOnUpdate && $media->getId()) {
             $classMedia = $this->getRealClass($media);
             $newMedia = new $classMedia();
             $newMedia->setBinaryContent($media->getBinaryContent());
             $media->setBinaryContent();
-        } else {
-            $newMedia = $media;
         }
 
         $matches = array();
@@ -128,7 +127,8 @@ class MediaDataTransformer implements DataTransformerInterface
         try {
             $this->providerFactory->getProvider($newMedia->getProviderName())->validateMimeType($newMedia->getBinaryContent()->getMimeType());
         } catch (InvalidMimeTypeException $e) {
-            throw new TransformationFailedException('invalid media, no filename');
+            $newMedia->setBinaryContent();
+            throw new TransformationFailedException('invalid media, invalid mimetype');
         }
 
         return $newMedia;

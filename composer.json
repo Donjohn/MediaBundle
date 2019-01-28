@@ -16,6 +16,7 @@
     "require" : {
         "php": ">=7.1",
         "ext-gd": "*",
+        "ext-mbstring": "*",
         "ext-fileinfo": "*",
         "doctrine/doctrine-bundle": "^1.6",
         "symfony/form": "^3.4 || ^4.1",

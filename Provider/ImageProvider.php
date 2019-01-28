@@ -24,7 +24,7 @@ class ImageProvider extends FileProvider
      */
     public function getAllowedTypes(): array
     {
-        return ['image/bmp', 'image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/tiff', 'image/jpeg', 'image/png'];
+        return ['image/bmp', 'image/x-bmp', 'image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/tiff', 'image/jpeg', 'image/png'];
     }
 
     /**

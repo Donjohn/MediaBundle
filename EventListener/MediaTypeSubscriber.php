@@ -87,7 +87,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
             }
 
             if ($this->options['sortable']) {
-                $form->add($this->options['sortable_field'], HiddenType::class);
+                $form->add($this->options['sortable_field'], HiddenType::class, ['empty_data' => 0]);
             }
         }
 

@@ -12,6 +12,7 @@ use Donjohn\MediaBundle\EventListener\MediaTypeSubscriber;
 use Donjohn\MediaBundle\Form\Transformer\MediaDataTransformer;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Donjohn\MediaBundle\Provider\FileProvider;
+use Donjohn\MediaBundle\Repository\MimeTypeRepository;
 use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
 use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;
 use Symfony\Bridge\Doctrine\Form\EventListener\MergeDoctrineCollectionListener;
@@ -106,7 +107,7 @@ class MediaType extends AbstractType
         } else {
             $mediaOptions = [
                 'media_class' => $options['media_class'],
-                'required' => $options['required'],
+                'required' => $options['fine_uploader'] ? false : $options['required'],
                 'provider' => $options['provider'],
                 'allow_delete' => $options['allow_delete'],
                 'allow_delete_label' => $options['allow_delete_label'],
@@ -147,6 +148,8 @@ class MediaType extends AbstractType
             $provider = $options['provider'] ? $this->providerFactory->getProvider($options['provider']) : $this->providerFactory->getProvider('file');
             $view->vars['chunk_size'] = $provider->getFileMaxSize();
             $view->vars['validation_accept_files'] = implode(',', $provider->getAllowedTypes());
+            $view->vars['validation_allowed_extensions'] = "['".implode("','", MimeTypeRepository::findExtensions($provider->getAllowedTypes()))."']";
+
         }
     }
 }

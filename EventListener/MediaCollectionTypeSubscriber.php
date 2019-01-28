@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace Donjohn\MediaBundle\EventListener;
 
 use Donjohn\MediaBundle\Form\Type\MediaType;
+use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -143,6 +144,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
      */
     public function onSubmit(FormEvent $event): void
     {
+        $form = $event->getForm();
         $data = $event->getData();
 
         if (null === $data) {
@@ -151,6 +153,15 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
 
         if (!\is_array($data) && !($data instanceof \Traversable && $data instanceof \ArrayAccess)) {
             throw new UnexpectedTypeException($data, 'array or (\Traversable and \ArrayAccess)');
+        }
+
+        $previousData = $form->getData();
+        /** @var FormInterface $child */
+        foreach ($form as $name => $child) {
+            if (!$child->getData() instanceof Media) {
+                unset($data[$name]);
+                $form->remove($name);
+            }
         }
 
         $event->setData($data);

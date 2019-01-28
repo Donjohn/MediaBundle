@@ -25,7 +25,8 @@ window.addEventListener('load', () => {
             },
             deleteFile: {
                 enabled: true,
-                endpoint: element.dataset.deletefile_endpoint
+                endpoint: element.dataset.deletefile_endpoint,
+                method: 'POST'
             },
             callbacks: {
                 onSubmitDelete: function (id) {
