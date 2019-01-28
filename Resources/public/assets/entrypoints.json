@@ -1,12 +1,11 @@
 {
   "entrypoints": {
     "fine-uploader": {
-      "js": [
-        "/assets/runtime.d38750cd.js",
-        "/assets/fine-uploader.be40d93f.js"
-      ],
       "css": [
-        "/assets/fine-uploader.48524599.css"
+        "/assets/fine-uploader.css"
+      ],
+      "js": [
+        "/assets/fine-uploader.js"
       ]
     }
   }
