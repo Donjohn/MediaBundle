@@ -43,11 +43,6 @@ class DonjohnMediaExtension extends Extension implements PrependExtensionInterfa
 
         if (array_key_exists('OneupUploaderBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('oneup_uploader.yml');
-
-            $definition = new Definition(DonjohnMediaLoader::class);
-            $definition->setArgument('$mapping_name', $config['mapping_name']);
-            $definition->addTag('routing.loader');
-            $container->setDefinition(DonjohnMediaLoader::class, $definition);
         }
         if (array_key_exists('ApiPlatformBundle', $container->getParameter('kernel.bundles'))) {
             $loader->load('api_platform.yml');

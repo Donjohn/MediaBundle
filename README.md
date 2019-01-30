@@ -134,13 +134,6 @@ oneup_uploader:
 
 ```
 
-And to routing.yml, add:
-```yaml
-#app/config/routing.yml
-donjohn_media:
-    resource: "@DonjohnMediaBundle/Resources/config/routing.yml"
-```
-
 
 
 You can change the uploaded chunk size or the template used to render the fineuploader frame

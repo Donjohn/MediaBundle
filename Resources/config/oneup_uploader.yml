@@ -6,6 +6,12 @@ services:
     Donjohn\MediaBundle\Uploader\Naming\OriginalNamer:
         public: true
 
+    Donjohn\MediaBundle\Routing\Loader\DonjohnMediaLoader:
+        decorates: oneup_uploader.routing.loader
+        arguments:
+            $loader: '@Donjohn\MediaBundle\Routing\Loader\DonjohnMediaLoader.inner'
+            $mappingName: "%donjohn.media.one_up.mapping_name%"
+
 
 
 

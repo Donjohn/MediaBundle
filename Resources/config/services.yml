@@ -7,9 +7,6 @@ services:
     Donjohn\MediaBundle\Provider\Factory\ProviderFactory:
         arguments: ~
 
-    Donjohn\MediaBundle\Routing\Loader\DonjohnMediaLoader:
-        tags: [routing.loader]
-
     Donjohn\MediaBundle\Provider\FileProvider:
         arguments:
             $filesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'

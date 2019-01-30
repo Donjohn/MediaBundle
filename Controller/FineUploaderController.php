@@ -139,8 +139,10 @@ class FineUploaderController extends BaseFineUploaderController
      *
      * @return JsonResponse
      */
-    public function cancelFineUploader(Request $request): JsonResponse
+    public function cancel(): JsonResponse
     {
+
+        $request = $this->getRequest();
         $response = new JsonResponse(['success' => true]);
         $response->headers->set('Vary', 'Accept');
 
@@ -163,7 +165,7 @@ class FineUploaderController extends BaseFineUploaderController
      *
      * @return JsonResponse
      */
-    public function initFineUploader(Request $request): JsonResponse
+    public function init(Request $request): JsonResponse
     {
         $request->getSession()->start();
 
