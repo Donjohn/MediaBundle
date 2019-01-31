@@ -57,7 +57,7 @@ class DonjohnMediaLoader implements LoaderInterface
                 ['_controller' => 'oneup_uploader.controller.'.$this->mappingName.'::cancel',
                     'id' => null,
                 ],
-                [], [], null, [], ['POST'])
+                [], [], null, [], ['POST', 'DELETE'])
         );
 
         $routes->add('_uploader_init_'.$this->mappingName,
