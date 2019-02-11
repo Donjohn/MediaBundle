@@ -121,7 +121,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             $form->remove('binaryContent');
             unset($data['binaryContent']);
         } else {
-            $newMedias = $this->filesystemOrphanageStorage->getFiles($event->getForm()->getName());
+            $newMedias = $this->filesystemOrphanageStorage->getFiles(MediaType::getPathName($event->getForm()));
         }
 
         foreach ($newMedias as $uploadedFile) {

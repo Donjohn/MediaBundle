@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace Donjohn\MediaBundle\EventListener;
 
+use Donjohn\MediaBundle\Form\Type\MediaType;
 use Donjohn\MediaBundle\Model\Media;
 use Donjohn\MediaBundle\Provider\Factory\ProviderFactory;
 use Oneup\UploaderBundle\Uploader\Storage\StorageInterface;
@@ -116,7 +117,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
         if ($this->options['fine_uploader'] && false === $this->options['multiple']) {
             /** @var $uploadedFile UploadedFile */
             //on prend de fait le dernier uploadé
-            foreach ($this->filesystemOrphanageStorage->getFiles($event->getForm()->getName()) as $uploadedFile) {
+            foreach ($this->filesystemOrphanageStorage->getFiles(MediaType::getPathName($event->getForm())) as $uploadedFile) {
                 $media = $event->getData();
                 if (null === $media) {
                     $dataClass = $event->getForm()->getConfig()->getOption('data_class');

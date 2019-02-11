@@ -5,13 +5,13 @@
     {{ form_widget(form) }}
     {% if form.vars.fine_uploader|default(false) %}
         <div data-fine-uploader="true"
-             data-request_endpoint="{{ oneup_uploader_endpoint(form.vars.oneup_mapping) }}?form_name={{ name }}&multiple={{ form.vars.multiple }}"
+             data-request_endpoint="{{ oneup_uploader_endpoint(form.vars.oneup_mapping) }}?form_name={{ form.vars.form_name }}&multiple={{ form.vars.multiple }}"
              data-chunking_partsize="{{ form.vars.chunk_size }}"
-             data-deletefile_endpoint="{{ path('_uploader_cancel_'~form.vars.oneup_mapping, {form_name: name }) }}"
+             data-deletefile_endpoint="{{ path('_uploader_cancel_'~form.vars.oneup_mapping, {form_name: form.vars.form_name }) }}"
              data-thumbnails_placeholders_notavailablepath='{{ asset('bundles/donjohnmedia/images/file.png') }}'
              data-thumbnails_placeholders_waitingpath='{{ asset('bundles/donjohnmedia/images/file.png') }}'
              data-multiple="{{ form.vars.multiple }}"
-             data-session_endpoint="{{ path('_uploader_init_'~form.vars.oneup_mapping, {form_name: name, multiple: form.vars.multiple }) }}"
+             data-session_endpoint="{{ path('_uploader_init_'~form.vars.oneup_mapping, {form_name: form.vars.form_name, multiple: form.vars.multiple }) }}"
              data-validation_accept_files="{{ form.vars.validation_accept_files|default(null) }}"
              data-validation_allowed_extensions="{{ form.vars.validation_allowed_extensions|default('[]') }}"
              data-template="donjohn-media-{{ id }}"

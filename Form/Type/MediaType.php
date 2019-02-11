@@ -144,6 +144,7 @@ class MediaType extends AbstractType
             $view->vars['fine_uploader'] = $options['fine_uploader'];
             $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
             $view->vars['oneup_mapping'] = $this->oneupMappingName;
+            $view->vars['form_name'] = MediaType::getPathName($form);
             /** @var FileProvider $provider */
             $provider = $options['provider'] ? $this->providerFactory->getProvider($options['provider']) : $this->providerFactory->getProvider('file');
             $view->vars['chunk_size'] = $provider->getFileMaxSize();
@@ -151,5 +152,22 @@ class MediaType extends AbstractType
             $view->vars['validation_allowed_extensions'] = "['".implode("','", MimeTypeRepository::findExtensions($provider->getAllowedTypes()))."']";
 
         }
+    }
+
+    /**
+     * @param FormBuilderInterface $builder
+     * @return string
+     */
+    public static function getPathName(FormInterface $form): string
+    {
+        $name = $form->getName();
+        $parent = $form->getParent();
+        while ($parent)
+        {
+            $name = $parent->getName().'_'.$name;
+            $parent = $parent->getParent();
+        }
+        return $name;
+
     }
 }
