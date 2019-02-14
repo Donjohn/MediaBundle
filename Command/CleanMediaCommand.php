@@ -84,12 +84,8 @@ class CleanMediaCommand extends Command
             return $metadata->getReflectionClass()->isSubclassOf(Media::class);
         });
 
-        $progressBarMetadatas = new ProgressBar($this->io, count($mediaClasses));
-        $progressBarMetadatas->start();
-
         /** @var ClassMetadata $metadata */
         foreach ($mediaClasses as $metadata) {
-            $progressBarMetadatas->advance();
             $this->io->writeln('Traitement de '.$metadata->getName());
 
             /** @var Media[] $medias */
@@ -107,8 +103,8 @@ class CleanMediaCommand extends Command
                 $file->move($destPath, $file->getFilename());
             }
             $progressBarMedias->finish();
+            $this->io->writeln('');
         }
-        $progressBarMetadatas->finish();
 
         $this->io->writeln('On efface tous les fichiers de '.$this->rootFolder.$this->mediaFolder.DIRECTORY_SEPARATOR);
         $this->deleteFiles($this->rootFolder.$this->mediaFolder);

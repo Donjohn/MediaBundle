@@ -8,7 +8,6 @@
 namespace Donjohn\MediaBundle\Filesystem;
 
 use Donjohn\MediaBundle\Model\Media;
-use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Routing\RequestContext;
