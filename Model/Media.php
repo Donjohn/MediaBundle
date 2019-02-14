@@ -30,7 +30,7 @@ class Media
     protected $providerName;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, unique=true)
      */
     protected $filename;
 

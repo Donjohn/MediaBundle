@@ -1,4 +1,12 @@
 services:
+    Donjohn\MediaBundle\Command\CleanMediaCommand:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+            $mediaFolder: "%donjohn.media.upload_folder%"
+            $rootFolder: "%donjohn.media.root_folder%"
+        tags: [console.command]
+
     Donjohn\MediaBundle\EventListener\MediaSubscriber:
         arguments:
             $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'

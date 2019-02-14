@@ -105,7 +105,7 @@ class FileProvider extends BaseProvider
             throw new InvalidMimeTypeException('invalid media');
         }
         if (null !== $media->getBinaryContent()) {
-            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($fileName, PATHINFO_EXTENSION));
+            $media->setFilename(sha1($media->getName().uniqid('', true)).'.'.pathinfo($fileName, PATHINFO_EXTENSION));
 
             if (0 === stripos(PHP_OS, 'WIN')) {
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
@@ -144,7 +144,7 @@ class FileProvider extends BaseProvider
     public function preUpdate(Media $media): void
     {
         if (null !== $media->getBinaryContent()) {
-            $media->setFilename(sha1($media->getName().random_int(11111, 99999)).'.'.pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION));
+            $media->setFilename(sha1($media->getName().uniqid('', true)).'.'.pathinfo($media->getOriginalFilename(), PATHINFO_EXTENSION));
 
             if (0 === stripos(PHP_OS, 'WIN')) {
                 $media->setMd5(md5_file($media->getBinaryContent()->getRealPath()));
