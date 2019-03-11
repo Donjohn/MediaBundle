@@ -13,6 +13,7 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 
 /**
@@ -84,8 +85,14 @@ class CleanMediaCommand extends Command
             return $metadata->getReflectionClass()->isSubclassOf(Media::class);
         });
 
+        $progressBarMetadatas = new ProgressBar($this->io, count($mediaClasses));
+        $progressBarMetadatas->start();
+
+        $mediasToDelete = [];
+
         /** @var ClassMetadata $metadata */
         foreach ($mediaClasses as $metadata) {
+            $progressBarMetadatas->advance();
             $this->io->writeln('Traitement de '.$metadata->getName());
 
             /** @var Media[] $medias */
@@ -99,15 +106,32 @@ class CleanMediaCommand extends Command
 
                 $filePath = $provider->getMediaFilesystem()->getFullPath($media);
                 $destPath = pathinfo(str_replace($this->mediaFolder, DIRECTORY_SEPARATOR.'tmpMedia', $filePath), PATHINFO_DIRNAME);
-                $file = new File($filePath);
-                $file->move($destPath, $file->getFilename());
+                try {
+                    $file = new File($filePath);
+                    $file->move($destPath, $file->getFilename());
+                } catch (FileNotFoundException $exception) {
+                    $mediasToDelete[] = $media;
+                }
             }
             $progressBarMedias->finish();
-            $this->io->writeln('');
         }
+        $progressBarMetadatas->finish();
 
         $this->io->writeln('On efface tous les fichiers de '.$this->rootFolder.$this->mediaFolder.DIRECTORY_SEPARATOR);
         $this->deleteFiles($this->rootFolder.$this->mediaFolder);
+
+
+        if (count($mediasToDelete) > 0) {
+            $this->io->writeln('On efface toutes les entités sans fichier');
+            $progressBarMediasToDelete = new ProgressBar($this->io, count($mediasToDelete));
+            $progressBarMediasToDelete->start();
+            foreach ($mediasToDelete as $mediaToDelete) {
+                $progressBarMediasToDelete->advance();
+                $this->entityManager->remove($mediaToDelete);
+                $this->entityManager->flush();
+            }
+            $progressBarMediasToDelete->finish();
+        }
 
         $this->io->writeln('On remets les valides.');
         rename($this->rootFolder.DIRECTORY_SEPARATOR.'tmpMedia', $this->rootFolder.$this->mediaFolder);
