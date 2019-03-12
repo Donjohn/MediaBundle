@@ -7,6 +7,13 @@ services:
             $rootFolder: "%donjohn.media.root_folder%"
         tags: [console.command]
 
+    Donjohn\MediaBundle\Command\UpdateCommand:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
+            $mediaLocalFilesystem: '@Donjohn\MediaBundle\Filesystem\MediaLocalFilesystem'
+        tags: [console.command]
+
     Donjohn\MediaBundle\EventListener\MediaSubscriber:
         arguments:
             $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'

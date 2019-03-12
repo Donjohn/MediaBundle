@@ -90,9 +90,9 @@ class Media
     /**
      * return old Media.
      *
-     * @return Media
+     * @return Media|null
      */
-    public function oldMedia(): Media
+    public function oldMedia(): ?Media
     {
         if ($this->oldFilename) {
             $oldMedia = clone $this;
