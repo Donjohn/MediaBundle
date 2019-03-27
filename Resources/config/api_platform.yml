@@ -4,9 +4,3 @@ services:
             $providerFactory: '@Donjohn\MediaBundle\Provider\Factory\ProviderFactory'
         tags:
             - { name: kernel.event_listener, event: kernel.view,  priority: 63 }
-
-    Donjohn\MediaBundle\Serializer\MediaNormalizer:
-        arguments:
-            $objectNormalizer: '@serializer.normalizer.object'
-        tags:
-            - { name: serializer.normalizer }
