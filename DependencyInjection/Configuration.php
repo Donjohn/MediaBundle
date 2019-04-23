@@ -29,7 +29,7 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('chunk_size')->defaultValue(ini_get('upload_max_filesize'))->end()
                 ->scalarNode('upload_folder')->defaultValue('/media')->end()
                 ->scalarNode('mapping_name')->defaultValue('donjohn_media')->end()
-                ->scalarNode('fine_uploader_template')->defaultValue('DonjohnMediaBundle:Form:fine_uploader_template.html.twig')->end()
+                ->scalarNode('fine_uploader_template')->defaultValue('@DonjohnMedia/Form/fine_uploader_template.html.twig')->end()
                 ->scalarNode('fixture_folder')->defaultValue('/assets/fixtures/img')->end()
             ->end();
 
