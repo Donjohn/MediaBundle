@@ -91,6 +91,7 @@ class MediaType extends AbstractType
             'show_template' => 'DonjohnMediaBundle:Form:media_form_show.html.twig',
             'sortable' => false,
             'sortable_field' => 'position',
+            'session_init' => true,
         ));
         $resolver->setRequired(['media_class']);
     }
@@ -119,6 +120,7 @@ class MediaType extends AbstractType
                 'show_template' => $options['show_template'],
                 'sortable' => $options['sortable'],
                 'sortable_field' => $options['sortable_field'],
+                'session_init' => $options['session_init'],
             ];
 
             if (null !== $options['media_label']) {
@@ -142,6 +144,7 @@ class MediaType extends AbstractType
         $view->vars['show_template'] = $options['show_template'];
         if ($options['fine_uploader']) {
             $view->vars['fine_uploader'] = $options['fine_uploader'];
+            $view->vars['session_init'] = $options['session_init'];
             $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
             $view->vars['oneup_mapping'] = $this->oneupMappingName;
             $view->vars['form_name'] = MediaType::getPathName($form);

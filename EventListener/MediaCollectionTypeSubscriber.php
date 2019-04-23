@@ -85,7 +85,9 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
             $form->add($name, MediaType::class, array_replace($this->options, array(
                 'property_path' => '['.$name.']',
                 'allow_add' => false,
-                'fine_uploader' => false,
+                'fine_uploader' => $this->options['fine_uploader'],
+                'create_on_update' => false,
+                'session_init' => $this->options['session_init'],
             )));
         }
 
