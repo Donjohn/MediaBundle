@@ -88,6 +88,7 @@ class MediaCollectionTypeSubscriber implements EventSubscriberInterface
                 'fine_uploader' => $this->options['fine_uploader'],
                 'create_on_update' => false,
                 'session_init' => $this->options['session_init'],
+                'thumbnail_format' => $this->options['thumbnail_format'],
             )));
         }
 

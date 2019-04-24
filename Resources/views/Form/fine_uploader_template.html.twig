@@ -1,5 +1,5 @@
 {% spaceless %}
-<div id="donjohn-media-fineuploader-{{ id }}" class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="{{ 'media.oneup.drop.files'|trans({},'DonjohnMediaBundle') }}" style="overflow: auto !important; overflow-x: hidden;{% if media.id|default(false) %} background-image: url('{{ media|mediaPath('thumbnail') }}'){% endif %}">
+<div id="donjohn-media-fineuploader-{{ id }}" class="qq-uploader-selector qq-uploader qq-gallery" qq-drop-area-text="{{ 'media.oneup.drop.files'|trans({},'DonjohnMediaBundle') }}" style="overflow: auto !important; overflow-x: hidden;{% if form.vars.data.id|default(false) %} background-image: url('{{ form.vars.data|mediaPath(form.vars.thumbnail_format) }}'){% endif %}">
     <div class="row progress qq-total-progress-bar-container-selector">
         <div role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" class="progress-bar qq-total-progress-bar-selector"></div>
     </div>

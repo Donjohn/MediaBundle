@@ -1,6 +1,6 @@
 {% block media_widget %}
     {% if not form.vars.multiple|default(false) and form.vars.data.id|default(false)  and not form.vars.fine_uploader|default(false) %}
-        {% include form.vars.show_template with {media: form.vars.data}%}
+        {% include form.vars.show_template with {media: form.vars.data, filter: form.vars.thumbnail_format }%}
     {% endif %}
     {{ form_widget(form) }}
     {% if form.vars.fine_uploader|default(false) %}

@@ -92,6 +92,7 @@ class MediaType extends AbstractType
             'sortable' => false,
             'sortable_field' => 'position',
             'session_init' => true,
+            'thumbnail_format' => 'thumbnail',
         ));
         $resolver->setRequired(['media_class']);
     }
@@ -121,6 +122,7 @@ class MediaType extends AbstractType
                 'sortable' => $options['sortable'],
                 'sortable_field' => $options['sortable_field'],
                 'session_init' => $options['session_init'],
+                'thumbnail_format' => $options['thumbnail_format'],
             ];
 
             if (null !== $options['media_label']) {
@@ -145,6 +147,7 @@ class MediaType extends AbstractType
         if ($options['fine_uploader']) {
             $view->vars['fine_uploader'] = $options['fine_uploader'];
             $view->vars['session_init'] = $options['session_init'];
+            $view->vars['thumbnail_format'] = $options['thumbnail_format'];
             $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
             $view->vars['oneup_mapping'] = $this->oneupMappingName;
             $view->vars['form_name'] = MediaType::getPathName($form);
