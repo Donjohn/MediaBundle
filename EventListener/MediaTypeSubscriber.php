@@ -71,7 +71,7 @@ class MediaTypeSubscriber implements EventSubscriberInterface
         $form = $event->getForm();
 
         $providerOptions = array('translation_domain' => $this->options['translation_domain'],
-            'label' => $this->options['label'],
+            'label' => false,
             'error_bubbling' => true,
             'required' => null === $media && $this->options['required'] && !$this->options['fine_uploader'],
         );
