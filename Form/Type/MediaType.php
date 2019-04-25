@@ -144,10 +144,10 @@ class MediaType extends AbstractType
     {
         $view->vars['multiple'] = $options['multiple'];
         $view->vars['show_template'] = $options['show_template'];
+        $view->vars['thumbnail_format'] = $options['thumbnail_format'];            
         if ($options['fine_uploader']) {
             $view->vars['fine_uploader'] = $options['fine_uploader'];
             $view->vars['session_init'] = $options['session_init'];
-            $view->vars['thumbnail_format'] = $options['thumbnail_format'];
             $view->vars['fine_uploader_template'] = $options['fine_uploader_template'];
             $view->vars['oneup_mapping'] = $this->oneupMappingName;
             $view->vars['form_name'] = MediaType::getPathName($form);
