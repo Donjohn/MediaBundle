@@ -41,7 +41,7 @@ class MediaBinaryContentProvider
     {
         $sourceFullPath = null;
         if (null !== $source && is_file($source)) {
-            $sourceFullPath = $source;
+            $sourceFullPath = new \SplFileInfo($source);
         }
 
         if (null === $sourceFullPath) {
