@@ -39,27 +39,22 @@ class MediaBinaryContentProvider
      */
     public function mediaBinaryContent(string $source = null): UploadedFile
     {
-        $sourceFullPath = null;
-        if (null !== $source && is_file($source)) {
-            $sourceFullPath = new \SplFileInfo($source);
-        }
+        $sourceFullPath = $source ?: $this->defaultSourceDirectory;
 
-        if (null === $sourceFullPath) {
-            $sourceDirectory = $this->defaultSourceDirectory;
-            if (null !== $source && is_dir($source)) {
-                $sourceDirectory = $source;
-            }
-
+        if (is_dir($sourceFullPath)) {
             $finder = new Finder();
-            $finder->in($sourceDirectory)->files();
+            $finder->in($sourceFullPath)->files();
             if (0 === $finder->count()) {
-                throw new \InvalidArgumentException(sprintf('Source directory %s is empty.', $sourceDirectory));
+                throw new \InvalidArgumentException(sprintf('Source directory %s is empty.', $sourceFullPath));
             }
             $arrayFiles = iterator_to_array($finder);
             shuffle($arrayFiles);
 
             /** @var \SplFileInfo $sourceFullPath */
             $sourceFullPath = array_shift($arrayFiles);
+
+        } elseif (!is_file($sourceFullPath)) {
+            throw new \RuntimeException(sprintf('%s does not exist', $sourceFullPath));
         }
 
         $copyFullPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.pathinfo($sourceFullPath->getRealPath(), PATHINFO_FILENAME).uniqid('media', false).'.'.pathinfo($sourceFullPath->getRealPath(), PATHINFO_EXTENSION);
