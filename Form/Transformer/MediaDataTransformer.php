@@ -46,11 +46,11 @@ class MediaDataTransformer implements DataTransformerInterface
      */
     private function getRealClass($class)
     {
-        if (false === $pos = strrpos($class, '\\'.Proxy::MARKER.'\\')) {
-            return $class;
+        if (false === $pos = strrpos(get_class($class), '\\'.Proxy::MARKER.'\\')) {
+            return get_class($class);
         }
 
-        return substr($class, $pos + Proxy::MARKER_LENGTH + 2);
+        return substr(get_class($class), $pos + Proxy::MARKER_LENGTH + 2);
     }
 
     /**
