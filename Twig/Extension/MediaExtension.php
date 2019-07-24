@@ -110,7 +110,7 @@ class MediaExtension extends \Twig_Extension
      *
      * @return mixed
      */
-    private function denormalize($media): ?Media
+    private function denormalize($media)
     {
         if (is_array($media)) {
             $media = $this->normalizer->denormalize($media, Media::class);
