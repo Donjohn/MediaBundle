@@ -55,6 +55,8 @@ class MediaBinaryContentProvider
 
         } elseif (!is_file($sourceFullPath)) {
             throw new \RuntimeException(sprintf('%s does not exist', $sourceFullPath));
+        } else {
+            $sourceFullPath = new \SplFileInfo($sourceFullPath);
         }
 
         $copyFullPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.pathinfo($sourceFullPath->getRealPath(), PATHINFO_FILENAME).uniqid('media', false).'.'.pathinfo($sourceFullPath->getRealPath(), PATHINFO_EXTENSION);
