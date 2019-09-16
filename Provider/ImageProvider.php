@@ -26,6 +26,15 @@ class ImageProvider extends FileProvider
     {
         return ['image/bmp', 'image/x-bmp', 'image/gif', 'image/jpeg', 'image/jpg', 'image/png', 'image/tiff', 'image/jpeg', 'image/png'];
     }
+    
+    /**
+     * @param Media $media
+     */
+    public function extractMetaData(Media $media): void
+    {
+        list($width, $height) = getimagesize($media->getBinaryContent()->getRealPath());
+        $media->setMetadatas(['width' => $width, 'height' => $height]);
+    }
 
     /**
      * @param array $options
