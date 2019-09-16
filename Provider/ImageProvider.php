@@ -3,6 +3,7 @@
 namespace Donjohn\MediaBundle\Provider;
 
 use Symfony\Component\Validator\Constraints;
+use Donjohn\MediaBundle\Model\Media;
 
 /**
  * description.
