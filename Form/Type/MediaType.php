@@ -117,7 +117,7 @@ class MediaType extends AbstractType
                 'block_name' => 'media',
                 'translation_domain' => $options['translation_domain'],
                 'by_reference' => true,
-                'fine_uploader' => $options['fine_uploader'],
+                'fine_uploader' => false,
                 'show_template' => $options['show_template'],
                 'sortable' => $options['sortable'],
                 'sortable_field' => $options['sortable_field'],
